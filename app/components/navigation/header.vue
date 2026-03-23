@@ -6,14 +6,18 @@
       <!-- Branding -->
       <NuxtLink to="/" class="flex items-center gap-3 group">
         <div
-          class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform"
+          class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform rounded-full"
         >
-          <span class="text-slate-950 font-black text-xl">H</span>
+          <img
+            src="/assets/images/image.png"
+            alt="RoboCare Logo"
+            class="w-10 h-10 object-contain rounded-full"
+          />
         </div>
         <div class="flex flex-col">
-          <span class="text-white font-bold tracking-tight text-sm uppercase"
-            >HealthBot IoT</span
-          >
+          <span class="text-white font-bold tracking-tight text-lg"
+            >RoboCare Platform
+          </span>
           <span
             class="text-slate-500 text-[10px] font-bold tracking-[0.2em] uppercase"
             >UoG · Ethiopia</span

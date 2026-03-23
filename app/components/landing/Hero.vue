@@ -97,11 +97,11 @@
             <div
               class="aspect-video bg-slate-950 rounded-2xl overflow-hidden relative border border-slate-800"
             >
-              <!-- <img
-                src="/assets/images/gazebo-hospital.png"
+              <img
+                src="/assets/images/gazebo.png"
                 alt="Gazebo View"
                 class="w-full h-full object-cover opacity-80"
-              /> -->
+              />
               <!-- Telemetry Overlay -->
               <div class="absolute top-4 right-4 flex gap-2">
                 <div
