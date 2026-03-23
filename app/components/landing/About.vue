@@ -17,9 +17,8 @@
           </h3>
           <p class="text-slate-400 text-lg leading-relaxed">
             Manual health monitoring puts medical staff at high risk of
-            cross-infection. Our project introduces an **IoT-enabled mobile
-            robot** that navigates hospital wards autonomously using **SLAM**
-            technology.
+            cross-infection. Our project introduces an IoT-enabled mobile robot
+            that navigates hospital wards autonomously using SLAM technology.
           </p>
           <ul class="space-y-4 pt-4">
             <li class="flex items-start gap-3 text-slate-300">

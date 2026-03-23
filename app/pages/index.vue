@@ -5,7 +5,8 @@
 
     <!-- We will build these next -->
     <LandingAbout />
-    <!-- <LandingFeatures /> -->
+    <LandingFeatures />
+    <LandingContact />
   </div>
 </template>
 
