@@ -49,7 +49,7 @@
               class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"
             >
               <Icon
-                name="heroicons:shield-check-solid"
+                name="fluent:shield-task-32-filled"
                 class="text-9xl text-cyan-500"
               />
             </div>
