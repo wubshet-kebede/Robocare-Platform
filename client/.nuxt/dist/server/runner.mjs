@@ -1,0 +1,1 @@
+export { default } from "file:///home/wube/robocare-platform/client/node_modules/@nuxt/vite-builder/dist/vite-node-runner.mjs"
