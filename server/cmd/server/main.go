@@ -6,7 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/wubshet-kebede/server/internal/infrastructure"
+	"github.com/wubshet-kebede/server/internal/infrastructure/db"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 		log.Println("No .env file found")
 	}
 
-	infrastructure.Connect()
+	db.Connect()
 	
 
 	port := os.Getenv("PORT")
