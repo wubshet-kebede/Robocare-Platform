@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Vital struct {
+type VitalSign struct {
 	ID          uuid.UUID `json:"id"`
 	PatientID   uuid.UUID `json:"patient_id"`
 	RobotID     uuid.UUID `json:"robot_id"`
@@ -18,14 +18,14 @@ type Vital struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-func NewVital(PatientID, RobotID uuid.UUID, HeartRate, SpO2, Temperature float64) (*Vital, error) {
+func NewVitalSign(PatientID, RobotID uuid.UUID, HeartRate, SpO2, Temperature float64) (*VitalSign, error) {
 	if PatientID == uuid.Nil {
 		return nil, errors.New("patient ID is required")
 	}
 	if RobotID == uuid.Nil {
 		return nil, errors.New("robot ID is required")
 	}
-	return &Vital{
+	return &VitalSign{
 		ID:          uuid.New(),
 		PatientID:   PatientID,
 		RobotID:     RobotID,
