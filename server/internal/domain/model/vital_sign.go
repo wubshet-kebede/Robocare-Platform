@@ -3,15 +3,35 @@ package model
 import (
 	"time"
 
+	"errors"
+
 	"github.com/google/uuid"
 )
 
 type Vital struct {
-	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
-	PatientID   uuid.UUID `gorm:"type:uuid;not null" json:"patient_id"`
-	RobotID     uuid.UUID `gorm:"type:uuid" json:"robot_id"`
+	ID          uuid.UUID `json:"id"`
+	PatientID   uuid.UUID `json:"patient_id"`
+	RobotID     uuid.UUID `json:"robot_id"`
 	HeartRate   float64   `json:"heart_rate"` 
 	SpO2        float64   `json:"spo2"`        
 	Temperature float64   `json:"temperature"` 
-	CreatedAt   time.Time `gorm:"index" json:"created_at"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+func NewVital(PatientID, RobotID uuid.UUID, HeartRate, SpO2, Temperature float64) (*Vital, error) {
+	if PatientID == uuid.Nil {
+		return nil, errors.New("patient ID is required")
+	}
+	if RobotID == uuid.Nil {
+		return nil, errors.New("robot ID is required")
+	}
+	return &Vital{
+		ID:          uuid.New(),
+		PatientID:   PatientID,
+		RobotID:     RobotID,
+		HeartRate:   HeartRate,
+		SpO2:        SpO2,
+		Temperature: Temperature,
+		CreatedAt:   time.Now(),
+	}, nil
 }
