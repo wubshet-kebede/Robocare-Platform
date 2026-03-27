@@ -7,31 +7,34 @@ import (
 
 	"github.com/google/uuid"
 )
-
 type VitalSign struct {
-	ID          uuid.UUID `json:"id"`
-	PatientID   uuid.UUID `json:"patient_id"`
-	RobotID     uuid.UUID `json:"robot_id"`
-	HeartRate   float64   `json:"heart_rate"` 
-	SpO2        float64   `json:"spo2"`        
-	Temperature float64   `json:"temperature"` 
-	CreatedAt   time.Time `json:"created_at"`
+    ID          uuid.UUID 
+    PatientID   uuid.UUID 
+    RobotID     uuid.UUID 
+    HeartRate   float64   
+    SpO2        float64   
+    Temperature float64   
+    // MeasuredAt is sent from the Robot to handle network delays
+    MeasuredAt  time.Time 
 }
 
-func NewVitalSign(PatientID, RobotID uuid.UUID, HeartRate, SpO2, Temperature float64) (*VitalSign, error) {
-	if PatientID == uuid.Nil {
-		return nil, errors.New("patient ID is required")
-	}
-	if RobotID == uuid.Nil {
-		return nil, errors.New("robot ID is required")
-	}
-	return &VitalSign{
-		ID:          uuid.New(),
-		PatientID:   PatientID,
-		RobotID:     RobotID,
-		HeartRate:   HeartRate,
-		SpO2:        SpO2,
-		Temperature: Temperature,
-		CreatedAt:   time.Now(),
-	}, nil
+func NewVitalSign(patientID, robotID uuid.UUID, hr, spo2, temp float64, measuredAt time.Time) (*VitalSign, error) {
+    if patientID == uuid.Nil || robotID == uuid.Nil {
+        return nil, errors.New("patient and robot IDs are required")
+    }
+
+    // Basic hardware sanity check: ensure sensors aren't sending garbage data
+    if hr < 0 || spo2 < 0 || temp < 0 {
+        return nil, errors.New("vital measurements cannot be negative")
+    }
+
+    return &VitalSign{
+        ID:          uuid.New(),
+        PatientID:   patientID,
+        RobotID:     robotID,
+        HeartRate:   hr,
+        SpO2:        spo2,
+        Temperature: temp,
+        MeasuredAt:  measuredAt, // Use the actual time of measurement
+    }, nil
 }

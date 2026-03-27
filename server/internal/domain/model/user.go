@@ -15,18 +15,24 @@ import (
 // 	HospitalID uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
 // 	// Hospital   Hospital `gorm:"foreignKey:HospitalID" json:"hospital"`
 // }
+type UserRole string
 
+const (
+    RoleAdmin  UserRole = "admin"
+    RoleDoctor UserRole = "doctor"
+    RoleNurse  UserRole = "nurse"
+)
 type User struct {
 	ID         uuid.UUID     `json:"id"`
 	FullName   string   `json:"full_name"`
 	Email      string   `json:"email"`
 	Password   string   `json:"-"`    // "-" means never send the password to the Frontend (Nuxt)
-	Role       string   `json:"role"` // "doctor" or "staff"
+	Role       UserRole   `json:"role"` // "doctor" or "staff"
 	HospitalID uuid.UUID     `json:"hospital_id"`
 	// Hospital   Hospital `json:"hospital"` // Nested struct to show hospital details
 }
 
-func NewUser(FullName, Email, Password, Role  string, HospitalID uuid.UUID) (*User, error) {
+func NewUser(FullName, Email, Password string, Role UserRole, HospitalID uuid.UUID) (*User, error) {
 	if FullName == "" {
 		return nil, errors.New("full name is required")
 	}
@@ -42,6 +48,17 @@ func NewUser(FullName, Email, Password, Role  string, HospitalID uuid.UUID) (*Us
 	if HospitalID == uuid.Nil {
 		return nil, errors.New("hospital ID is required")
 	}
+	validRole := false
+    roles := []UserRole{RoleAdmin, RoleDoctor, RoleNurse}
+    for _, r := range roles {
+        if Role == r {
+            validRole = true
+            break
+        }
+    }
+    if !validRole {
+        return nil, errors.New("invalid role assigned")
+    }
 	return &User{
 		ID:         uuid.New(),
 		FullName:   FullName,
