@@ -7,7 +7,7 @@ import (
 )
 
 type VitalSign struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	PatientID uuid.UUID `gorm:"type:uuid;not null;index" json:"patient_id"`
 	RobotID   uuid.UUID `gorm:"type:uuid;not null;index" json:"robot_id"`
 

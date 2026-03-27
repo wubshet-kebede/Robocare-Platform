@@ -8,8 +8,8 @@ import (
 )
 
 type Hospital struct {
-	ID   uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	Name string    `gorm:"size:255;not null" json:"name"`
+	ID   uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
+	Name string    `gorm:"type:text;not null" json:"name"`
 	Slug string    `gorm:"uniqueIndex;not null" json:"slug"`
 	TINNumber     string `gorm:"uniqueIndex;size:100" json:"tin_number"`
 	ContactPerson string `gorm:"size:255" json:"contact_person"`
@@ -22,4 +22,15 @@ type Hospital struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+}
+type HospitalRequest struct {
+	Name          string `json:"name"`
+	TINNumber     string `json:"tin_number"`
+	ContactPerson string `json:"contact_person"`
+	ContactPhone  string `json:"contact_phone"`
+	Address       string `json:"address"`
+	AdminFullName string `json:"admin_full_name"`
+    AdminEmail    string `json:"admin_email"`
+    AdminPassword string `json:"admin_password"`
+    AdminPhone    string `json:"admin_phone"`
 }

@@ -17,7 +17,7 @@ const (
 )
 
 type Robot struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
 
 	// Navigation State
