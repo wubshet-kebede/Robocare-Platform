@@ -16,7 +16,7 @@ const (
 )
 
 type Patient struct {
-	ID                   uuid.UUID     `gorm:"type:uuid;primaryKey" json:"id"`
+	ID                   uuid.UUID     `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	HospitalID           uuid.UUID     `gorm:"type:uuid;not null" json:"hospital_id"`
 	FullName             string        `gorm:"size:255;not null" json:"full_name"`
 	CurrentRoomID        uuid.UUID     `gorm:"type:uuid" json:"current_room_id"`

@@ -15,7 +15,7 @@ const (
 )
 
 type Room struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
 	RoomNumber  string `gorm:"size:50;not null" json:"room_number"`   
 	LocationName string `gorm:"size:100" json:"location_name"`      
