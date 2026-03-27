@@ -30,3 +30,12 @@ type User struct {
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
+type UserLoginInput struct {
+    Identifier string `json:"identifier"` 
+    Password   string `json:"password"`
+}
+
+type UserLoginResponse struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}

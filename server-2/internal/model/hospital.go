@@ -14,6 +14,7 @@ type Hospital struct {
 	TINNumber     string `gorm:"uniqueIndex;size:100" json:"tin_number"`
 	ContactPerson string `gorm:"size:255" json:"contact_person"`
 	ContactPhone  string `gorm:"size:20" json:"contact_phone"`
+	TotalUsers int64 `gorm:"type:bigint;default:1" json:"total_users"`
 	MapID           string  `gorm:"size:100;default:'default_map'" json:"map_id"`
 	DockingStationX float64 `gorm:"type:decimal(10,6);default:0" json:"docking_station_x"`
 	DockingStationY float64 `gorm:"type:decimal(10,6);default:0" json:"docking_station_y"`
