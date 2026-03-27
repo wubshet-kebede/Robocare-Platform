@@ -9,5 +9,6 @@ func SetupRouter() *mux.Router {
 	// protected := r.PathPrefix("/api").Subrouter()
 	// // protected.Use(middleware.AuthMiddleware)
     r.HandleFunc("/signup", auth.SignupHandler).Methods("POST")
+	r.HandleFunc("/login", auth.LoginHandler).Methods("POST")
 	return  r
 }
