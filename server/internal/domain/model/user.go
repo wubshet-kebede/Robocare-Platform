@@ -2,34 +2,33 @@ package model
 
 import (
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 )
 
-// type User struct {
-// 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
-// 	FullName   string   `gorm:"size:255;not null" json:"full_name"`
-// 	Email      string   `gorm:"uniqueIndex;not null" json:"email"`
-// 	Password   string   `json:"-"` // Hashed password, never exported to JSON
-// 	Role       string   `gorm:"size:50;not null" json:"role"` // "doctor", "staff", "admin"
-// 	HospitalID uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
-// 	// Hospital   Hospital `gorm:"foreignKey:HospitalID" json:"hospital"`
-// }
 type UserRole string
 
 const (
-    RoleAdmin  UserRole = "admin"
-    RoleDoctor UserRole = "doctor"
-    RoleNurse  UserRole = "nurse"
+	RoleAdmin  UserRole = "admin"
+	RoleDoctor UserRole = "doctor"
+	RoleNurse  UserRole = "nurse"
 )
+
 type User struct {
-	ID         uuid.UUID     `json:"id"`
-	FullName   string   `json:"full_name"`
-	Email      string   `json:"email"`
-	Password   string   `json:"-"`    // "-" means never send the password to the Frontend (Nuxt)
-	Role       UserRole   `json:"role"` // "doctor" or "staff"
-	HospitalID uuid.UUID     `json:"hospital_id"`
-	// Hospital   Hospital `json:"hospital"` // Nested struct to show hospital details
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	FullName   string    `gorm:"size:255;not null" json:"full_name"`
+	Email      string    `gorm:"size:255;unique;not null" json:"email"`
+	Password   string    `gorm:"size:255;not null" json:"-"` // never exposed
+	Role       UserRole  `gorm:"type:varchar(20);not null;index" json:"role"`
+	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
+
+	// Optional relationship
+	// Hospital Hospital `gorm:"foreignKey:HospitalID" json:"hospital,omitempty"`
+
+	// Timestamps
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func NewUser(FullName, Email, Password string, Role UserRole, HospitalID uuid.UUID) (*User, error) {
