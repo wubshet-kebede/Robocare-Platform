@@ -36,3 +36,17 @@ server/.DS_Store
 *.dylib
 *.test
 *.out
+# ------------------------
+# Go backend
+# ------------------------
+server-2/bin/
+server-2/vendor/
+server-2/.env
+server-2/.DS_Store
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
