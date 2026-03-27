@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/server/internal/domain/model"
 )
-type HospitalRepo interface {
+type HospitalRepository interface {
 	CreateHospital(ctx context.Context, hospital *model.Hospital) error
 	GetHospitalByID(ctx context.Context, id uuid.UUID) (*model.Hospital, error)
 	GetHospitalBySlug(ctx context.Context, slug string) (*model.Hospital, error)
