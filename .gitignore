@@ -1,34 +1,39 @@
-# Nuxt dev/build outputs
-client/output
-client/data
-client/nuxt
-client/nitro
-client/cache
-client/dist
-
-# Node dependencies
-client/node_modules
-
-# Logs
-client/logs
-*.log
-
-# Misc
+# ---------------------------------------------------------
+# 1. GLOBAL IDE & SYSTEM (STOP THE 1GB FILE ERRORS)
+# ---------------------------------------------------------
+.vscode/
+.idea/
+*.vc.db
+*.db
+*.opendb
 .DS_Store
-.fleet
-.idea
+Thumbs.db
 
-# Local env files
-.env
-.env.*
+# ---------------------------------------------------------
+# 2. CLIENT (NUXT 3)
+# ---------------------------------------------------------
+client/.output
+client/.nuxt
+client/.nitro
+client/.cache
+client/dist
+client/node_modules
+client/logs
+client/.env
+client/.env.*
 !.env.example
-# ------------------------
-# Go backend
-# ------------------------
-server/bin/
-server/vendor/
-server/.env
-server/.DS_Store
+
+# ---------------------------------------------------------
+# 3. BACKEND (SERVER & SERVER-2)
+# ---------------------------------------------------------
+# Matches both /server and /server-2
+server*/bin/
+server*/vendor/
+server*/tmp/
+server*/.env
+server*/.env.*
+
+# Go Binary & Build Outputs
 *.exe
 *.exe~
 *.dll
@@ -36,3 +41,5 @@ server/.DS_Store
 *.dylib
 *.test
 *.out
+__debug_bin
+debug
