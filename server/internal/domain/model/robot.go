@@ -6,28 +6,43 @@ import (
 
 	"github.com/google/uuid"
 )
+type RobotStatus string
+
+const (
+    RobotIdle       RobotStatus = "idle"
+    RobotNavigating RobotStatus = "navigating" // Moving to a patient
+    RobotCharging   RobotStatus = "charging"
+    RobotEmergency  RobotStatus = "emergency_stop"
+    RobotOffline    RobotStatus = "offline"
+)
 type Robot struct {
-	ID            uuid.UUID `json:"id"` // Serial Number
-	HospitalID    uuid.UUID `json:"hospital_id"`
-	CurrentRoomID *uint    `json:"current_room_id"`
-	Status        string   `json:"status"` // "charging", "moving"
-	BatteryLevel  int      `json:"battery_level"`
-	LastSeen      time.Time `json:"last_seen"`
+    ID            uuid.UUID 
+    HospitalID    uuid.UUID 
+    
+    // Navigation State
+    CurrentRoomID *uuid.UUID // Where it is now
+    TargetRoomID  *uuid.UUID // Where the doctor sent it
+    Status        RobotStatus     // "idle", "charging", "moving", "emergency_stop", "navigating"
+    
+    // Telemetry from ROS2
+    BatteryLevel  int      
+    WiFiStrength  int        // Important for video quality in telepresence
+    IPAddress     string     // Needed for WebRTC handshake
+    
+    // Hardware Health
+    LastSeen      time.Time 
 }
 
-func NewRobot(HospitalID uuid.UUID, CurrentRoomID uuid.UUID, BatteryLevel int) (*Robot, error) {
-	if HospitalID == uuid.Nil {
-		return nil, errors.New("hospital ID is required")
-	}
-	if CurrentRoomID == uuid.Nil {
-		return nil, errors.New("current room ID is required")
-	}
-	return &Robot{
-		ID:            uuid.New(),
-		HospitalID:    HospitalID,
-		CurrentRoomID: nil,
-		Status:        "charging",
-		BatteryLevel:  100,
-		LastSeen:      time.Now(),
-	}, nil
+func NewRobot(hospitalID uuid.UUID) (*Robot, error) {
+    if hospitalID == uuid.Nil {
+        return nil, errors.New("hospital ID is required")
+    }
+    
+    return &Robot{
+        ID:           uuid.New(),
+        HospitalID:   hospitalID,
+        Status:       RobotIdle,
+        BatteryLevel: 100,
+        LastSeen:     time.Now(),
+    }, nil
 }
