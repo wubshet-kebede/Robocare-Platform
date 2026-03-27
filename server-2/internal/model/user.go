@@ -6,12 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserRole string
+type Role string
 
 const (
-	RoleAdmin  UserRole = "admin"
-	RoleDoctor UserRole = "doctor"
-	RoleNurse  UserRole = "nurse"
+	Admin  Role = "admin"
+	Doctor Role = "doctor"
+	Nurse  Role = "nurse"
 )
 
 type User struct {
@@ -19,7 +19,7 @@ type User struct {
 	FullName   string    `gorm:"size:255;not null" json:"full_name"`
 	Email      string    `gorm:"size:255;unique;not null" json:"email"`
 	PasswordHash   string    `gorm:"type:text;not null" json:"-"`
-	Role       UserRole  `gorm:"type:varchar(20);not null;index" json:"role"`
+	Role       Role  `gorm:"type:varchar(20);not null;index" json:"role"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
 	Phone          string    `gorm:"type:varchar(20);uniqueIndex;not null" json:"phone"`
 
