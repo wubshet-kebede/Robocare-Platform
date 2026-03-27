@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"fmt"
+
+	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/utils"
@@ -15,6 +18,7 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 	}
 	Slug := utils.GenerateSlug(input.Name)
 	hospital := model.Hospital{
+		ID: uuid.New(),
 		Name:          input.Name,
 		Slug:          Slug,
 		TINNumber:     input.TINNumber,
@@ -22,6 +26,7 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 		ContactPhone: input.ContactPhone,
 		Address: input.Address,
 	}
+	fmt.Println("Hospital ID:", hospital.ID)
 	if err := tx.Create(&hospital).Error; err != nil {
 		tx.Rollback()
 		return createdOrg, createdAdmin, err
@@ -36,7 +41,7 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 		FullName:       input.AdminFullName,
 		Email:          input.AdminEmail,
 		PasswordHash:   hashedPassword,
-		Role:           model.RoleAdmin,
+		Role:           model.Admin,
 		Phone:          input.AdminPhone,
 	}
 	if err := tx.Create(&admin).Error; err != nil {

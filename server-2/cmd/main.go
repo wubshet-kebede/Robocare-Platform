@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
-	// "github.com/gorilla/handlers"
+	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 )
 
@@ -15,23 +17,23 @@ func main() {
 	}
 
 	db.Connect()
-	// db.Migrate()
-	// r := api.SetupRouter()
-	// allowedOrigins := []string{"http://localhost:5173"}
-	// allowedHeaders := []string{"Content-Type", "Authorization"}
-	// allowedMethods := []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-	// corsMiddleware := handlers.CORS(
-	// 	handlers.AllowedOrigins(allowedOrigins),
-	// 	handlers.AllowedHeaders(allowedHeaders),
-	// 	handlers.AllowedMethods(allowedMethods),
-	// 	handlers.AllowCredentials(),
-	// )
+	db.Migrate()
+	r := api.SetupRouter()
+	allowedOrigins := []string{"http://localhost:5173"}
+	allowedHeaders := []string{"Content-Type", "Authorization"}
+	allowedMethods := []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	corsMiddleware := handlers.CORS(
+		handlers.AllowedOrigins(allowedOrigins),
+		handlers.AllowedHeaders(allowedHeaders),
+		handlers.AllowedMethods(allowedMethods),
+		handlers.AllowCredentials(),
+	)
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "8082"
 	}
 
 	log.Printf("Server running on :%s\n", port)
-	// log.Fatal(http.ListenAndServe(":"+port, corsMiddleware(r)))
+	log.Fatal(http.ListenAndServe(":"+port, corsMiddleware(r)))
 }
