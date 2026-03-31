@@ -10,11 +10,9 @@ import (
 )
 
 func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model.User, error) {
-	var createdOrg model.Hospital
-	var createdAdmin model.User
 	tx := db.DB.Begin()
 	if tx.Error != nil {
-		return createdOrg, createdAdmin, tx.Error
+		return model.Hospital{}, model.User{}, tx.Error
 	}
 	Slug := utils.GenerateSlug(input.Name)
 	hospital := model.Hospital{
@@ -29,12 +27,12 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 	fmt.Println("Hospital ID:", hospital.ID)
 	if err := tx.Create(&hospital).Error; err != nil {
 		tx.Rollback()
-		return createdOrg, createdAdmin, err
+		return model.Hospital{}, model.User{}, err
 	}
-	hashedPassword, pwdErr := utils.HashPassword(input.AdminPassword)
-	if pwdErr != nil {
+	hashedPassword, err := utils.HashPassword(input.AdminPassword)
+	if err != nil {
 		tx.Rollback()
-		return createdOrg, createdAdmin, pwdErr
+		return model.Hospital{}, model.User{}, err
 	}
 	admin := model.User{
 		HospitalID: hospital.ID,
@@ -46,11 +44,11 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 	}
 	if err := tx.Create(&admin).Error; err != nil {
 		tx.Rollback()
-		return hospital, createdAdmin, err
+		return model.Hospital{}, model.User{}, err
 	}
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
-		return hospital, admin, err
+		return model.Hospital{}, model.User{}, err
 	}
 	return hospital, admin, nil
 }

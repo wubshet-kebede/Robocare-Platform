@@ -12,8 +12,8 @@ type MedicalRecord struct {
 	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	PatientID   uuid.UUID `gorm:"type:uuid;not null;index" json:"patient_id"`       // permanent patient
 	AdmissionID uuid.UUID `gorm:"type:uuid;not null;index" json:"admission_id"`    // links to hospital stay
-    CreatedByID uuid.UUID `gorm:"type:uuid;not null;index" json:"created_by_id"` 
-    Creator     User      `gorm:"foreignKey:CreatedByID" json:"creator,omitempty"`
+    UserID uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"` 
+    // Creator     User      `gorm:"foreignKey:CreatedByID" json:"creator,omitempty"`
 	// Medical Information
 	Diagnosis      string `gorm:"type:text" json:"diagnosis,omitempty"`
 	TreatmentPlan  string `gorm:"type:text" json:"treatment_plan,omitempty"`
