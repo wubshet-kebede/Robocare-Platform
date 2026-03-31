@@ -11,10 +11,10 @@ func jwtSecret() []byte {
 	return []byte(os.Getenv("JWT_SECRET"))
 }
 
-func GenerateJWT(ID string, organization_id string, role string, duration time.Duration) (string, error) {
+func GenerateJWT(ID string, Hospital_id string, role string, duration time.Duration) (string, error) {
 	claims := jwt.MapClaims{
 		"id":   ID,
-		"organization_id" : organization_id,
+		"hospital_id": Hospital_id,
 		"role": role,
 		"exp":  time.Now().Add(duration).Unix(),
 		"iat":  time.Now().Unix(),

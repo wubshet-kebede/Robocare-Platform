@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Role string
@@ -14,17 +15,38 @@ const (
 	Nurse  Role = "nurse"
 )
 
+// type User struct {
+// 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
+// 	FullName   string    `gorm:"size:255;not null" json:"full_name"`
+// 	Email      string    `gorm:"size:255;unique;not null" json:"email"`
+// 	PasswordHash   string    `gorm:"type:text;not null" json:"-"`
+// 	Role       Role  `gorm:"type:varchar(20);not null;index" json:"role"`
+// 	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
+// 	Phone          string    `gorm:"type:varchar(20);uniqueIndex;not null" json:"phone"`
+
+	
+// 	// Timestamps
+// 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+// 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+// }
 type User struct {
 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	FullName   string    `gorm:"size:255;not null" json:"full_name"`
 	Email      string    `gorm:"size:255;unique;not null" json:"email"`
-	PasswordHash   string    `gorm:"type:text;not null" json:"-"`
-	Role       Role  `gorm:"type:varchar(20);not null;index" json:"role"`
-	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
-	Phone          string    `gorm:"type:varchar(20);uniqueIndex;not null" json:"phone"`
+	Phone      string    `gorm:"size:20;uniqueIndex;not null" json:"phone"`
+	PasswordHash string  `gorm:"type:text;not null" json:"-"`
 
-	// Optional relationship
-	// Hospital Hospital `gorm:"foreignKey:HospitalID" json:"hospital,omitempty"`
+	Role       Role      `gorm:"type:varchar(50);not null;index" json:"role"`
+	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
+
+	// Optional: assign to department
+	DepartmentID *uuid.UUID `gorm:"type:uuid;index" json:"department_id,omitempty"`
+	Specialty    string     `gorm:"size:100" json:"specialty,omitempty"` // for doctors
+
+	// Active & Audit
+	IsActive           bool          `gorm:"default:true" json:"is_active"`
+	LastPasswordChange *time.Time    `json:"last_password_change,omitempty"`
+	DeletedAt          gorm.DeletedAt `gorm:"index" json:"-"`
 
 	// Timestamps
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type RobotStatus string
@@ -16,28 +17,60 @@ const (
 	RobotOffline    RobotStatus = "offline"
 )
 
+// type Robot struct {
+// 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
+// 	HospitalID uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
+
+// 	// Navigation State
+// 	CurrentRoomID *uuid.UUID `gorm:"type:uuid" json:"current_room_id"`
+// 	TargetRoomID  *uuid.UUID `gorm:"type:uuid" json:"target_room_id"`
+// 	Status        RobotStatus `gorm:"type:varchar(30);default:'idle'" json:"status"`
+
+// 	// Telemetry (from ROS2)
+// 	BatteryLevel int    `gorm:"check:battery_level >= 0 AND battery_level <= 100" json:"battery_level"`
+// 	WiFiStrength int    `json:"wifi_strength"` // could be RSSI or percentage
+// 	IPAddress    string `gorm:"size:50" json:"ip_address"`
+
+// 	// Health / Monitoring
+// 	LastSeen time.Time `gorm:"index" json:"last_seen"`
+
+// 	// Optional relationships (if you have Room model)
+// 	// CurrentRoom *Room `gorm:"foreignKey:CurrentRoomID" json:"current_room,omitempty"`
+// 	// TargetRoom  *Room `gorm:"foreignKey:TargetRoomID" json:"target_room,omitempty"`
+
+// 	// Timestamps
+// 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+// 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+// }
 type Robot struct {
 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
-	HospitalID uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
+	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
 
 	// Navigation State
-	CurrentRoomID *uuid.UUID `gorm:"type:uuid" json:"current_room_id"`
-	TargetRoomID  *uuid.UUID `gorm:"type:uuid" json:"target_room_id"`
-	Status        RobotStatus `gorm:"type:varchar(30);default:'idle'" json:"status"`
+	CurrentRoomID *uuid.UUID `gorm:"type:uuid;index" json:"current_room_id,omitempty"`
+	TargetRoomID  *uuid.UUID `gorm:"type:uuid;index" json:"target_room_id,omitempty"`
+	Status        RobotStatus `gorm:"type:varchar(30);default:'idle';index" json:"status"`
 
-	// Telemetry (from ROS2)
+	// Telemetry / Health
 	BatteryLevel int    `gorm:"check:battery_level >= 0 AND battery_level <= 100" json:"battery_level"`
-	WiFiStrength int    `json:"wifi_strength"` // could be RSSI or percentage
+	WiFiStrength int    `json:"wifi_strength"` // RSSI / %  
 	IPAddress    string `gorm:"size:50" json:"ip_address"`
+	LastSeen     time.Time `gorm:"index" json:"last_seen"`
 
-	// Health / Monitoring
-	LastSeen time.Time `gorm:"index" json:"last_seen"`
+	// Advanced Info
+	MapID string `gorm:"size:100;default:'default_map'" json:"map_id"`
+	Floor int    `json:"floor"`
+	Zone  string `gorm:"size:50" json:"zone"`
+	Model string `gorm:"size:50" json:"model,omitempty"`
 
-	// Optional relationships (if you have Room model)
-	// CurrentRoom *Room `gorm:"foreignKey:CurrentRoomID" json:"current_room,omitempty"`
-	// TargetRoom  *Room `gorm:"foreignKey:TargetRoomID" json:"target_room,omitempty"`
+	// Soft Delete
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
 	// Timestamps
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+
+	// Optional relationships
+	CurrentRoom *Room `gorm:"foreignKey:CurrentRoomID" json:"current_room,omitempty"`
+	TargetRoom  *Room `gorm:"foreignKey:TargetRoomID" json:"target_room,omitempty"`
 }
