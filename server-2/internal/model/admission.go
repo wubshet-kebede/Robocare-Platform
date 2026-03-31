@@ -24,7 +24,7 @@ type Admission struct {
 
 	AdmissionDate  time.Time `json:"admission_date"`
 	DischargeDate  *time.Time `json:"discharge_date,omitempty"`
-	IsActive       bool      `gorm:"default:true" json:"is_active"`
+	IsActive       bool      `gorm:"default:true;index" json:"is_active"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`

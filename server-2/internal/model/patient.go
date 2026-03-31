@@ -42,21 +42,21 @@ const (
 
 type Patient struct {
 	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
-	HospitalID  uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
+	HospitalID  uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
 	FullName    string    `gorm:"size:255;not null" json:"full_name"`
 	DateOfBirth time.Time `gorm:"not null" json:"date_of_birth"`
-	Gender      string    `gorm:"size:20" json:"gender"`
+	Gender      string    `gorm:"type:text" json:"gender"`
 
-	Email  string `gorm:"size:255;unique;not null" json:"email"`
+	Email  string `gorm:"size:255;uniqueIndex;not null" json:"email"`
 	Phone  string `gorm:"size:20;uniqueIndex;not null" json:"phone"`
 	Address string `gorm:"size:255" json:"address"`
 
-	EmergencyContactName  string `gorm:"size:255" json:"emergency_contact_name"`
-	EmergencyContactPhone string `gorm:"size:20" json:"emergency_contact_phone"`
+	EmergencyContactName  string `gorm:"type:text" json:"emergency_contact_name"`
+	EmergencyContactPhone string `gorm:"type:text" json:"emergency_contact_phone"`
 
-	BloodType         string `gorm:"size:3" json:"blood_type"`
-	Allergies         string `gorm:"size:255" json:"allergies"`
-	ChronicConditions string `gorm:"size:255" json:"chronic_conditions"`
+	BloodType         string `gorm:"type:text" json:"blood_type"`
+	Allergies         string `gorm:"type:text" json:"allergies"`
+	ChronicConditions string `gorm:"type:text" json:"chronic_conditions"`
 
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
