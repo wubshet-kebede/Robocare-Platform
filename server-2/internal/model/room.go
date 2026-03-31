@@ -37,10 +37,11 @@ type Room struct {
 	RoomNumber string    `gorm:"size:50;not null;uniqueIndex:idx_hospital_room" json:"room_number"`
 
 	LocationName string `gorm:"size:100" json:"location_name"`
-	X            float64 `json:"x"`
-	Y            float64 `json:"y"`
-	Yaw          float64 `json:"yaw"`
-	Floor        int     `gorm:"index" json:"floor"`
+	// Using decimal for exact robotics coordinate precision
+    X            float64 `gorm:"type:decimal(10,6)" json:"x"`
+    Y            float64 `gorm:"type:decimal(10,6)" json:"y"`
+    Yaw          float64 `gorm:"type:decimal(10,6)" json:"yaw"` // Orientation in radians
+    Floor        int     `gorm:"index" json:"floor"`
 
 	Status RoomStatus `gorm:"type:varchar(20);default:'available';index" json:"status"`
 

@@ -33,7 +33,9 @@ type VitalSign struct {
 	HeartRate   float64 `gorm:"not null" json:"heart_rate"`   // bpm
 	SpO2        float64 `gorm:"not null" json:"spo2"`         // %
 	Temperature float64 `gorm:"not null" json:"temperature"`  // °C
-	BloodPressure string `gorm:"size:20" json:"blood_pressure,omitempty"` // optional
+	// Split Blood Pressure for better querying/graphing
+    SystolicBP  int `json:"systolic_bp,omitempty"`
+    DiastolicBP int `json:"diastolic_bp,omitempty"` // optional
 
 	// Timestamp from robot (important for latency handling)
 	MeasuredAt time.Time `gorm:"index;not null" json:"measured_at"`
