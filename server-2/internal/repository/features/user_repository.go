@@ -2,7 +2,6 @@ package features
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/dlclark/regexp2"
 	"github.com/google/uuid"
@@ -97,21 +96,8 @@ func CheckForUsers(userID uuid.UUID) (model.User, error) {
 	}
 	return user, nil
 }
-func UpdateUser(user *model.User, hosID uuid.UUID) (model.User, error) {
-	if hosID == uuid.Nil{
-		return model.User{}, errors.New("hospital_id is required")
-	}
-	var existing model.User
-	if err := db.DB.Where("id = ? AND hospital_id = ?", user.ID, hosID).First(&existing).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return model.User{}, fmt.Errorf("user not found")
-		}
-		return model.User{}, err
-	}
-	if err := db.DB.Model(&existing).Updates(user).Error; err != nil {
-		return model.User{}, err
-	}
-	return existing, nil
+func UpdateUser(user *model.User) error {
+	return db.DB.Save(user).Error
 }
 func DeleteUser(id uuid.UUID) (model.User, error) {
 	var user model.User
@@ -130,12 +116,11 @@ func DeleteUser(id uuid.UUID) (model.User, error) {
 
 	return user, nil
 }
-func GetUserByID(id uuid.UUID) (model.User, error) {
+func GetUserByID(userID, hospitalID uuid.UUID) (*model.User, error) {
 	var user model.User
-	if err := db.DB.First(&user, "id = ?", id).Error; err != nil {
-		return model.User{}, err
-	}
-	return user, nil
+	err := db.DB.Where("id = ? AND hospital_id = ?", userID, hospitalID).
+		First(&user).Error
+	return &user, err
 }
 func GetUsers(hosID uuid.UUID, page, limit int) ([]model.User, int64, error) {
 	var users []model.User
