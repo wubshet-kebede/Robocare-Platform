@@ -29,7 +29,44 @@ func GetAllUsers() ([]model.User, error) {
 	err := db.DB.Find(&users).Error
 	return users, err
 }
+func CreateUserFromInvitation(invite model.Invitation, fullName, password, phone, specialty string) (model.User, error) {
+    var user model.User
+    tx := db.DB.Begin()
+    if tx.Error != nil {
+        return user, tx.Error
+    }
+    user = model.User{
+        ID:           uuid.New(),
+        Email:        invite.Email,
+        FullName:     fullName,
+        PasswordHash: password,
+        Phone:        phone,
+        Specialty:    specialty,
+        HospitalID:   invite.HospitalID,
+        Role:         invite.Role,
+    }
+    if err := tx.Create(&user).Error; err != nil {
+        tx.Rollback()
+        return user, err
+    }
+    if err := tx.Model(&model.Hospital{}).
+        Where("id = ?", invite.HospitalID).
+        UpdateColumn("max_users", gorm.Expr("max_users + ?", 1)).Error; err != nil {
+        tx.Rollback()
+        return user, err
+    }
+    if err := tx.Model(&model.Invitation{}).
+        Where("id = ? AND is_accepted = false", invite.ID).
+        Update("is_accepted", true).Error; err != nil {
+        tx.Rollback()
+        return user, err
+    }
+    if err := tx.Commit().Error; err != nil {
+        return user, err
+    }
 
+    return user, nil
+}
 
 func GetUserByEmailOrPhone(identifier string) (model.User, error) {
 	var user model.User
