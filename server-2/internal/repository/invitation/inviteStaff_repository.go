@@ -12,7 +12,7 @@ func SaveInvitation(invite model.Invitation) error {
 
     var existing model.Invitation
     if err := tx.
-        Where("email = ? AND hospital_id = ? AND accepted_at IS NULL", invite.Email, invite.HospitalID).
+        Where("email = ? AND hospital_id = ? AND is_accepted = false", invite.Email, invite.HospitalID).
         First(&existing).Error; err == nil {
         tx.Rollback() 
         return fmt.Errorf("an active invitation already exists for this email")
