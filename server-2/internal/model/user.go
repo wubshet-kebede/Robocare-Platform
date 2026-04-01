@@ -61,3 +61,10 @@ type UserLoginResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }
+type CompleteProfileRequest struct {
+    Token     string `json:"token" validate:"required"`
+    FullName  string `json:"full_name" validate:"required,min=3"`
+    Phone     string `json:"phone" validate:"required"`
+    Password  string `json:"password" validate:"required,min=8"`
+    Specialty string `json:"specialty,omitempty"` 
+}
