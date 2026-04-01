@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
 
-	"github.com/wubshet-kebede/robocare-platform/server-2/internal/services/features"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/services/user"
 )
 
 type User struct {
@@ -20,7 +20,7 @@ type User struct {
 func MeHandler(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(middleware.UserIDKey).(uuid.UUID)
 
-	user, err := features.CheckForUser(userID)
+	user, err := user.CheckForUser(userID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Header().Set("Content-Type", "application/json")
