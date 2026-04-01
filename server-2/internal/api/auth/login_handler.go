@@ -40,5 +40,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(4 * time.Hour),
 	})
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Login successful"})
+	// json.NewEncoder(w).Encode(map[string]string{"message": "Login successful"})
+	json.NewEncoder(w).Encode(map[string]interface{}{
+	"message":       "Login successful",
+	"access_token":  token["access_token"],
+	"refresh_token": token["refresh_token"],
+})
 }
