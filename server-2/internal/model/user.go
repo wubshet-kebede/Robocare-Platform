@@ -13,6 +13,7 @@ const (
 	Admin  Role = "admin"
 	Doctor Role = "doctor"
 	Nurse  Role = "nurse"
+	Receptionist Role = "receptionist"
 )
 type User struct {
 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
