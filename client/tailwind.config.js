@@ -2,22 +2,24 @@
 export default {
   content: [
     // all directories and extensions will correspond to your Nuxt config
-    "{srcDir}/components/**/*.{vue,js,jsx,mjs,ts,tsx}",
-    "{srcDir}/layouts/**/*.{vue,js,jsx,mjs,ts,tsx}",
-    "{srcDir}/pages/**/*.{vue,js,jsx,mjs,ts,tsx}",
-    "{srcDir}/plugins/**/*.{js,ts,mjs}",
-    "{srcDir}/composables/**/*.{js,ts,mjs}",
-    "{srcDir}/utils/**/*.{js,ts,mjs}",
-    "{srcDir}/{A,a}pp.{vue,js,jsx,mjs,ts,tsx}",
-    "{srcDir}/{E,e}rror.{vue,js,jsx,mjs,ts,tsx}",
-    "{srcDir}/app.config.{js,ts,mjs}",
-    "{srcDir}/app/spa-loading-template.html",
+    "./components/**/*.{vue,js,ts}",
+    "./layouts/**/*.{vue,js,ts}",
+    "./pages/**/*.{vue,js,ts}",
+    "./plugins/**/*.{js,ts}",
+    "./composables/**/*.{js,ts}",
+    "./utils/**/*.{js,ts}",
+    "./App.{vue,js,ts}",
+    "./Error.{vue,js,ts}",
+    "./app.config.{js,ts}",
+    "./app/spa-loading-template.html",
   ],
   theme: {
     extend: {
       colors: {
-        sidebar_robocare: "#f7f0f1",
-        sidebar_primary: "#ea6c5a",
+        "sidebar-robocare": "#f7f0f1",
+        "sidebar-primary": "#ea6c5a",
+        "card-foreground": "#f7f0f1",
+        background: "#0c0809",
       },
     },
   },
