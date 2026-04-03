@@ -5,13 +5,35 @@
     <div>
       <UiStatCard />
     </div>
-    <div>
-      <h2 class="text-lg font-bold mb-2">24h Patient Vitals Monitor</h2>
-      <p class="text-sm text-muted mb-4">
-        Hourly average heart rate, blood pressure, and SpO₂ across all monitored
+  </div>
+  <div
+    data-slot="card"
+    class="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200 mb-6"
+  >
+    <div data-slot="card-header" class="flex flex-col space-y-1.5 p-6 pb-2">
+      <div class="tracking-tight text-base font-semibold">
+        24h Patient Vitals Monitor
+      </div>
+      <p class="text-xs text-muted-foreground">
+        Hourly average heart rate, blood pressure, and SpO2 across all monitored
         patients
       </p>
-      <VitalsChart :series="series" :categories="hours" />
+    </div>
+    <div data-slot="card-content" class="p-6 pt-4">
+      <ChartVitalsChart :series="series" :categories="hours" />
+    </div>
+  </div>
+  <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div
+      class="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200"
+    >
+      <div data-slot="card-header" class="flex flex-col space-y-1.5 p-6 pb-2">
+        <div class="tracking-tight text-base font-semibold">Bed Occupancy</div>
+        <p class="text-xs text-muted-foreground">Occupancy rate by ward</p>
+      </div>
+      <div>
+        <ChartBedOccupancyChart />
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +42,7 @@
 definePageMeta({
   layout: "dashboard",
 });
-import VitalsChart from "~/components/VitalsChart.vue";
+import VitalsChart from "~/components/chart/VitalsChart.vue";
 
 const hours = [
   "00:00",

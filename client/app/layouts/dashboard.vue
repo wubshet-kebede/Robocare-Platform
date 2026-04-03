@@ -208,11 +208,11 @@ const navSections = [
             <div
               class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sidebar-primary/80 to-sidebar-primary text-[11px] font-bold text-sidebar-primary-robocare"
             >
-              AS
+              WA
             </div>
             <div class="flex flex-1 flex-col">
               <span class="text-sm font-medium text-sidebar-foreground"
-                >Aigars S.</span
+                >Wubshet A.</span
               >
               <span class="text-[11px] text-sidebar-foreground/50">Admin</span>
             </div> </a
@@ -298,7 +298,7 @@ const navSections = [
             <button
               class="h-8 w-8 rounded-full bg-primary/10 text-xs font-semibold text-primary"
             >
-              AS
+              WA
             </button>
           </div>
         </header>

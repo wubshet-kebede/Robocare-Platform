@@ -1,135 +1,122 @@
 <template>
-  <div
-    class="bg-slate-900/50 border border-slate-800 p-8 md:p-10 rounded-[2.5rem] backdrop-blur-xl shadow-2xl"
-  >
-    <!-- Dynamic Header based on Slug -->
-    <div class="text-center mb-8">
-      <div
-        class="inline-flex w-16 h-16 bg-cyan-500/10 rounded-2xl items-center justify-center mb-4 border border-cyan-500/20"
-      >
-        <Icon name="lucide:hospital" class="text-3xl text-cyan-500" />
+  <div class="min-h-screen flex bg-slate-50">
+    <div
+      class="hidden lg:flex w-1/2 bg-blue-700 relative overflow-hidden items-center justify-center"
+    >
+      <div class="z-10 text-white p-12 max-w-lg">
+        <h1 class="text-5xl font-bold mb-6 italic">Robocare.</h1>
+        <p class="text-xl text-blue-100 leading-relaxed">
+          The future of hospital automation. Managing your fleet of medical
+          robots starts here.
+        </p>
       </div>
-      <h1
-        class="text-xl font-black text-white tracking-tighter uppercase italic"
-      >
-        {{ hospitalName }}
-      </h1>
-      <p
-        class="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-2"
-      >
-        Fleet Management Portal
-      </p>
+      <div
+        class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70"
+      ></div>
+      <div
+        class="absolute -top-24 -right-24 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70"
+      ></div>
     </div>
 
-    <form @submit.prevent="handleLogin" class="space-y-5">
-      <!-- Role Selection -->
-      <div
-        class="grid grid-cols-2 gap-3 p-1 bg-slate-950 border border-slate-800 rounded-xl"
-      >
-        <button
-          type="button"
-          @click="role = 'doctor'"
-          :class="
-            role === 'doctor'
-              ? 'bg-cyan-600 text-slate-950 shadow-lg shadow-cyan-500/20'
-              : 'text-slate-500'
-          "
-          class="py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all"
-        >
-          Medical Doctor
-        </button>
-        <button
-          type="button"
-          @click="role = 'staff'"
-          :class="
-            role === 'staff'
-              ? 'bg-cyan-600 text-slate-950 shadow-lg shadow-cyan-500/20'
-              : 'text-slate-500'
-          "
-          class="py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all"
-        >
-          Tech Staff
-        </button>
-      </div>
-
-      <!-- Professional Credentials -->
-      <div class="space-y-4 pt-2">
-        <div class="group">
-          <label
-            class="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-1 mb-2 block"
-            >System ID</label
-          >
-          <div class="relative">
-            <Icon
-              name="lucide:fingerprint"
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-500 transition-colors"
-            />
-            <input
-              type="text"
-              placeholder="EMP-2026-X"
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-12 pr-5 py-4 text-white text-sm focus:border-cyan-500 outline-none transition-all"
-            />
-          </div>
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+      <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+          <img class="mx-auto h-12 w-auto" src="/logo.png" alt="Robocare" />
+          <h2 class="mt-6 text-3xl font-extrabold text-slate-900">
+            Welcome back
+          </h2>
+          <p class="mt-2 text-sm text-slate-600">
+            Please enter your details to sign in.
+          </p>
         </div>
 
-        <div class="group">
-          <label
-            class="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-1 mb-2 block"
-            >Access Key</label
-          >
-          <div class="relative">
-            <Icon
-              name="lucide:shield-lock"
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-cyan-500 transition-colors"
-            />
-            <input
-              type="password"
-              placeholder="••••••••"
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-12 pr-5 py-4 text-white text-sm focus:border-cyan-500 outline-none transition-all"
-            />
+        <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
+          <div class="space-y-4">
+            <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-slate-700"
+                >Email Address</label
+              >
+              <input
+                v-model="form.email"
+                id="email"
+                type="email"
+                required
+                class="mt-1 block w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200"
+                placeholder="doctor@hospital.com"
+              />
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between">
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-slate-700"
+                  >Password</label
+                >
+                <a
+                  href="#"
+                  class="text-xs font-semibold text-blue-600 hover:text-blue-500"
+                  >Forgot password?</a
+                >
+              </div>
+              <input
+                v-model="form.password"
+                id="password"
+                type="password"
+                required
+                class="mt-1 block w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200"
+                placeholder="••••••••"
+              />
+            </div>
           </div>
-        </div>
+
+          <div class="flex items-center">
+            <input
+              id="remember-me"
+              type="checkbox"
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+            />
+            <label for="remember-me" class="ml-2 block text-sm text-slate-700"
+              >Keep me logged in</label
+            >
+          </div>
+
+          <button
+            type="submit"
+            :disabled="loading"
+            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 disabled:opacity-50"
+          >
+            <span v-if="loading">Signing in...</span>
+            <span v-else>Sign In</span>
+          </button>
+        </form>
+
+        <p class="mt-10 text-center text-sm text-slate-500">
+          Not a member yet?
+          <span class="font-semibold text-slate-900 italic"
+            >Contact your administrator</span
+          >
+        </p>
       </div>
-
-      <button
-        class="w-full py-4 bg-white hover:bg-cyan-50 text-slate-950 font-black rounded-xl transition-all shadow-xl shadow-white/5 mt-4 flex items-center justify-center gap-2 group"
-      >
-        ENTER DASHBOARD
-        <Icon
-          name="lucide:unplug"
-          class="group-hover:rotate-12 transition-transform"
-        />
-      </button>
-    </form>
-
-    <div class="mt-8 pt-6 border-t border-slate-800/50 text-center">
-      <NuxtLink
-        to="/login"
-        class="text-[10px] font-black text-slate-500 hover:text-cyan-400 uppercase tracking-[0.2em] transition-colors"
-      >
-        Change Facility
-      </NuxtLink>
     </div>
   </div>
 </template>
 
 <script setup>
-const route = useRoute();
-const slug = route.params.slug; // Gets "gondar-university" from URL
-const role = ref("doctor");
-
-// Compute name from slug (e.g., gondar-university -> GONDAR UNIVERSITY)
-const hospitalName = computed(() => {
-  return slug ? slug.toString().replace(/-/g, " ") : "Unknown Facility";
+const form = reactive({
+  email: "",
+  password: "",
 });
+const loading = ref(false);
 
-definePageMeta({
-  layout: "auth",
-});
-
-const handleLogin = () => {
-  // Logic to redirect to the specific dashboard
-  console.log(`Logging into ${slug} as ${role.value}`);
-  navigateTo(`/dashboard/${slug}`);
+const handleLogin = async () => {
+  loading.value = true;
+  // Call your Go Backend here!
+  console.log("Logging in with:", form.email);
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
 };
 </script>
