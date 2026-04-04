@@ -32,6 +32,7 @@ server*/vendor/
 server*/tmp/
 server*/.env
 server*/.env.*
+server*/cookies.txt
 
 # Go Binary & Build Outputs
 *.exe
