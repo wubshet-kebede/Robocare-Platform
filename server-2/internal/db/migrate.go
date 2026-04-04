@@ -10,7 +10,7 @@ func Migrate() {
 		DO $$ 
 		BEGIN
 			IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_enum') THEN
-				CREATE TYPE role_enum AS ENUM ('admin', 'staff');
+				CREATE TYPE role_enum AS ENUM ('admin', 'doctor', 'surgeon', 'nurse', 'receptionist','nurse', 'lab_technician', 'pharmacist', 'er_doctor', 'er_nurse','it_support', 'robot_operator', 'head_nurse');
 			END IF;
 		END
 		$$;
@@ -19,10 +19,24 @@ func Migrate() {
 	if err := DB.Exec(createEnumSQL).Error; err != nil {
 		log.Fatalf("Failed to create enum type: %v", err)
 	}
+	createDeptTypeSQL := `
+	    DO $$
+		BEGIN
+		    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typename = 'department_type_enum) THEN
+			    CREATE TYPE department_type_enum AS ENUM ('clinical', 'adminstrative', 'custom','laboratory', 'emergency','pharmacy' );
+			END IF;
+		END
+		$$;
+	`
+
+	if err := DB.Exec(createDeptTypeSQL).Error; err != nil {
+		log.Fatalf("Failed to create department type enum: %v", err)
+	}
 	err := DB.AutoMigrate(
 		&model.Hospital{},
 		&model.User{},
 		&model.Invitation{},
+		&model.Department{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
