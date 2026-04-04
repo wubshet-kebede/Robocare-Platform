@@ -39,3 +39,18 @@ func CreateDepartmentHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(createdDept)
 }
+func GetDepartmentsHandler(w http.ResponseWriter, r*http.Request) {
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+///role, Rok := r.Context().Value(middleware.RoleKey).(string)
+	if !ok  {
+		http.Error(w, "missing hospital id ", http.StatusBadRequest)
+		return
+	}
+	depts, err := department.GetDepartments(hospitalID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(depts)
+}
