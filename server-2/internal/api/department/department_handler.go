@@ -28,7 +28,6 @@ func CreateDepartmentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	// override AFTER decode (important!)
     input.HospitalID = hospitalID
     input.CreatedBy = userID
 	createdDept, err := department.CreateDepartment(input)
@@ -41,7 +40,7 @@ func CreateDepartmentHandler(w http.ResponseWriter, r *http.Request) {
 }
 func GetDepartmentsHandler(w http.ResponseWriter, r*http.Request) {
 	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
-///role, Rok := r.Context().Value(middleware.RoleKey).(string)
+    ///role, Rok := r.Context().Value(middleware.RoleKey).(string)
 	if !ok  {
 		http.Error(w, "missing hospital id ", http.StatusBadRequest)
 		return
