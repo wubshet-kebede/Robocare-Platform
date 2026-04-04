@@ -3,6 +3,8 @@ package department
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"gorm.io/gorm"
@@ -27,4 +29,12 @@ func CreateDepartment(dept model.Department) (*model.Department, error) {
 	}
 
 	return &dept, nil
+}
+func GetDepartments(hospitalID uuid.UUID) ([]model.Department, error) {
+	var depts []model.Department
+	err:= db.DB.Where("hospital_id = ?", hospitalID).Find(&depts).Error
+	if err != nil {
+		return nil, err
+	}
+	return depts, nil
 }

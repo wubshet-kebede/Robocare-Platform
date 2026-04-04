@@ -13,6 +13,7 @@ func SetupRouter() *mux.Router {
 	protected.Use(middleware.AuthMiddleware)
 	protected.HandleFunc("/invite-staff", invitation.InviteStaffHandler).Methods("POST")
 	protected.HandleFunc("/departments", department.CreateDepartmentHandler).Methods("POST") 
+	protected.HandleFunc("/departments", department.GetDepartmentsHandler).Methods("GET")
     r.HandleFunc("/signup", auth.SignupHandler).Methods("POST")
 	r.HandleFunc("/verify-invite", invitation.VerifyInvitationHandler).Methods("GET")
 	r.HandleFunc("/accept-invite", invitation.AcceptInvitationHandler).Methods("POST")

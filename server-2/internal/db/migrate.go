@@ -22,8 +22,8 @@ func Migrate() {
 	createDeptTypeSQL := `
 	    DO $$
 		BEGIN
-		    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typename = 'department_type_enum) THEN
-			    CREATE TYPE department_type_enum AS ENUM ('clinical', 'adminstrative', 'custom','laboratory', 'emergency','pharmacy' );
+		    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'department_type_enum') THEN
+			    CREATE TYPE department_type_enum AS ENUM ('clinical', 'administrative', 'custom','laboratory', 'emergency','pharmacy' );
 			END IF;
 		END
 		$$;
