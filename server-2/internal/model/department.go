@@ -17,6 +17,7 @@ const (
 	Laboratory     DepartmentType = "laboratory"
 	Emergency      DepartmentType = "emergency"
 	Pharmacy       DepartmentType = "pharmacy"
+	Custom          DepartmentType = "custom"
 )
 
 type Department struct {

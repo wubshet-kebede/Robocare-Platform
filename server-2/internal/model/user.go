@@ -10,10 +10,18 @@ import (
 type Role string
 
 const (
-	Admin  Role = "admin"
-	Doctor Role = "doctor"
-	Nurse  Role = "nurse"
-	Receptionist Role = "receptionist"
+    Admin          Role = "admin"
+    Doctor         Role = "doctor"
+    Surgeon        Role = "surgeon"
+    Nurse          Role = "nurse"
+    HeadNurse      Role = "head_nurse"
+    Receptionist   Role = "receptionist"
+    LabTechnician  Role = "lab_technician"
+    Pharmacist     Role = "pharmacist"
+    ERDoctor       Role = "er_doctor"
+    ERNurse        Role = "er_nurse"
+    ITSupport      Role = "it_support"
+    RobotOperator  Role = "robot_operator"
 )
 type User struct {
 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
