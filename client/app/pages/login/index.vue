@@ -74,111 +74,87 @@
           </p>
         </div>
 
-        <form class="space-y-8" @submit.prevent="handleLogin">
-          <div class="space-y-2.5">
-            <label
-              for="email"
-              class="block text-sm font-semibold text-slate-800"
-              >Email</label
+        <form @submit.prevent="submit" class="w-full space-y-6">
+          <div>
+            <UiBaseInput
+              rules="required|email"
+              name="email"
+              placeholder="Email"
+              leading-icon="mdi:email-outline"
+              leadingIconClass="border-r-[1px] border-gray-300 "
+              iconLeadingClass="pl-14"
+              class="text-gray-600 focus:border-primary duration-200 py-2"
             >
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none"
-              >
-                <Icon
-                  name="ic:baseline-email"
-                  class="text-gray-400 px-3 text-lg"
-                />
-              </div>
-              <input
-                v-model="form.email"
-                id="email"
-                type="email"
-                required
-                class="block w-full pl-13 px-5 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition duration-150"
-                placeholder="doctor@hospital.com"
-              />
-            </div>
+              <template #label>
+                <h1
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                >
+                  Email address <span class="text-red-600">*</span>
+                </h1>
+              </template>
+            </UiBaseInput>
           </div>
 
-          <div class="space-y-2.5">
-            <label
-              for="password"
-              class="block text-sm font-semibold text-slate-800"
-              >Password</label
+          <div>
+            <UiBaseInput
+              rules="required"
+              leading-icon="majesticons:key-line"
+              trailingIcon="mdi:eye-outline"
+              type="password"
+              name="password"
+              placeholder="Password"
+              leadingIconClass="border-r-[1px] border-gray-300"
+              iconLeadingClass="pl-14"
+              class="text-gray-600 focus:border-primary duration-200 py-2"
             >
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none"
-              >
-                <Icon name="mdi:password" class="text-gray-400 text-lg px-3" />
-              </div>
+              <template #label>
+                <h1
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                >
+                  Password <span class="text-red-600">*</span>
+                </h1>
+              </template>
+            </UiBaseInput>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
               <input
-                v-model="form.password"
-                id="password"
-                :type="passwordVisible ? 'text' : 'password'"
-                required
-                class="block w-full pl-13 px-5 pr-12 py-3.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition duration-150"
-                placeholder="Enter your password"
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary duration-200 cursor-pointer"
               />
-              <button
-                type="button"
-                @click="passwordVisible = !passwordVisible"
-                class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-teal-600 transition"
+              <label
+                for="remember-me"
+                class="ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-300 cursor-pointer duration-200"
+                >Remember me</label
               >
-                <svg
-                  v-if="passwordVisible"
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L5.136 5.136M14.122 14.122l4.742 4.742"
-                  />
-                </svg>
-                <svg
-                  v-else
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
-                </svg>
-              </button>
             </div>
-            <div class="text-right">
+
+            <div class="text-sm leading-6">
               <a
                 href="#"
-                class="text-xs font-semibold text-teal-700 hover:text-teal-600 transition"
-                >Forgot Password?</a
+                class="font-semibold text-primary hover:text-primaryDark duration-200"
+                >Forgot password?</a
               >
             </div>
           </div>
 
-          <button
-            type="submit"
-            :disabled="loading"
-            class="w-full flex justify-center py-4 px-4 text-base font-semibold rounded-xl text-white bg-teal-950 hover:bg-teal-900 transition duration-150 disabled:opacity-50"
-          >
-            <span v-if="loading">Signing in...</span>
-            <span v-else>Sign In</span>
-          </button>
+          <div>
+            <button
+              :disabled="loading"
+              type="submit"
+              class="flex gap-x-2 w-full justify-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md bg-primary px-3 py-2 font-semibold leading-6 text-white shadow-sm hover:bg-primaryDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200 duration-200 hover:shadow-full"
+            >
+              <Icon
+                name="svg-spinners:ring-resize"
+                class="text-2xl text-gray-300"
+                v-if="loading"
+              />
+              Log in
+            </button>
+          </div>
         </form>
 
         <div class="relative my-12">
@@ -221,6 +197,7 @@
 </template>
 
 <script setup>
+import UiBaseInput from "~/components/ui/BaseInput.vue";
 const form = reactive({ email: "", password: "" });
 const loading = ref(false);
 const passwordVisible = ref(false);
@@ -228,12 +205,8 @@ definePageMeta({
   layout: false,
 });
 
-const handleLogin = async () => {
-  loading.value = true;
-  console.log("Submitting:", form.email);
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
+const handleLogin = () => {
+  console.log(form);
 };
 </script>
 <!-- <script setup>
