@@ -10,6 +10,11 @@
       >
         <!-- <source src="/assets/robot-animation.mp4" type="video/mp4" /> -->
       </video>
+      <img
+        src="/assets/images/image_copy.png"
+        alt="Hospital Image"
+        class="absolute inset-0 w-full h-full object-cover opacity-60"
+      />
       <div
         class="absolute inset-0 bg-gradient-to-tr from-teal-900/80 via-transparent to-teal-800/20"
       ></div>
@@ -22,13 +27,13 @@
           ROBO<span class="text-teal-400">CARE.</span>
         </h1>
         <p
-          class="text-xl text-slate-300 font-light max-w-sm mt-4 leading-relaxed"
+          class="mt-8 text-2xl text-slate-100 font-light max-w-lg leading-relaxed"
         >
-          Advanced autonomous logistics for the
-          <span class="text-white font-medium"
-            >University of Gondar Hospital.</span
-          >
+          "Autonomous logistics platform for the
+          <span class="text-white font-medium">Ethiopian Hospital</span>, built
+          to optimize staff workflows."
         </p>
+
         <div
           class="mt-12 flex gap-8 opacity-50 text-[10px] font-mono uppercase tracking-widest"
         >
@@ -43,6 +48,20 @@
       class="w-full lg:w-1/2 flex items-center justify-center p-12 lg:p-24 bg-white"
     >
       <div class="w-full max-w-lg">
+        <NuxtLink
+          to="/"
+          class="group inline-flex items-center gap-2 mb-10 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-teal-700 hover:bg-teal-50 transition-all duration-300 ease-in-out border border-transparent hover:border-teal-100"
+        >
+          <div
+            class="p-1.5 rounded-lg bg-slate-100 group-hover:bg-teal-100 transition-colors"
+          >
+            <Icon
+              name="bitcoin-icons:arrow-left-filled"
+              class="w-5 h-5 text-slate-500 group-hover:text-teal-700 transition-colors font-bold"
+            />
+          </div>
+          Back to Home
+        </NuxtLink>
         <div class="mb-16">
           <h2 class="text-4xl font-extrabold text-slate-950 tracking-tight">
             Welcome Back!
@@ -66,26 +85,17 @@
               <div
                 class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none"
               >
-                <svg
-                  class="h-5 w-5 text-teal-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"
-                  />
-                </svg>
+                <Icon
+                  name="ic:baseline-email"
+                  class="text-gray-400 px-3 text-lg"
+                />
               </div>
               <input
                 v-model="form.email"
                 id="email"
                 type="email"
                 required
-                class="block w-full pl-13 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition duration-150"
+                class="block w-full pl-13 px-5 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition duration-150"
                 placeholder="doctor@hospital.com"
               />
             </div>
@@ -101,26 +111,14 @@
               <div
                 class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none"
               >
-                <svg
-                  class="h-5 w-5 text-teal-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
+                <Icon name="mdi:password" class="text-gray-400 text-lg px-3" />
               </div>
               <input
                 v-model="form.password"
                 id="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 required
-                class="block w-full pl-13 pr-12 py-3.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition duration-150"
+                class="block w-full pl-13 px-5 pr-12 py-3.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/20 transition duration-150"
                 placeholder="Enter your password"
               />
               <button
