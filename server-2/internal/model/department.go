@@ -22,6 +22,7 @@ const (
 type Department struct {
 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
     HospitalID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:idx_hospital_dept_code" json:"hospital_id"`
+	CreatedBy uuid.UUID `gorm:"type:uuid;not null" json:"created_by"`
 	// Basic Info
 	Name        string         `gorm:"size:100;not null" json:"name"`              
     Code       string    `gorm:"size:10;not null;uniqueIndex:idx_hospital_dept_code" json:"code"`
