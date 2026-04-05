@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/admission"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/auth"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/department"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/invitation"
@@ -16,6 +17,7 @@ func SetupRouter() *mux.Router {
 	protected.HandleFunc("/departments", department.CreateDepartmentHandler).Methods("POST") 
 	protected.HandleFunc("/departments", department.GetDepartmentsHandler).Methods("GET")
 	protected.HandleFunc("/patients", patient.CreatePatientHandler).Methods("POST")
+	protected.HandleFunc("/admissions", admission.AdmissionHandler).Methods("POST")
     r.HandleFunc("/signup", auth.SignupHandler).Methods("POST")
 	r.HandleFunc("/verify-invite", invitation.VerifyInvitationHandler).Methods("GET")
 	r.HandleFunc("/accept-invite", invitation.AcceptInvitationHandler).Methods("POST")

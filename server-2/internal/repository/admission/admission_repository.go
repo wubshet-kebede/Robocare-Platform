@@ -8,13 +8,19 @@ import (
 )
 
 func AdmissionRepository(admission model.Admission) (*model.Admission, error) {
-    var existing model.Admission
-	err := db.DB.Where("patient_id = ? AND is_active = true", admission.PatientID).First(&existing).Error
-	if err == nil {
-		return nil, fmt.Errorf("patient with ID '%s' already has an active admission", admission.PatientID)
-	}
-	if err := db.DB.Create(&admission).Error; err != nil {
-		return nil, err
-	}
-	return &admission, nil
+    var existingPatient model.Admission
+    err := db.DB.Where("patient_id = ? AND is_active = true", admission.PatientID).First(&existingPatient).Error
+    if err == nil {
+        return nil, fmt.Errorf("patient already has an active admission")
+    }
+    var existingBed model.Admission
+    err = db.DB.Where("room_id = ? AND bed_number = ? AND is_active = true", 
+        admission.RoomID, admission.BedNumber).First(&existingBed).Error
+    if err == nil {
+        return nil, fmt.Errorf("bed %s in this room is already occupied", admission.BedNumber)
+    }
+    if err := db.DB.Create(&admission).Error; err != nil {
+        return nil, err
+    }
+    return &admission, nil
 }

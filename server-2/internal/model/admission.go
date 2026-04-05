@@ -6,14 +6,27 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+type UrgencyLevel string
+const (
+	UrgencyNormal  UrgencyLevel = "Normal"
+	UrgencyHigh    UrgencyLevel = "Urgent"
+	UrgencyEmergency UrgencyLevel = "Emergency"
+)
+type AdmissionStatus string 
+const (
+	StatusAdmitted  AdmissionStatus = "Admitted"
+	StatusDischarged AdmissionStatus = "Discharged"
+	StatusWaiting AdmissionStatus = "Waiting"
+	StatusDeceased AdmissionStatus = "Deceased"
 
+)
 
 type Admission struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	PatientID uuid.UUID `gorm:"type:uuid;not null;index" json:"patient_id"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:idx_hospital_mrn" json:"hospital_id"`
 
-	AssignedDoctorID uuid.UUID `gorm:"type:uuid;index" json:"assigned_doctor_id"`
+    AssignedDoctorID *uuid.UUID `gorm:"type:uuid;index" json:"assigned_doctor_id,omitempty"`
 	RoomID           uuid.UUID `gorm:"type:uuid;index" json:"room_id"`
 	BedNumber        string    `gorm:"size:20" json:"bed_number"`
 
@@ -21,6 +34,8 @@ type Admission struct {
 	Status             MedicalStatus `gorm:"type:varchar(20);default:'unknown'" json:"status"`
 	ReasonForAdmission string        `gorm:"type:text" json:"reason_for_admission"`
 	Diagnosis          string        `gorm:"type:text" json:"diagnosis"`
+	Urgency            UrgencyLevel `gorm:"type:varchar(20);default:'Normal'" json:"urgency"`
+	AdmissionStatus    AdmissionStatus `gorm:"type:varchar(20);default:'Waiting'" json:"admission_status"`
 
 	AdmissionDate  time.Time `json:"admission_date"`
 	DischargeDate  *time.Time `json:"discharge_date,omitempty"`
