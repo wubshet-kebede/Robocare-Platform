@@ -2,6 +2,7 @@ package mrn
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,17 +10,14 @@ import (
 )
 func GenerateMRN(hospitalID uuid.UUID) (string, error) {
 	var nextVal int64
-
-	seqName := fmt.Sprintf("admission_seq_%s", hospitalID.String())
-
-	
+	safeID := strings.ReplaceAll(hospitalID.String(), "-", "_")
+	seqName := fmt.Sprintf("admission_seq_%s", safeID)
 	if err := EnsureSequenceExists(hospitalID); err != nil {
 		return "", err
 	}
 
-	
 	err := db.DB.Raw(
-		fmt.Sprintf("SELECT nextval('%s')", seqName),
+		fmt.Sprintf(`SELECT nextval('%s')`, seqName),
 	).Scan(&nextVal).Error
 
 	if err != nil {
