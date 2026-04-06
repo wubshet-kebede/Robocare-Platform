@@ -14,11 +14,19 @@ func NewMQTTClient(broker string) mqtt.Client {
     opts.SetAutoReconnect(true)
     opts.SetConnectRetry(true)
     opts.SetConnectRetryInterval(time.Second * 5)
+   
 
     client := mqtt.NewClient(opts)
+    // if token := client.Connect(); token.Wait() && token.Error() != nil {
+    //     panic(token.Error())
+    // }
     if token := client.Connect(); token.Wait() && token.Error() != nil {
-        panic(token.Error())
-    }
+    return nil 
+}
     fmt.Println("MQTT connected ")
+    opts.OnConnect = func(c mqtt.Client) {
+    println("MQTT reconnected")
+    RegisterSubscribers(c)
+}
     return client
 }

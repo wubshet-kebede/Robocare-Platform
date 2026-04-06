@@ -8,7 +8,7 @@ import (
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/mqtt"
 )
 
-func ProcessRobotVitals(tenantID string, data model.VitalSign) error {
+func ProcessRobotVitals(tenantID string, robotID string, data model.VitalSign) error {
    
     activeAdmission, err := admission.GetActiveAdmissionByID(data.AdmissionID.String())
     if err != nil {
@@ -22,8 +22,12 @@ func ProcessRobotVitals(tenantID string, data model.VitalSign) error {
 
    
     data.PatientID = activeAdmission.PatientID
-    // data.IsRobotEntry = true 
-
+    data.IsRobotEntry = true
     
-    return mqtt.SaveVitalSign(data)
+    err = mqtt.SaveVitalSign(data)
+    if err != nil {
+        return err
+    }
+    
+    return nil
 }

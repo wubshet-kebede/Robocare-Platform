@@ -12,7 +12,8 @@ type VitalSign struct {
 	PatientID   uuid.UUID `gorm:"type:uuid;index" json:"patient_id"`  
 	HeartRate   float64 `gorm:"not null" json:"heart_rate"`  
 	SpO2        float64 `gorm:"not null" json:"spo2"`         
-	Temperature float64 `gorm:"not null" json:"temperature"`  
+	Temperature float64 `gorm:"not null" json:"temperature"` 
+	IsRobotEntry bool	`gorm:"default:false" json:"is_robot_entry"`
     SystolicBP  int `json:"systolic_bp,omitempty"`
     DiastolicBP int `json:"diastolic_bp,omitempty"` 
 	MeasuredAt time.Time `gorm:"index;not null" json:"measured_at"`
