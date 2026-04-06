@@ -24,3 +24,11 @@ func AdmissionRepository(admission model.Admission) (*model.Admission, error) {
     }
     return &admission, nil
 }
+func GetActiveAdmissionByID(admissionID string) (*model.Admission, error) {
+    var admission model.Admission
+    err := db.DB.Where("id = ? AND is_active = true", admissionID).First(&admission).Error
+    if err != nil {
+        return nil, fmt.Errorf("active admission not found: %v", err)
+    }
+    return &admission, nil
+}
