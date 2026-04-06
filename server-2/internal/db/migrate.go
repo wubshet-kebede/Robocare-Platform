@@ -38,6 +38,8 @@ func Migrate() {
 		&model.Invitation{},
 		&model.Department{},
 		&model.Patient{},
+		&model.Admission{},
+		&model.Room{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
