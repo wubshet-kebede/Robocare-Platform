@@ -1,33 +1,45 @@
 package robot
 
 import (
-    "errors"
-    "github.com/google/uuid"
-    "github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
-    "github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/robot"
+	"errors"
+	"strings"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/robot"
 )
 
 func RegisterRobot(hospitalID uuid.UUID, serial string, modelName string) (*model.Robot, error) {
-    // 1. Check if this physical robot is already in the system
-    existing, _ := robot.GetBySerial(serial)
-    if existing != nil && existing.ID != uuid.Nil {
-        return nil, errors.New("serial number already registered")
-    }
+	serial = strings.TrimSpace(serial)
+	modelName = strings.TrimSpace(modelName)
 
-    // 2. Build the Robot object
-    newBot := &model.Robot{
-        ID:           uuid.New(),
-        HospitalID:   hospitalID,
-        SerialNumber: serial,
-        Model:        modelName,
-        Status:       model.RobotOffline, // Default state
-        BatteryLevel: 0,
-    }
+	if serial == "" {
+		return nil, errors.New("serial number is required")
+	}
+	existing, err := robot.GetBySerial(serial)
+	if err != nil {
+		return nil, err
+	}
+	if existing != nil && existing.ID != uuid.Nil {
+		return nil, errors.New("serial number already registered")
+	}
 
-    // 3. Save to Database
-    if err := robot.Create(newBot); err != nil {
-        return nil, err
-    }
+	newRobot := &model.Robot{
+		HospitalID:   hospitalID,
+		SerialNumber: serial,
+		Model:        modelName,
+		Status:       model.RobotOffline,
+		BatteryLevel: 0,
+		LastSeen:     time.Now(),
+	}
 
-    return newBot, nil
+	if err := robot.Create(newRobot); err != nil {
+		if strings.Contains(err.Error(), "duplicate") {
+			return nil, errors.New("serial number already registered")
+		}
+		return nil, err
+	}
+
+	return newRobot, nil
 }

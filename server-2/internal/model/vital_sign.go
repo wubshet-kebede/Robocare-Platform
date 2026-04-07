@@ -8,6 +8,7 @@ import (
 type VitalSign struct {
 	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	AdmissionID uuid.UUID `gorm:"type:uuid;not null;index" json:"admission_id"` 
+	CommandID *uuid.UUID `gorm:"type:uuid;index"`
 	RobotID     uuid.UUID `gorm:"type:uuid;not null;index" json:"robot_id"`   
 	PatientID   uuid.UUID `gorm:"type:uuid;index" json:"patient_id"`  
 	HeartRate   float64 `gorm:"not null" json:"heart_rate"`  

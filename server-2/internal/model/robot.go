@@ -12,67 +12,72 @@ type RobotStatus string
 const (
 	RobotIdle       RobotStatus = "idle"
 	RobotNavigating RobotStatus = "navigating"
+	RobotMeasuring  RobotStatus = "measuring"
 	RobotCharging   RobotStatus = "charging"
 	RobotEmergency  RobotStatus = "emergency_stop"
 	RobotOffline    RobotStatus = "offline"
 )
+type CommandStatus string
+
+const (
+	CommandPending   CommandStatus = "pending"
+	CommandSent      CommandStatus = "sent"
+	CommandRunning   CommandStatus = "running"
+	CommandCompleted CommandStatus = "completed"
+	CommandFailed    CommandStatus = "failed"
+)
+
+type CommandType string
+
+const (
+	CommandMeasureVitals CommandType = "measure_vitals"
+)
+
 
 type Robot struct {
 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
 	
 	SerialNumber string `gorm:"size:100;uniqueIndex;not null" json:"serial_number"`
-	// Navigation State
 	CurrentRoomID *uuid.UUID `gorm:"type:uuid;index" json:"current_room_id,omitempty"`
 	TargetRoomID  *uuid.UUID `gorm:"type:uuid;index" json:"target_room_id,omitempty"`
 	Status        RobotStatus `gorm:"type:varchar(30);default:'idle';index" json:"status"`
-	
-	// Telemetry / Health
 	BatteryLevel int    `gorm:"check:battery_level >= 0 AND battery_level <= 100" json:"battery_level"`
-	WiFiStrength int    `json:"wifi_strength"` // RSSI / %  
+	WiFiStrength int    `json:"wifi_strength"` 
 	IPAddress    string `gorm:"size:50" json:"ip_address"`
 	LastSeen     time.Time `gorm:"index" json:"last_seen"`
 	 
 	CurrentAdmissionID *uuid.UUID `gorm:"type:uuid;index" json:"current_admission_id,omitempty"`
-	// Advanced Info
 	MapID string `gorm:"size:100;default:'default_map'" json:"map_id"`
 	Floor int    `json:"floor"`
 	Zone  string `gorm:"size:50" json:"zone"`
 	Model string `gorm:"size:50" json:"model,omitempty"`
-	
-	// Soft Delete
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-	
-	// Timestamps
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
-	
-	
 	CurrentRoom *Room `gorm:"foreignKey:CurrentRoomID" json:"current_room,omitempty"`
 	TargetRoom  *Room `gorm:"foreignKey:TargetRoomID" json:"target_room,omitempty"`
 }
-// type Robot struct {
-// 	ID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
-// 	HospitalID uuid.UUID `gorm:"type:uuid;not null" json:"hospital_id"`
 
-// 	// Navigation State
-// 	CurrentRoomID *uuid.UUID `gorm:"type:uuid" json:"current_room_id"`
-// 	TargetRoomID  *uuid.UUID `gorm:"type:uuid" json:"target_room_id"`
-// 	Status        RobotStatus `gorm:"type:varchar(30);default:'idle'" json:"status"`
+type RobotCommand struct {
+	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	RobotID   uuid.UUID `gorm:"type:uuid;not null;index"`
 
-// 	// Telemetry (from ROS2)
-// 	BatteryLevel int    `gorm:"check:battery_level >= 0 AND battery_level <= 100" json:"battery_level"`
-// 	WiFiStrength int    `json:"wifi_strength"` // could be RSSI or percentage
-// 	IPAddress    string `gorm:"size:50" json:"ip_address"`
+	PatientID   uuid.UUID `gorm:"type:uuid;not null;index"`
+	AdmissionID uuid.UUID `gorm:"type:uuid;not null;index"`
+	RoomID      uuid.UUID `gorm:"type:uuid;not null;index"`
 
-// 	// Health / Monitoring
-// 	LastSeen time.Time `gorm:"index" json:"last_seen"`
+	Type   CommandType   `gorm:"type:varchar(50);not null"`
+	Status CommandStatus `gorm:"type:varchar(30);default:'pending';index"`
 
-// 	// Optional relationships (if you have Room model)
-// 	// CurrentRoom *Room `gorm:"foreignKey:CurrentRoomID" json:"current_room,omitempty"`
-// 	// TargetRoom  *Room `gorm:"foreignKey:TargetRoomID" json:"target_room,omitempty"`
+	RequestedBy uuid.UUID `gorm:"type:uuid;not null"` 
 
-// 	// Timestamps
-// 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
-// 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
-// }
+	RequestedAt time.Time
+	StartedAt   *time.Time
+	CompletedAt *time.Time
+
+	ErrorMessage string `gorm:"size:255"`
+
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
