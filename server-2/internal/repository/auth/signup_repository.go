@@ -15,6 +15,7 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 		return model.Hospital{}, model.User{}, tx.Error
 	}
 	Slug := utils.GenerateSlug(input.Name)
+	secret, err := utils.GenerateHospitalSecret()
 	hospital := model.Hospital{
 		ID: uuid.New(),
 		Name:          input.Name,
@@ -23,6 +24,7 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 		ContactPerson: input.ContactPerson,
 		ContactPhone: input.ContactPhone,
 		Address: input.Address,
+		Secret: secret,
 	}
 	fmt.Println("Hospital ID:", hospital.ID)
 	if err := tx.Create(&hospital).Error; err != nil {
