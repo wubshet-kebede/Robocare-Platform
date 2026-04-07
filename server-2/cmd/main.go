@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/mqttclient"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 )
 
@@ -18,6 +19,7 @@ func main() {
 
 	db.Connect()
 	db.Migrate()
+	mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
 	r := api.SetupRouter()
 	allowedOrigins := []string{"http://localhost:5173"}
 	allowedHeaders := []string{"Content-Type", "Authorization"}
