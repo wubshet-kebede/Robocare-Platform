@@ -57,7 +57,9 @@ func (p *MQTTPublisher) PublishNavGoal(hospitalUUID, robotUUID string, goal Goal
 	if err != nil {
 		return fmt.Errorf("failed to marshal goal payload with HMAC: %w", err)
 	}
-
+    if !client.client.IsConnected() {
+	return fmt.Errorf("client not connected")
+}
 	token := client.client.Publish(topic, 1, false, payloadBytes) // QoS=1
 	token.Wait()
 	if token.Error() != nil {

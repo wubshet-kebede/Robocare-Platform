@@ -29,6 +29,13 @@ func NewClient(cfg Config) (*MQTTClientManager, error) {
 	opts.SetAutoReconnect(true)
 	opts.SetConnectRetry(true)
 	opts.SetConnectRetryInterval(5 * time.Second)
+	opts.OnConnect = func(c mqtt.Client) {
+	fmt.Println("Connected to broker")
+}
+
+opts.OnConnectionLost = func(c mqtt.Client, err error) {
+	fmt.Println("Connection lost:", err)
+}
 
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
