@@ -3,6 +3,8 @@ package mqttclient
 import (
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 type GoalPayload struct {
     GoalID       string    `json:"goal_id"`
@@ -24,4 +26,8 @@ type MQTTPublisher struct {
     port    int                            // MQTT port
 	mu      sync.Mutex                     // protects clients map
 
+}
+type PublishGoalRequest struct {
+    RobotID string    `json:"robot_id"`
+    RoomID  uuid.UUID `json:"room_id"`
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/room"
 )
 
 var publisher *MQTTPublisher
@@ -22,25 +23,28 @@ func PublishNavGoalHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    var body GoalPayload
+    var body PublishGoalRequest
     if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
         http.Error(w, "invalid request body", http.StatusBadRequest)
         return
+    } 
+    
+    room, err := room.GetRoomByID(body.RoomID )
+    if err != nil {
+        http.Error(w, "room not found", http.StatusNotFound)
+        return
     }
 
-    goal := GoalPayload{
-        GoalID:       body.GoalID,
-        MapID:        body.MapID,
+     goal := GoalPayload{
         RobotID:      body.RobotID,
-        TargetRoomID: body.TargetRoomID,
-        X:            body.X,
-        Y:            body.Y,
-        Theta:        body.Theta,
-        DoctorID:     body.DoctorID,
+        TargetRoomID: body.RoomID.String(),
+        X:            room.X,
+        Y:            room.Y,
+        Theta:        room.Yaw,
         Timestamp:    time.Now(),
     }
 
-    err := publisher.PublishNavGoal(hospitalID.String(), body.RobotID, goal)
+    err = publisher.PublishNavGoal(hospitalID.String(), body.RobotID, goal)
     if err != nil {
         w.WriteHeader(http.StatusInternalServerError)
         json.NewEncoder(w).Encode(map[string]string{

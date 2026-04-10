@@ -6,6 +6,7 @@ import (
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/auth"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/department"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/invitation"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/mqttclient"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/patient"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/robot"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/room"
@@ -22,6 +23,7 @@ func SetupRouter() *mux.Router {
 	protected.HandleFunc("/admissions", admission.AdmissionHandler).Methods("POST")
 	protected.HandleFunc("/rooms", room.CreateRoomHandler).Methods("POST")
 	protected.HandleFunc("/robots", robot.CreateRobotHandler).Methods("POST")
+	protected.HandleFunc("/publish-nav-goal", mqttclient.PublishNavGoalHandler).Methods("POST")
     r.HandleFunc("/signup", auth.SignupHandler).Methods("POST")
 	r.HandleFunc("/verify-invite", invitation.VerifyInvitationHandler).Methods("GET")
 	r.HandleFunc("/accept-invite", invitation.AcceptInvitationHandler).Methods("POST")
