@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 
@@ -23,19 +24,20 @@ func (p *MQTTPublisher) PublishNavGoal(hospitalUUID, robotUUID string, goal Goal
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-
+    
 	client, ok := p.clients[hospitalUUID]
 	if !ok {
-		secret, exists := p.secrets[hospitalUUID]
+		_, exists := p.secrets[hospitalUUID]
 		if !exists {
 			return fmt.Errorf("no secret found for hospital %s", hospitalUUID)
 		}
-
+       brokerUser := os.Getenv("MQTT_USERNAME")
+       brokerPass := os.Getenv("MQTT_PASSWORD")
 		newClient, err := NewClient(Config{
 			Broker:   p.broker,
 			Port:     p.port,
-			Username: hospitalUUID,
-			Password: secret,
+			Username: brokerUser,
+			Password: brokerPass,
 			ClientID: fmt.Sprintf("backend-%s", hospitalUUID),
 		})
 		if err != nil {

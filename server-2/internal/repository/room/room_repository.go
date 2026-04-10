@@ -3,6 +3,7 @@ package room
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 )
@@ -17,4 +18,10 @@ func RoomRepository(room model.Room) (*model.Room, error) {
         return nil, err
     }
     return &room, nil
+}
+
+func GetRoomByID(id uuid.UUID) (*model.Room, error) {
+    var room model.Room
+    err := db.DB.First(&room, "id = ?", id).Error
+    return &room, err
 }
