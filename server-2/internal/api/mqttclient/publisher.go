@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -50,9 +51,13 @@ func (p *MQTTPublisher) PublishNavGoal(hospitalUUID, robotUUID string, goal Goal
 	topic := buildTopic(hospitalUUID, robotUUID)
 
 	payloadBytes, err := json.Marshal(goal)
+	log.Printf("📡 Publishing to topic: %s", topic)
+    log.Printf("📦 Payload: %s", string(payloadBytes))
 	if err != nil {
 		return fmt.Errorf("failed to marshal goal payload: %w", err)
 	}
+	fmt.Println("Using secret:", p.secrets[hospitalUUID])
+
 	hmacSignature := signPayload(payloadBytes, p.secrets[hospitalUUID])
 	goal.HMAC = hmacSignature
 	payloadBytes, err = json.Marshal(goal)
@@ -81,3 +86,4 @@ func signPayload(payload []byte, secret string) string {
 	h.Write(payload)
 	return hex.EncodeToString(h.Sum(nil))
 }
+
