@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 )
 type GoalPayload struct {
+    HospitalID   string    `json:"hospital_id"`
+    PatientID    string    `json:"patient_id"`
     GoalID       string    `json:"goal_id"`
     MapID        string    `json:"map_id"`
 	RobotID     string    `json:"robot_id"`
@@ -30,4 +32,7 @@ type MQTTPublisher struct {
 type PublishGoalRequest struct {
     RobotID string    `json:"robot_id"`
     RoomID  uuid.UUID `json:"room_id"`
+}
+type VitalsSubscriber struct {
+	client *MQTTClientManager
 }
