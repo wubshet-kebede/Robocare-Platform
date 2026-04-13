@@ -26,7 +26,7 @@ type Admission struct {
 	PatientID uuid.UUID `gorm:"type:uuid;not null;index" json:"patient_id"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex:idx_hospital_mrn" json:"hospital_id"`
 
-    AssignedDoctorID *uuid.UUID `gorm:"type:uuid;index" json:"assigned_doctor_id,omitempty"`
+    AssignedDoctorID uuid.UUID `gorm:"type:uuid;not null;index" json:"assigned_doctor_id"`
 	RoomID           uuid.UUID `gorm:"type:uuid;index" json:"room_id"`
 	BedNumber        string    `gorm:"size:20" json:"bed_number"`
 

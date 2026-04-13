@@ -28,3 +28,11 @@ func CreatePatient(patient model.Patient) (*model.Patient, error) {
 
 	return &patient, nil
 }
+// func GetPatientByRoomID(roomID uuid.UUID) (*model.Patient, error) {
+// 	var patient model.Patient
+// 	err := db.DB.Where("room_id = ?", roomID).First(&patient).Error
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &patient, nil
+// }

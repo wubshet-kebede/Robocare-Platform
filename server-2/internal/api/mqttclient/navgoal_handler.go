@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/admission"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/room"
 )
 
@@ -34,12 +35,18 @@ func PublishNavGoalHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "room not found", http.StatusNotFound)
         return
     }
-
+    patient, err := admission.GetPatientByRoomID(body.RoomID)
+    if err != nil {
+	    http.Error(w, "patient not found in this room", http.StatusNotFound)
+	    return
+    } 
+    
      goal := GoalPayload{
         HospitalID:   hospitalID.String(),
-        PatientID:    "",
+        PatientID:    patient.ID.String(),
         RobotID:      body.RobotID,
         TargetRoomID: body.RoomID.String(),
+        DoctorID:     patient.AssignedDoctorID.String(),
         X:            room.X,
         Y:            room.Y,
         Theta:        room.Yaw,
