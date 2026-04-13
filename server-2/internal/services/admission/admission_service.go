@@ -21,5 +21,5 @@ func AdmissionService(input model.Admission) (model.Admission, error) {
 	}
 
 	return *savedAdmission, nil
-	
+
 }

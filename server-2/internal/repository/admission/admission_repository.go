@@ -3,6 +3,7 @@ package admission
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 )
@@ -31,4 +32,12 @@ func GetActiveAdmissionByID(admissionID string) (*model.Admission, error) {
         return nil, fmt.Errorf("active admission not found: %v", err)
     }
     return &admission, nil
+}
+func GetPatientByRoomID(roomID uuid.UUID) (*model.Admission, error) {
+	var admission model.Admission
+	err := db.DB.Where("room_id = ? OR is_active = true", roomID).First(&admission).Error
+	if err != nil {
+		return nil, err
+	}
+	return &admission, nil
 }
