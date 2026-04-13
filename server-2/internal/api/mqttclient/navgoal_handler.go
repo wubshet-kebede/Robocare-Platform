@@ -36,6 +36,8 @@ func PublishNavGoalHandler(w http.ResponseWriter, r *http.Request) {
     }
 
      goal := GoalPayload{
+        HospitalID:   hospitalID.String(),
+        PatientID:    "",
         RobotID:      body.RobotID,
         TargetRoomID: body.RoomID.String(),
         X:            room.X,

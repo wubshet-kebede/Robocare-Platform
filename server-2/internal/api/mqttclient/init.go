@@ -25,3 +25,37 @@ func InitMQTTPublisher(broker string, port int) {
 	SetMQTTPublisher(mqttPub) 
 	log.Println("MQTT publisher initialized with all hospitals")
 }
+
+func NewVitalsSubscriber(cfg Config) (*VitalsSubscriber, error) {
+
+	client, err := NewClient(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &VitalsSubscriber{
+		client: client,
+	}, nil
+}
+// func InitMQTTSubscriber(broker string, port int, hospitalSecrets map[string]string) {
+//     cfg := Config{
+//         Broker:   broker,
+//         Port:     port,
+//         Username: os.Getenv("MQTT_USERNAME"), // only if broker requires auth
+//         Password: os.Getenv("MQTT_PASSWORD"),
+//         ClientID: "backend-subscriber",       // must be unique
+//     }
+
+//     mqttSub, err := NewClient(cfg)
+//     if err != nil {
+//         log.Fatal("failed to init MQTT subscriber:", err)
+//     }
+//     err = mqttSub.Subscribe("hospital/+/patient/+/vitals", func(client mqtt.Client, msg mqtt.Message) {
+//         HandleVitalsMessage(msg, hospitalSecrets)
+//     })
+//     if err != nil {
+//         log.Fatal("failed to subscribe:", err)
+//     }
+
+//     log.Println("MQTT subscriber initialized and listening for vitals")
+// }
