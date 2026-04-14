@@ -10,6 +10,7 @@ import (
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/patient"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/robot"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/room"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/ws"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
 )
 func SetupRouter() *mux.Router {
@@ -29,5 +30,9 @@ func SetupRouter() *mux.Router {
 	r.HandleFunc("/accept-invite", invitation.AcceptInvitationHandler).Methods("POST")
 	r.HandleFunc("/login", auth.LoginHandler).Methods("POST")
 	r.HandleFunc("/logout", auth.LogoutHandler).Methods("POST")
+	manager := ws.NewManager()
+    wsHandler := ws.NewHandler(manager)
+
+    r.HandleFunc("/ws/vitals", wsHandler.ServeWS)
 	return  r
 }
