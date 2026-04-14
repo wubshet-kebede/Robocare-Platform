@@ -41,3 +41,11 @@ func GetPatientByRoomID(roomID uuid.UUID) (*model.Admission, error) {
 	}
 	return &admission, nil
 }
+func GetPatientAdmissionID(patientID uuid.UUID) (*model.Admission, error) {
+    var admission model.Admission
+    err := db.DB.Where("patient_id = ? AND is_active = true", patientID).First(&admission).Error
+    if err != nil {
+        return nil, fmt.Errorf("active admission not found for patient: %v", err)
+    }
+    return &admission, nil
+}
