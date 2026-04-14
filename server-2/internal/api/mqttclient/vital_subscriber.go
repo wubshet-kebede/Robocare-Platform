@@ -42,6 +42,14 @@ func HandleVitalsMessage(msg mqtt.Message) {
     if err != nil {
         log.Println("Failed to process vitals:", err)
     }
+    // 🚀 SEND TO WEBSOCKET
+	wsPayload, _ := json.Marshal(payload)
+
+	globalWSManager.BroadcastVitals(
+		hospitalID.String(),
+		patientID.String(),
+		wsPayload,
+	)
 }
 
 func parseVitalsTopic(topic string) (uuid.UUID, uuid.UUID, uuid.UUID, error) {
