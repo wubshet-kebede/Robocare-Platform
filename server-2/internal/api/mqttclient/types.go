@@ -33,6 +33,3 @@ type PublishGoalRequest struct {
     RobotID string    `json:"robot_id"`
     RoomID  uuid.UUID `json:"room_id"`
 }
-type VitalsSubscriber struct {
-	client *MQTTClientManager
-}

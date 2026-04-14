@@ -1,6 +1,7 @@
 package robot
 
 import (
+	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"gorm.io/gorm"
@@ -22,4 +23,14 @@ func GetBySerial(serial string) (*model.Robot, error) {
 	}
 
 	return &r, nil
+}
+func GetRobotByID(id uuid.UUID) (*model.Robot, error) {
+    var robot model.Robot
+
+    err := db.DB.Where("id = ?", id).First(&robot).Error
+    if err != nil {
+        return nil, err
+    }
+
+    return &robot, nil
 }

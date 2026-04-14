@@ -3,6 +3,7 @@ package patient
 import (
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"gorm.io/gorm"
@@ -28,11 +29,13 @@ func CreatePatient(patient model.Patient) (*model.Patient, error) {
 
 	return &patient, nil
 }
-// func GetPatientByRoomID(roomID uuid.UUID) (*model.Patient, error) {
-// 	var patient model.Patient
-// 	err := db.DB.Where("room_id = ?", roomID).First(&patient).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &patient, nil
-// }
+func GetPatientByID(id uuid.UUID) (*model.Patient, error) {
+    var patient model.Patient
+
+    err := db.DB.Where("id = ?", id).First(&patient).Error
+    if err != nil {
+        return nil, err
+    }
+
+    return &patient, nil
+}
