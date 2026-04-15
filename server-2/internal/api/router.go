@@ -34,11 +34,7 @@ func SetupRouter() *mux.Router {
 	protected.HandleFunc("/rooms", room.CreateRoomHandler).Methods("POST")
 	protected.HandleFunc("/robots", robot.CreateRobotHandler).Methods("POST")
 	protected.HandleFunc("/publish-nav-goal", mqttclient.PublishNavGoalHandler).Methods("POST")
-    // r.HandleFunc("/signup", auth.SignupHandler).Methods("POST")
-	// r.HandleFunc("/verify-invite", invitation.VerifyInvitationHandler).Methods("GET")
-	// r.HandleFunc("/accept-invite", invitation.AcceptInvitationHandler).Methods("POST")
-	// r.HandleFunc("/login", auth.LoginHandler).Methods("POST")
-	// r.HandleFunc("/logout", auth.LogoutHandler).Methods("POST")
+    protected.HandleFunc("/me", auth.MeHandler).Methods("GET")
 	manager := ws.NewManager()
     wsHandler := ws.NewHandler(manager)
 
