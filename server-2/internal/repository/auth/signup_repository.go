@@ -16,6 +16,10 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 	}
 	Slug := utils.GenerateSlug(input.Name)
 	secret, err := utils.GenerateHospitalSecret()
+   if err != nil {
+	   tx.Rollback()
+	   return model.Hospital{}, model.User{}, err
+    }
 	hospital := model.Hospital{
 		ID: uuid.New(),
 		Name:          input.Name,
@@ -48,6 +52,11 @@ func CreateHospitalWithAdmin(input model.HospitalRequest) (model.Hospital, model
 		tx.Rollback()
 		return model.Hospital{}, model.User{}, err
 	}
+    hospital.OwnerID = admin.ID
+    if err := tx.Model(&hospital).Update("owner_id", admin.ID).Error; err != nil {
+	    tx.Rollback()
+	    return model.Hospital{}, model.User{}, err
+}
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 		return model.Hospital{}, model.User{}, err

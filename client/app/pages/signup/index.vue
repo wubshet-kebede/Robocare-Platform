@@ -1,3 +1,40 @@
+<script setup>
+import UiBaseInput from "~/components/ui/BaseInput.vue";
+import { useForm } from "vee-validate";
+definePageMeta({
+  layout: false,
+});
+
+const { handleSubmit } = useForm();
+const { signup } = useAuthService();
+const loading = ref(false);
+
+const submit = handleSubmit(async (values) => {
+  console.log("input values:", values);
+  try {
+    loading.value = true;
+
+    const res = await signup({
+      name: values.hospital,
+      tin_number: values.tin,
+      contact_person: values.contactPerson,
+      contact_phone: values.contactPhone,
+      address: values.address,
+      admin_full_name: values.adminName,
+      admin_email: values.email,
+      admin_password: values.password,
+      admin_phone: values.phone,
+    });
+    console.log("signup response:", res);
+
+    navigateTo("/login");
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+});
+</script>
 <template>
   <div class="min-h-screen flex bg-slate-50">
     <div class="hidden lg:block w-1/2 relative overflow-hidden bg-slate-950">
@@ -50,14 +87,14 @@
       <div class="w-full max-w-lg">
         <NuxtLink
           to="/"
-          class="group inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-teal-700 hover:bg-teal-50 transition-all"
+          class="group inline-flex items-center gap-2 mb-10 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-teal-700 hover:bg-teal-50 transition-all duration-300 ease-in-out border border-transparent hover:border-teal-100"
         >
           <div
             class="p-1.5 rounded-lg bg-slate-100 group-hover:bg-teal-100 transition-colors"
           >
             <Icon
               name="bitcoin-icons:arrow-left-filled"
-              class="w-5 h-5 text-slate-500 group-hover:text-teal-700"
+              class="w-5 h-5 text-slate-500 group-hover:text-teal-700 transition-colors font-bold"
             />
           </div>
           Back to Home
@@ -78,45 +115,8 @@
           <div class="flex flex-row items-center gap-4">
             <UiBaseInput
               rules="required"
-              name="name"
-              placeholder="Full Name"
-              leading-icon="mdi:account-outline"
-              leadingIconClass="border-r-[1px] border-gray-300 "
-              iconLeadingClass="pl-14"
-              class="text-gray-600 focus:border-primary duration-200 py-2"
-            >
-              <template #label>
-                <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
-                >
-                  Full Name <span class="text-red-600">*</span>
-                </h1>
-              </template>
-            </UiBaseInput>
-
-            <UiBaseInput
-              rules="required"
-              name="name"
-              placeholder="Username"
-              leading-icon="mdi:account-outline"
-              leadingIconClass="border-r-[1px] border-gray-300 "
-              iconLeadingClass="pl-14"
-              class="text-gray-600 focus:border-primary duration-200 py-2"
-            >
-              <template #label>
-                <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
-                >
-                  Username <span class="text-red-600">*</span>
-                </h1>
-              </template>
-            </UiBaseInput>
-          </div>
-          <div class="flex flex-row items-center gap-4">
-            <UiBaseInput
-              rules="required"
               name="hospital"
-              placeholder="Hospital Name"
+              placeholder="enter your hospital name"
               leading-icon="mdi:hospital-building"
               leadingIconClass="border-r-[1px] border-gray-300 "
               iconLeadingClass="pl-14"
@@ -124,15 +124,35 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
                   Hospital Name <span class="text-red-600">*</span>
                 </h1>
               </template>
             </UiBaseInput>
+
             <UiBaseInput
               rules="required"
-              name="phone"
+              name="ContactPerson"
+              placeholder="enter your business man name "
+              leading-icon="mdi:account-outline"
+              leadingIconClass="border-r-[1px] border-gray-300 "
+              iconLeadingClass="pl-14"
+              class="text-gray-600 focus:border-primary duration-200 py-2"
+            >
+              <template #label>
+                <h1
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
+                >
+                  Contact Person<span class="text-red-600">*</span>
+                </h1>
+              </template>
+            </UiBaseInput>
+          </div>
+          <div>
+            <UiBaseInput
+              rules="required"
+              name="contactPhone"
               placeholder="+2519..."
               leading-icon="mdi:phone-outline"
               leadingIconClass="border-r-[1px] border-gray-300 "
@@ -141,9 +161,9 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
-                  Phone Number <span class="text-red-600">*</span>
+                  Contact Phone <span class="text-red-600">*</span>
                 </h1>
               </template>
             </UiBaseInput>
@@ -160,7 +180,7 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
                   TIN Number <span class="text-red-600">*</span>
                 </h1>
@@ -177,18 +197,55 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
                   Address <span class="text-red-600">*</span>
                 </h1>
               </template>
             </UiBaseInput>
           </div>
+          <div class="flex flex-row items-center gap-4">
+            <UiBaseInput
+              rules="required"
+              name="adminName"
+              placeholder="enter your name"
+              leading-icon="mdi:account-outline"
+              leadingIconClass="border-r-[1px] border-gray-300 "
+              iconLeadingClass="pl-14"
+              class="text-gray-600 focus:border-primary duration-200 py-2"
+            >
+              <template #label>
+                <h1
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
+                >
+                  Admin Name <span class="text-red-600">*</span>
+                </h1>
+              </template>
+            </UiBaseInput>
+            <UiBaseInput
+              rules="required"
+              name="phone"
+              placeholder="+2519..."
+              leading-icon="mdi:phone-outline"
+              leadingIconClass="border-r-[1px] border-gray-300 "
+              iconLeadingClass="pl-14"
+              class="text-gray-600 focus:border-primary duration-200 py-2"
+            >
+              <template #label>
+                <h1
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
+                >
+                  Admin Phone <span class="text-red-600">*</span>
+                </h1>
+              </template>
+            </UiBaseInput>
+          </div>
+
           <div>
             <UiBaseInput
               rules="required|email"
               name="email"
-              placeholder="Email"
+              placeholder="enter your email"
               leading-icon="mdi:email-outline"
               leadingIconClass="border-r-[1px] border-gray-300 "
               iconLeadingClass="pl-14"
@@ -196,9 +253,9 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
-                  Email address <span class="text-red-600">*</span>
+                  Admin Email address <span class="text-red-600">*</span>
                 </h1>
               </template>
             </UiBaseInput>
@@ -207,7 +264,7 @@
           <div class="flex flex-row gap-4">
             <UiBaseInput
               rules="required"
-              leading-icon="majesticons:key-line"
+              leading-icon="mdi:cellphone-key"
               trailingIcon="mdi:eye-outline"
               type="password"
               name="password"
@@ -218,15 +275,15 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
-                  Password <span class="text-red-600">*</span>
+                  Admin Password <span class="text-red-600">*</span>
                 </h1>
               </template>
             </UiBaseInput>
             <UiBaseInput
               rules="required|password"
-              leading-icon="majesticons:key-line"
+              leading-icon="fluent:phone-key-24-regular"
               trailingIcon="mdi:eye-outline"
               type="password"
               name="confirm_password"
@@ -237,7 +294,7 @@
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
                   Confirm Password <span class="text-red-600">*</span>
                 </h1>
@@ -255,7 +312,7 @@
               />
               <label
                 for="remember-me"
-                class="ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-300 cursor-pointer duration-200"
+                class="ml-3 block text-sm leading-6 text-gray-900 cursor-pointer duration-200"
                 >Remember me</label
               >
             </div>
@@ -273,7 +330,7 @@
             <button
               :disabled="loading"
               type="submit"
-              class="flex gap-x-2 w-full justify-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md bg-primary px-3 py-2 font-semibold leading-6 text-white shadow-sm hover:bg-primaryDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200 duration-200 hover:shadow-full"
+              class="flex gap-x-2 w-full justify-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-full bg-primary px-3 py-2 font-semibold leading-6 text-white shadow-sm hover:bg-primaryDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200 duration-200 hover:shadow-full"
             >
               <Icon
                 name="svg-spinners:ring-resize"
@@ -285,28 +342,22 @@
           </div>
         </form>
 
-        <p class="mt-10 text-center text-sm text-slate-600">
-          Already have an Account?
-          <NuxtLink
-            to="/login"
-            class="font-semibold text-teal-700 hover:text-teal-600 transition underline underline-offset-4"
-            >Sign In</NuxtLink
+        <div class="flex justify-center text-base mt-10">
+          <p
+            class="text-gray-600 text-center flex flex-wrap items-center gap-2"
           >
-        </p>
+            Don't have an account?
+            <a
+              href="/signup"
+              class="text-primary underline underline-offset-4 flex items-center gap-1"
+            >
+              Log In
+              <span>
+                <Icon name="i-mdi:arrow-right" class="-rotate-45 ml-1" /> </span
+            ></a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
-<script setup>
-import UiBaseInput from "~/components/ui/BaseInput.vue";
-const form = reactive({ email: "", password: "" });
-const loading = ref(false);
-const passwordVisible = ref(false);
-definePageMeta({
-  layout: false,
-});
-
-const handleSignup = () => {
-  console.log(form);
-};
-</script>
