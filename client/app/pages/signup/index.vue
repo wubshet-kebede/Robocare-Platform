@@ -133,7 +133,7 @@ const submit = handleSubmit(async (values) => {
 
             <UiBaseInput
               rules="required"
-              name="ContactPerson"
+              name="contactPerson"
               placeholder="enter your business man name "
               leading-icon="mdi:account-outline"
               leadingIconClass="border-r-[1px] border-gray-300 "
