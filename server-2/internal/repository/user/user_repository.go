@@ -13,3 +13,15 @@ func GetUserByHospitalID(hospitalID uuid.UUID) (*model.User, error) {
 	}
 	return &user, nil
 }
+func  GetUserWithHospital(userID uuid.UUID) (*model.User, *model.Hospital, error) {
+	var user model.User
+	var hospital model.Hospital
+	if err := db.DB.First(&user, "id = ?", userID).Error; err != nil {
+		return nil, nil, err
+	}
+	if err := db.DB.First(&hospital, "id = ?", user.HospitalID).Error; err != nil {
+		return nil, nil, err
+	}
+
+	return &user, &hospital, nil
+}

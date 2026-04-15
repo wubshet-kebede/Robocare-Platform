@@ -5,6 +5,7 @@ import (
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/features"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/utils"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/user"
 )
 
 func CreateUser(user model.User, password string) (model.User, error) {
@@ -54,7 +55,27 @@ func UpdateUser(input model.UpdateUserInput, hospitalID, userID uuid.UUID) (*mod
 
 	return existing, nil
 }
+func  GetMe(userID uuid.UUID) (*model.MeResponse, error) {
 
+	user, hospital, err := user.GetUserWithHospital(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.MeResponse{
+		ID:       user.ID,
+		FullName: user.FullName,
+		Email:    user.Email,
+		Role:     string(user.Role),
+		Hospital: model.HospitalResponse{
+			ID:       hospital.ID,
+			Name:     hospital.Name,
+			Slug:     hospital.Slug,
+			Plan:     hospital.Plan,
+			IsActive: hospital.IsActive,
+		},
+	}, nil
+}
 
 
 
