@@ -79,15 +79,15 @@
             <UiBaseInput
               rules="required|email"
               name="email"
-              placeholder="Email"
+              placeholder="Enter your email"
               leading-icon="mdi:email-outline"
               leadingIconClass="border-r-[1px] border-gray-300 "
               iconLeadingClass="pl-14"
-              class="text-gray-600 focus:border-primary duration-200 py-2"
+              class="text-gray-600 focus:border-primary duration-200 py-3"
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
                   Email address <span class="text-red-600">*</span>
                 </h1>
@@ -102,14 +102,14 @@
               trailingIcon="mdi:eye-outline"
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Enter your password"
               leadingIconClass="border-r-[1px] border-gray-300"
               iconLeadingClass="pl-14"
-              class="text-gray-600 focus:border-primary duration-200 py-2"
+              class="text-gray-600 focus:border-primary duration-200 py-3"
             >
               <template #label>
                 <h1
-                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 dark:text-gray-300 duration-200"
+                  class="block text-sm font-medium leading-6 text-gray-900 mb-1 duration-200"
                 >
                   Password <span class="text-red-600">*</span>
                 </h1>
@@ -127,7 +127,7 @@
               />
               <label
                 for="remember-me"
-                class="ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-300 cursor-pointer duration-200"
+                class="ml-3 block text-sm leading-6 text-gray-900 cursor-pointer duration-200"
                 >Remember me</label
               >
             </div>
@@ -145,7 +145,7 @@
             <button
               :disabled="loading"
               type="submit"
-              class="flex gap-x-2 w-full justify-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-md bg-primary px-3 py-2 font-semibold leading-6 text-white shadow-sm hover:bg-primaryDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200 duration-200 hover:shadow-full"
+              class="flex gap-x-2 w-full justify-center disabled:bg-gray-400 disabled:cursor-not-allowed rounded-full bg-primary px-3 py-2 font-semibold leading-6 text-white shadow-sm hover:bg-primaryDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200 duration-200 hover:shadow-full"
             >
               <Icon
                 name="svg-spinners:ring-resize"
@@ -168,29 +168,34 @@
 
         <div class="space-y-4">
           <button
-            class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+            class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-slate-200 rounded-xl text-md font-medium text-slate-800 hover:bg-slate-50 transition"
           >
-            <!-- <img src="/icons/google.svg" class="h-5 w-5" alt="Google" /> -->
             <Icon name="devicon:google" class="h-5 w-5" />
             Continue with Google
           </button>
           <button
-            class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 hover:bg-slate-50 transition"
+            class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-slate-200 rounded-xl text-md font-medium text-slate-800 hover:bg-slate-50 transition"
           >
-            <!-- <img src="/icons/apple.svg" class="h-5 w-5" alt="Apple" /> Continue -->
             <Icon name="ic:outline-apple" class="h-5 w-5" />
             with Apple
           </button>
         </div>
 
-        <p class="mt-14 text-center text-sm text-slate-600">
-          Don't have an Account?
-          <a
-            href="#"
-            class="font-semibold text-teal-700 hover:text-teal-600 transition"
-            >Sign Up</a
+        <div class="flex justify-center text-base mt-10">
+          <p
+            class="text-gray-600 text-center flex flex-wrap items-center gap-2"
           >
-        </p>
+            Don't have an account?
+            <a
+              href="/signup"
+              class="text-primary underline underline-offset-4 flex items-center gap-1"
+            >
+              Sign Up
+              <span>
+                <Icon name="i-mdi:arrow-right" class="-rotate-45 ml-1" /> </span
+            ></a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
