@@ -61,3 +61,19 @@ type UpdateUserInput struct {
 	Role         *Role `json:"role"`
 	DepartmentID *uuid.UUID  `json:"department_id"`
 }
+type MeResponse struct {
+	ID       uuid.UUID `json:"id"`
+	FullName string    `json:"full_name"`
+	Email    string    `json:"email"`
+	Role     string    `json:"role"`
+
+	Hospital HospitalResponse `json:"hospital"`
+}
+
+type HospitalResponse struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+	Slug string    `json:"slug"`
+	Plan string    `json:"plan"`
+	IsActive bool  `json:"is_active"`
+}
