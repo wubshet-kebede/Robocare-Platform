@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: [
     // all directories and extensions will correspond to your Nuxt config
     "./components/**/*.{vue,js,ts}",
