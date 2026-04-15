@@ -21,7 +21,7 @@ func main() {
 	db.Migrate()
 	mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
 	r := api.SetupRouter()
-	allowedOrigins := []string{"http://localhost:5173"}
+	allowedOrigins := []string{"http://localhost:3000"}
 	allowedHeaders := []string{"Content-Type", "Authorization"}
 	allowedMethods := []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
 	corsMiddleware := handlers.CORS(
