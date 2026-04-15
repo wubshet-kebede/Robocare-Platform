@@ -1,3 +1,32 @@
+<script setup>
+import UiBaseInput from "~/components/ui/BaseInput.vue";
+import { useForm } from "vee-validate";
+definePageMeta({
+  layout: false,
+});
+const { handleSubmit } = useForm();
+const { login } = useAuthService();
+const loading = ref(false);
+
+const submit = handleSubmit(async (values) => {
+  console.log("Form values:", values);
+  try {
+    loading.value = true;
+
+    const res = await login({
+      identifier: values.email,
+      password: values.password,
+    });
+    console.log("Login response:", res);
+
+    navigateTo("/admin/staff");
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+});
+</script>
 <template>
   <div class="min-h-screen flex bg-slate-50">
     <div class="hidden lg:block w-1/2 relative overflow-hidden bg-slate-950">
@@ -120,7 +149,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <input
-                id="remember-me"
+                id="remember-doctorwubshet@example.comme"
                 name="remember-me"
                 type="checkbox"
                 class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary duration-200 cursor-pointer"
@@ -201,19 +230,6 @@
   </div>
 </template>
 
-<script setup>
-import UiBaseInput from "~/components/ui/BaseInput.vue";
-const form = reactive({ email: "", password: "" });
-const loading = ref(false);
-const passwordVisible = ref(false);
-definePageMeta({
-  layout: false,
-});
-
-const handleLogin = () => {
-  console.log(form);
-};
-</script>
 <!-- <script setup>
 definePageMeta({
   layout: false,

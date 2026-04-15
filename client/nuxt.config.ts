@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  devServer: {
+    port: 3000,
+    host: "localhost",
+  },
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
