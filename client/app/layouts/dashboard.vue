@@ -1,4 +1,11 @@
 <script setup>
+const colorMode = useColorMode();
+
+const isDark = computed(() => colorMode.value === "dark");
+
+function toggleTheme() {
+  colorMode.preference = isDark.value ? "light" : "dark";
+}
 const navSections = [
   {
     title: "Overview",
@@ -120,9 +127,9 @@ const navSections = [
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-background">
+  <div class="flex min-h-screen dark:bg-background">
     <aside
-      class="fixed ltr:left-0 rtl:right-0 top-0 z-40 hidden h-screen flex-col bg-sidebar transition-all duration-300 ease-in-out lg:flex w-[260px]"
+      class="fixed ltr:left-0 rtl:right-0 top-0 z-40 hidden h-screen flex-col dark:bg-sidebar transition-all duration-300 ease-in-out lg:flex w-[260px]"
     >
       <div
         class="flex h-16 items-center gap-3 border-b border-sidebar-border px-4"
@@ -136,11 +143,12 @@ const navSections = [
           />
         </div>
         <div class="flex flex-col">
-          <span class="text-sm font-bold tracking-tight text-sidebar-robocare"
+          <span
+            class="text-sm font-bold tracking-tight dark:text-sidebar-robocare"
             >Hospital
           </span>
           <span
-            class="text-[10px] font-medium uppercase tracking-widest text-sidebar-robocare/40"
+            class="text-[10px] font-medium uppercase tracking-widest dark:text-sidebar-robocare/40"
             >Dashboard</span
           >
         </div>
@@ -154,7 +162,7 @@ const navSections = [
         <div v-for="section in navSections" :key="section.title">
           <!-- Section Header -->
           <button
-            class="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-sidebar-robocare/30 transition-colors hover:text-sidebar-robocare/50"
+            class="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest dark:text-sidebar-robocare/30 transition-colors hover:text-sidebar-robocare/50"
           >
             <span class="flex-1 text-start">{{ section.title }}</span>
             <Icon
@@ -173,14 +181,16 @@ const navSections = [
                   v-for="item in section.items"
                   :key="item.name"
                   :href="item.href"
-                  class="group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 text-sidebar-robocare/70 hover:bg-sidebar-accent/50 hover:text-sidebar-robocare"
+                  class="group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 dark:text-sidebar-robocare/70 hover:bg-sidebar-accent/50 hover:text-sidebar-robocare"
                   :class="
-                    item.active ? 'bg-sidebar-accent text-sidebar-primary' : ''
+                    item.active
+                      ? 'dark:bg-sidebar-accent dark:text-sidebar-primary'
+                      : ''
                   "
                 >
                   <Icon
                     :name="item.icon"
-                    class="h-[18px] w-[18px] shrink-0 transition-colors text-sidebar-robocare/50 group-hover:text-sidebar-robocare/80"
+                    class="h-[18px] w-[18px] shrink-0 transition-colors dark:text-sidebar-robocare/50 dark:group-hover:text-sidebar-robocare/80"
                   />
 
                   <span class="flex-1">{{ item.name }}</span>
@@ -188,7 +198,7 @@ const navSections = [
                   <!-- Badge -->
                   <span
                     v-if="item.badge"
-                    class="flex h-5 min-w-5 items-center justify-center rounded-full bg-sidebar-primary/15 px-1.5 text-[10px] font-semibold text-sidebar-primary"
+                    class="flex h-5 min-w-5 items-center justify-center rounded-full dark:bg-sidebar-primary/15 px-1.5 text-[10px] font-semibold text-sidebar-primary"
                   >
                     {{ item.badge }}
                   </span>
@@ -199,10 +209,10 @@ const navSections = [
         </div>
       </nav>
 
-      <div class="border-t border-sidebar-border p-3">
+      <div class="border-t dark:border-sidebar-border p-3">
         <div class="flex items-center gap-2">
           <a
-            class="flex flex-1 items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-sidebar-accent/50"
+            class="flex flex-1 items-center gap-3 rounded-lg px-2 py-2 transition-colors dark:hover:bg-sidebar-accent/50"
             href="/profile"
           >
             <div
@@ -211,14 +221,16 @@ const navSections = [
               WA
             </div>
             <div class="flex flex-1 flex-col">
-              <span class="text-sm font-medium text-sidebar-foreground"
+              <span class="text-sm font-medium dark:text-sidebar-foreground"
                 >Wubshet A.</span
               >
-              <span class="text-[11px] text-sidebar-foreground/50">Admin</span>
+              <span class="text-[11px] dark:text-sidebar-foreground/50"
+                >Admin</span
+              >
             </div> </a
           ><button
             aria-label="Log out"
-            class="rounded-md p-1.5 text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-robocare/70"
+            class="rounded-md p-1.5 dark:text-sidebar-foreground/40 transition-colors dark:hover:bg-sidebar-accent dark:hover:text-sidebar-robocare/70"
           >
             <Icon name="lucide:log-out" class="h-4 w-4" />
           </button>
@@ -226,7 +238,7 @@ const navSections = [
       </div>
       <button
         aria-label="Collapse sidebar"
-        class="absolute ltr:-right-3 rtl:-left-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-sidebar-border bg-sidebar text-sidebar-robocare/50 shadow-sm transition-all hover:bg-sidebar-accent hover:text-sidebar-robocare"
+        class="absolute ltr:-right-3 rtl:-left-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border dark:border-sidebar-border dark:bg-sidebar dark:text-sidebar-robocare/50 shadow-sm transition-all dark:hover:bg-sidebar-accent dark:hover:text-sidebar-robocare"
       >
         <Icon
           name="lucide:chevron-left"
@@ -237,27 +249,27 @@ const navSections = [
     <div class="flex flex-1 flex-col transition-all duration-300 lg:ms-[260px]">
       <div class="sticky top-0 z-30">
         <header
-          class="flex h-16 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-xl sm:px-6"
+          class="flex h-16 items-center justify-between border-b dark:border-border dark:bg-background/80 px-4 backdrop-blur-xl sm:px-6"
         >
           <!-- LEFT -->
           <div class="flex items-center gap-3">
             <button
               aria-label="Open menu"
-              class="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+              class="flex h-8 w-8 items-center justify-center rounded-lg dark:text-muted-foreground transition-colors dark:hover:bg-accent dark:hover:text-foreground lg:hidden"
             >
               <Icon name="lucide:menu" class="h-5 w-5" />
             </button>
 
             <button
-              class="relative hidden h-9 w-72 items-center rounded-lg border border-input bg-muted/40 ps-9 pe-4 text-start text-sm text-muted-foreground/50 transition-colors hover:bg-muted/60 sm:flex"
+              class="relative hidden h-9 w-72 items-center rounded-lg border dark:border-input dark:bg-muted/40 ps-9 pe-4 text-start text-sm dark:text-muted-foreground/50 transition-colors hover:bg-muted/60 sm:flex"
             >
               <Icon
                 name="lucide:search"
-                class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60"
+                class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 dark:text-muted-foreground/60"
               />
               Search anything...
               <kbd
-                class="absolute right-3 top-1/2 -translate-y-1/2 rounded border border-border bg-muted px-1.5 text-[10px]"
+                class="absolute right-3 top-1/2 -translate-y-1/2 rounded border dark:border-border dark:bg-muted px-1.5 text-[10px]"
               >
                 ⌘K
               </kbd>
@@ -268,35 +280,43 @@ const navSections = [
           <div class="flex items-center gap-2">
             <!-- New Appointment -->
             <button
-              class="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 text-xs rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+              class="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 text-xs rounded-md dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
             >
               <Icon name="lucide:plus" class="h-3.5 w-3.5" />
               New Appointment
             </button>
 
-            <div class="mx-1 hidden h-6 w-px bg-border sm:block"></div>
+            <div class="mx-1 hidden h-6 w-px dark:bg-border sm:block"></div>
 
             <!-- Theme -->
-            <button class="h-8 w-8 flex items-center justify-center">
-              <Icon name="lucide:sun" class="h-4 w-4" />
+            <button
+              @click="toggleTheme"
+              class="h-8 w-8 flex items-center justify-center"
+            >
+              <span v-if="isDark">
+                <Icon name="lucide:sun" class="h-4 w-4 dark:text-white"
+              /></span>
+              <span v-else
+                ><Icon name="majesticons:moon-line" class="h-4 w-4"
+              /></span>
             </button>
 
             <!-- Customize -->
             <button class="h-8 w-8 flex items-center justify-center">
-              <Icon name="lucide:palette" class="h-4 w-4" />
+              <Icon name="lucide:palette" class="h-4 w-4 dark:text-white" />
             </button>
 
             <!-- Notifications -->
             <button class="relative h-8 w-8 flex items-center justify-center">
-              <Icon name="lucide:bell" class="h-4 w-4" />
+              <Icon name="lucide:bell" class="h-4 w-4 dark:text-white" />
               <span
-                class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive"
+                class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full dark:bg-destructive"
               ></span>
             </button>
 
             <!-- User -->
             <button
-              class="h-8 w-8 rounded-full bg-primary/10 text-xs font-semibold text-primary"
+              class="h-8 w-8 rounded-full dark:bg-primary/10 text-xs font-semibold dark:text-primary"
             >
               WA
             </button>

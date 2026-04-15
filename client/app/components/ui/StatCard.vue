@@ -12,19 +12,21 @@ const cards = [
     <div
       v-for="(card, index) in cards"
       :key="index"
-      class="flex items-center gap-3 rounded-lg border border-border bg-card py-2 px-4"
+      class="flex items-center gap-3 rounded-lg border dark:border-border dark:bg-card py-2 px-4"
       :style="{ borderLeftWidth: '4px', borderLeftColor: `var(${card.color})` }"
     >
       <div class="flex-1 min-w-0">
-        <p class="text-xs text-muted-foreground truncate">{{ card.title }}</p>
+        <p class="text-xs dark:text-muted-foreground truncate">
+          {{ card.title }}
+        </p>
         <div class="flex items-center gap-2">
           <span class="text-lg font-bold">{{ card.value }}</span>
           <div
             class="inline-flex items-center rounded-md border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow-sm text-[10px] px-1.5 py-0"
             :class="[
               card.change.startsWith('+')
-                ? 'bg-success text-success-foreground'
-                : 'bg-destructive text-destructive-foreground',
+                ? 'bg-success dark:text-success-foreground'
+                : 'bg-destructive dark:text-destructive-foreground',
             ]"
           >
             {{ card.change }}
