@@ -24,8 +24,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		refreshCookie, errR := r.Cookie("refresh_token")
 
 		if errA != nil && errR != nil {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+            return
 		}
 
 		var accessClaims map[string]interface{}
@@ -42,7 +42,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			refreshClaims, refreshErr := utils.VerifyJWT(refreshToken)
 			if refreshErr != nil {
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
 
@@ -62,6 +62,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 				Path:     "/",
 				HttpOnly: true,
 				Secure:   false,
+				SameSite: http.SameSiteLaxMode,
 				Expires:  time.Now().Add(15 * time.Minute),
 			})
 
