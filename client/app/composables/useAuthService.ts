@@ -19,5 +19,10 @@ export const useAuthService = () => {
       method: "POST",
     });
   };
-  return { login, signup, logout };
+  const me = () => {
+    return $api("/me", {
+      method: "GET",
+    });
+  };
+  return { login, signup, logout, me };
 };

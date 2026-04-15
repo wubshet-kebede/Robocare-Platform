@@ -5,7 +5,7 @@ definePageMeta({
   layout: false,
 });
 const { handleSubmit } = useForm();
-const { login } = useAuthService();
+const { login, me } = useAuthService();
 const loading = ref(false);
 
 const submit = handleSubmit(async (values) => {
@@ -18,8 +18,9 @@ const submit = handleSubmit(async (values) => {
       password: values.password,
     });
     console.log("Login response:", res);
-
-    navigateTo("/admin/staff");
+    const user = await me();
+    console.log("Logged user:", user);
+    await navigateTo(`/${user.hospital.slug}/dashboard`);
   } catch (err) {
     console.log(err);
   } finally {
