@@ -7,14 +7,18 @@ import (
 )
 func Migrate() {
 	createEnumSQL := `
-		DO $$ 
-		BEGIN
-			IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_enum') THEN
-				CREATE TYPE role_enum AS ENUM ('admin', 'doctor', 'surgeon', 'nurse', 'receptionist','nurse', 'lab_technician', 'pharmacist', 'er_doctor', 'er_nurse','it_support', 'robot_operator', 'head_nurse');
-			END IF;
-		END
-		$$;
-	`
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_enum') THEN
+        CREATE TYPE role_enum AS ENUM (
+            'admin', 'doctor', 'surgeon', 'nurse', 'head_nurse',
+            'receptionist', 'lab_technician', 'pharmacist',
+            'er_doctor', 'er_nurse', 'it_support', 'robot_operator'
+        );
+    END IF;
+END
+$$;
+`
 
 	if err := DB.Exec(createEnumSQL).Error; err != nil {
 		log.Fatalf("Failed to create enum type: %v", err)

@@ -28,12 +28,17 @@ const submit = () => {
           <template #label>Email *</template>
         </UiBaseInput>
 
-        <select v-model="form.role" class="w-full border p-2 rounded">
-          <option disabled value="">Select role</option>
-          <option value="doctor">Doctor</option>
-          <option value="nurse">Nurse</option>
-          <option value="admin">Admin</option>
-        </select>
+        <UiListSelect name="role" :items="roleOptions" v-model="userData.role">
+          <template #label>
+            <div class="flex items-center mb-1">
+              <Icon
+                name="mdi:gender-male-female"
+                class="text-xl text-primary dark:text-white mr-2"
+              />
+              <span class="dark:text-white">Role</span>
+            </div>
+          </template>
+        </UiListSelect>
 
         <div class="flex justify-end gap-3 mt-6">
           <button @click="isOpen = false">Cancel</button>
