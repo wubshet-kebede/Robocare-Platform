@@ -124,6 +124,8 @@ const navSections = [
     ],
   },
 ];
+const user = useAuthUser();
+const slug = user.value?.hospital.slug;
 </script>
 
 <template>
@@ -177,10 +179,10 @@ const navSections = [
           >
             <div class="overflow-hidden">
               <div class="mt-1 space-y-0.5">
-                <a
+                <NuxtLink
                   v-for="item in section.items"
                   :key="item.name"
-                  :href="item.href"
+                  :to="`/${slug}${item.href}`"
                   class="group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 dark:text-sidebar-robocare/70 hover:bg-sidebar-accent/50 hover:text-sidebar-robocare"
                   :class="
                     item.active
@@ -202,7 +204,7 @@ const navSections = [
                   >
                     {{ item.badge }}
                   </span>
-                </a>
+                </NuxtLink>
               </div>
             </div>
           </div>
