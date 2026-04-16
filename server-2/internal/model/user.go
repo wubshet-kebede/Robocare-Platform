@@ -29,7 +29,7 @@ type User struct {
 	Email      string    `gorm:"size:255;unique;not null" json:"email"`
 	Phone      string    `gorm:"size:20;uniqueIndex;not null" json:"phone"`
 	PasswordHash string  `gorm:"type:text;not null" json:"-"`
-	Role       Role      `gorm:"type:varchar(50);not null;index" json:"role"`
+	Role Role `gorm:"type:role_enum;not null;index" json:"role"`
 	HospitalID uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`
 	DepartmentID *uuid.UUID `gorm:"type:uuid;index" json:"department_id,omitempty"`
 	Specialty    string     `gorm:"size:100" json:"specialty,omitempty"` 

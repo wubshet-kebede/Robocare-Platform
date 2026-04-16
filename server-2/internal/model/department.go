@@ -27,7 +27,7 @@ type Department struct {
 	Name        string         `gorm:"size:100;not null" json:"name"`              
     Code       string    `gorm:"size:10;not null;uniqueIndex:idx_hospital_dept_code" json:"code"`
 	Description string         `gorm:"type:text" json:"description,omitempty"`     
-	Type     DepartmentType `gorm:"type:varchar(50);default:'clinical'" json:"type"`
+	Type     DepartmentType `gorm:"type:department_type_enum;default:'clinical'" json:"type"`
 	MaxBeds  int            `gorm:"default:0" json:"max_beds"`                   
 	Floor    int            `json:"floor,omitempty"`                             
 	HeadID *uuid.UUID `gorm:"type:uuid;index" json:"head_id,omitempty"`    
