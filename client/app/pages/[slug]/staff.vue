@@ -4,6 +4,10 @@ definePageMeta({
 });
 const { inviteStaff } = useInvitationService();
 const loading = ref(false);
+const isModalOpen = ref(false);
+const openInviteModal = () => {
+  isModalOpen.value = true;
+};
 const submit = handleSubmit(async (values) => {
   console.log("Form values:", values);
   try {
@@ -84,6 +88,8 @@ const filteredStaff = computed(() => {
 });
 </script>
 <template>
+  <ModalsInviteForm v-if="isModalOpen" v-model="isModalOpen">
+  </ModalsInviteForm>
   <div
     class="mb-6 flex flex-col gap-4 sm:flex-row items-center justify-between"
   >
@@ -107,6 +113,7 @@ const filteredStaff = computed(() => {
       </div>
       <button
         type="button"
+        @click="openInviteModal"
         class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
       >
         <Icon name="fluent-mdl2:chat-invite-friend" class="mr-2 h-4 w-4" />
