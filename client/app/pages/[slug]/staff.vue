@@ -2,11 +2,49 @@
 definePageMeta({
   layout: "dashboard",
 });
+const { inviteStaff } = useInvitationService();
+const loading = ref(false);
+const submit = handleSubmit(async (values) => {
+  console.log("Form values:", values);
+  try {
+    loading.value = true;
+
+    const res = await inviteStaff({
+      email: values.email,
+      role: values.role,
+    });
+    console.log("invitation response:", res);
+    // const user = await me();
+    // user.value = user;
+    // console.log("Logged user:", user);
+    // await navigateTo(`/${user.hospital.slug}/dashboard`);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+});
+const activeTab = ref("All Staff");
+const tabs = computed(() => [
+  { name: "All Staff", count: staffList.value.length },
+  {
+    name: "Doctors",
+    count: staffList.value.filter((s) => s.role === "Doctors").length,
+  },
+  {
+    name: "Nurses",
+    count: staffList.value.filter((s) => s.role === "Nurses").length,
+  },
+  {
+    name: "Administration",
+    count: staffList.value.filter((s) => s.role === "Administration").length,
+  },
+]);
 const staffList = ref([
   {
     id: 1,
     name: "Dr. Sarah Mitchell",
-    role: "Cardiologist",
+    role: "Doctors",
     department: "Cardiology",
     phone: "(555) 201-3344",
     email: "s.mitchell@hospital.org",
@@ -15,7 +53,35 @@ const staffList = ref([
     exp: 14,
     shift: "Morning",
   },
+  {
+    id: 2,
+    name: "Marla Santos",
+    role: "Nurses",
+    department: "Emergency",
+    phone: "(555) 201-1122",
+    email: "m.santos@hospital.org",
+    status: "On Duty",
+    rating: 4.9,
+    exp: 12,
+    shift: "Morning",
+  },
+  {
+    id: 3,
+    name: "David Thompson",
+    role: "Administration",
+    department: "Hospital Admin",
+    phone: "(555) 201-7788",
+    email: "d.thompson@hospital.org",
+    status: "On Duty",
+    rating: 4.5,
+    exp: 8,
+    shift: "Morning",
+  },
 ]);
+const filteredStaff = computed(() => {
+  if (activeTab.value === "All Staff") return staffList.value;
+  return staffList.value.filter((staff) => staff.role === activeTab.value);
+});
 </script>
 <template>
   <div
@@ -77,7 +143,44 @@ const staffList = ref([
       colorTheme="bg-violet-50 text-violet-500"
     />
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
-    <UiStaffCard v-for="person in staffList" :key="person.id" :staff="person" />
+  <div class="p-6">
+    <div class="flex gap-2 mb-8">
+      <button
+        v-for="tab in tabs"
+        :key="tab.name"
+        @click="activeTab = tab.name"
+        :class="[
+          'flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all duration-200',
+          activeTab === tab.name
+            ? 'bg-white text-gray-900 shadow-sm'
+            : 'text-gray-500 hover:text-gray-900',
+        ]"
+      >
+        {{ tab.name }}
+        <span
+          :class="[
+            'text-xs px-2 py-0.5 rounded-full',
+            activeTab === tab.name ? 'bg-gray-100' : 'bg-transparent',
+          ]"
+        >
+          {{ tab.count }}
+        </span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <UiStaffCard
+        v-for="person in filteredStaff"
+        :key="person.id"
+        :staff="person"
+      />
+    </div>
+
+    <div
+      v-if="filteredStaff.length === 0"
+      class="text-center py-20 text-gray-500"
+    >
+      No staff found in this category.
+    </div>
   </div>
 </template>
