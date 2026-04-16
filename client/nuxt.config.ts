@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxtjs/color-mode",
     "@vee-validate/nuxt",
-    "nuxt-headlessui",
+    "@vueuse/nuxt",
   ],
   css: ["~/assets/css/tailwind.css"],
   veeValidate: {

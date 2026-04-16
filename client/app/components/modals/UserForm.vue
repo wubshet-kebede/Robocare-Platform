@@ -27,8 +27,6 @@ const isOpen = computed({
   },
 });
 
-const title = computed(() => (props.editMode ? "Edit User" : "Create User"));
-
 const { handleSubmit, resetForm, setValues } = useForm();
 
 const form = ref(props.currentUser || {});
@@ -53,12 +51,7 @@ const isEditing = ref(false);
 
         <div class="grid grid-cols-1 md:grid-cols-4 mb-4 gap-x-10">
           <div class="col-span-2 grid grid-cols-1 gap-4">
-            <SelectorsAuthorizerUser
-              v-if="!editMode"
-              rules="required"
-              v-model="form.id"
-            />
-            <HTextfield
+            <UiBaseInput
               name="first_name"
               rules="required"
               v-model="form.first_name"
@@ -71,9 +64,9 @@ const isEditing = ref(false);
                   <span class="text-red-500">*</span>
                 </h1>
               </template>
-            </HTextfield>
+            </UiBaseInput>
 
-            <HTextfield name="middle_name" v-model="form.middle_name">
+            <UiBaseInput name="middle_name" v-model="form.middle_name">
               <template #label>
                 <h1
                   class="font-medium mb-2 text-gray-600 dark:text-secondary-lite"
@@ -81,9 +74,9 @@ const isEditing = ref(false);
                   Father's Name
                 </h1>
               </template>
-            </HTextfield>
+            </UiBaseInput>
 
-            <HTextfield name="last_name" v-model="form.last_name">
+            <UiBaseInput name="last_name" v-model="form.last_name">
               <template #label>
                 <h1
                   class="font-medium mb-2 text-gray-600 dark:text-secondary-lite"
@@ -91,11 +84,11 @@ const isEditing = ref(false);
                   Grand Father's Name
                 </h1>
               </template>
-            </HTextfield>
+            </UiBaseInput>
           </div>
           <!-- Other Fields (Two per Row) -->
           <div class="col-span-2 flex flex-col gap-4">
-            <HTextfield
+            <UiBaseInput
               name="email"
               rules="required|email"
               v-model="form.email"
@@ -108,9 +101,9 @@ const isEditing = ref(false);
                   <span class="text-red-500">*</span>
                 </h1>
               </template>
-            </HTextfield>
+            </UiBaseInput>
 
-            <HTextfield
+            <UiBaseInput
               name="phone_number"
               rules="required|ethiopian_phone_number"
               v-model="form.phone_number"
@@ -123,9 +116,9 @@ const isEditing = ref(false);
                   <span class="text-red-500">*</span>
                 </h1>
               </template>
-            </HTextfield>
+            </UiBaseInput>
 
-            <HListselect
+            <!-- <HListselect
               rules="required"
               :items="[
                 { name: 'Female', id: 'female' },
@@ -157,7 +150,7 @@ const isEditing = ref(false);
               <template #label>
                 <h1 class="mb-2 dark:text-secondary-lite">Role</h1>
               </template>
-            </SelectorsRoleUser>
+            </SelectorsRoleUser> -->
           </div>
           <div class="flex col-span-4 justify-end gap-5 mt-9">
             <button
@@ -171,7 +164,7 @@ const isEditing = ref(false);
               type="submit"
               class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark"
             >
-              {{ currentUser ? "Update" : "Create" }}
+              {{ "Create" }}
             </button>
           </div>
         </div>
