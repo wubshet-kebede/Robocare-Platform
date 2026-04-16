@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.23",
     "@nuxt/icon": "2.2.1",
     "@nuxtjs/color-mode": "^4.0.0",
     "@nuxtjs/tailwindcss": "6.14.0",
