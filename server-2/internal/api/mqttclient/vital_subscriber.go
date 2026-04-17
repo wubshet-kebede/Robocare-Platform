@@ -9,12 +9,13 @@ import (
 	"github.com/google/uuid"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/ws"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/services/vitals"
 )
 
 // HandleVitalsMessage processes incoming MQTT messages for vitals
-func HandleVitalsMessage(msg mqtt.Message) {
+func HandleVitalsMessage(wsManager *ws.Manager, msg mqtt.Message) {
     log.Println("Received MQTT message:", msg.Topic())
 
     hospitalID, robotID, patientID, err := parseVitalsTopic(msg.Topic())
@@ -42,14 +43,14 @@ func HandleVitalsMessage(msg mqtt.Message) {
     if err != nil {
         log.Println("Failed to process vitals:", err)
     }
-    // 🚀 SEND TO WEBSOCKET
-	// wsPayload, _ := json.Marshal(payload)
+   
+	wsPayload, _ := json.Marshal(payload)
 
-	// globalWSManager.BroadcastVitals(
-	// 	hospitalID.String(),
-	// 	patientID.String(),
-	// 	wsPayload,
-	// )
+	wsManager.BroadcastVitals(
+		hospitalID.String(),
+		patientID.String(),
+		wsPayload,
+	)
 }
 
 func parseVitalsTopic(topic string) (uuid.UUID, uuid.UUID, uuid.UUID, error) {

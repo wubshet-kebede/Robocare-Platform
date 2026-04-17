@@ -9,7 +9,7 @@ import (
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		return true // ⚠️ allow all (OK for now, restrict in production)
+		return true // allow all (OK for now, restrict in production)
 	},
 }
 
@@ -22,7 +22,6 @@ func NewHandler(m *Manager) *Handler {
 }
 
 func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
-	// 🔥 1. Extract query params
 	hospitalID := r.URL.Query().Get("hospital_id")
 	patientID := r.URL.Query().Get("patient_id")
 
@@ -31,24 +30,19 @@ func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 🔥 2. Upgrade connection
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("WebSocket upgrade failed:", err)
 		return
 	}
-
-	// 🔥 3. Create client
 	client := &Client{
 		Conn:       conn,
 		HospitalID: hospitalID,
 		PatientID:  patientID,
+		Send:       make(chan []byte, 256),
 	}
-
-	// 🔥 4. Register client
 	h.manager.AddClient(client)
-
-	// 🔥 5. Listen for disconnect
+    go h.writePump(client)
 	go h.listen(client)
 }
 
@@ -59,10 +53,23 @@ func (h *Handler) listen(c *Client) {
 	}()
 
 	for {
-		// We don’t care about messages yet
+	
 		_, _, err := c.Conn.ReadMessage()
 		if err != nil {
 			break
+		}
+	}
+}
+func (h *Handler) writePump(c *Client) {
+	defer func() {
+		c.Conn.Close()
+	}()
+
+	for msg := range c.Send {
+		err := c.Conn.WriteMessage(websocket.TextMessage, msg)
+		if err != nil {
+			log.Println("write error:", err)
+			return
 		}
 	}
 }
