@@ -92,7 +92,7 @@ const navSections = [
       },
       {
         name: "Vitals Monitor",
-        href: "/vitals",
+        href: "/vital_monitor",
         icon: "lucide:activity",
       },
     ],
@@ -126,6 +126,15 @@ const navSections = [
 ];
 const user = useAuthUser();
 const slug = user.value?.hospital.slug;
+const getInitials = (name) => {
+  if (!name) return "";
+
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+};
 </script>
 
 <template>
@@ -220,15 +229,15 @@ const slug = user.value?.hospital.slug;
             <div
               class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sidebar-primary/80 to-sidebar-primary text-[11px] font-bold text-sidebar-primary-robocare"
             >
-              WA
+              {{ getInitials(user?.full_name) }}
             </div>
             <div class="flex flex-1 flex-col">
-              <span class="text-sm font-medium dark:text-sidebar-foreground"
-                >Wubshet A.</span
-              >
-              <span class="text-[11px] dark:text-sidebar-foreground/50"
-                >Admin</span
-              >
+              <span class="text-sm font-medium dark:text-sidebar-foreground">{{
+                user?.full_name
+              }}</span>
+              <span class="text-[11px] dark:text-sidebar-foreground/50">{{
+                user?.role
+              }}</span>
             </div> </a
           ><button
             aria-label="Log out"
@@ -318,9 +327,9 @@ const slug = user.value?.hospital.slug;
 
             <!-- User -->
             <button
-              class="h-8 w-8 rounded-full dark:bg-primary/10 text-xs font-semibold dark:text-primary"
+              class="ms-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
             >
-              WA
+              {{ getInitials(user?.full_name) }}
             </button>
           </div>
         </header>
