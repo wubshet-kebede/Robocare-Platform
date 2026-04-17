@@ -2,32 +2,33 @@
 definePageMeta({
   layout: "dashboard",
 });
+
 const { inviteStaff } = useInvitationService();
 const loading = ref(false);
 const isModalOpen = ref(false);
 const openInviteModal = () => {
   isModalOpen.value = true;
 };
-const submit = handleSubmit(async (values) => {
-  console.log("Form values:", values);
-  try {
-    loading.value = true;
+// const submit = handleSubmit(async (values) => {
+//   console.log("Form values:", values);
+//   try {
+//     loading.value = true;
 
-    const res = await inviteStaff({
-      email: values.email,
-      role: values.role,
-    });
-    console.log("invitation response:", res);
-    // const user = await me();
-    // user.value = user;
-    // console.log("Logged user:", user);
-    // await navigateTo(`/${user.hospital.slug}/dashboard`);
-  } catch (err) {
-    console.log(err);
-  } finally {
-    loading.value = false;
-  }
-});
+//     const res = await inviteStaff({
+//       email: values.email,
+//       role: values.role,
+//     });
+//     console.log("invitation response:", res);
+//     // const user = await me();
+//     // user.value = user;
+//     // console.log("Logged user:", user);
+//     // await navigateTo(`/${user.hospital.slug}/dashboard`);
+//   } catch (err) {
+//     console.log(err);
+//   } finally {
+//     loading.value = false;
+//   }
+// });
 const activeTab = ref("All Staff");
 const tabs = computed(() => [
   { name: "All Staff", count: staffList.value.length },
