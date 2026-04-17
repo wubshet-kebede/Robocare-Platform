@@ -1,13 +1,18 @@
 <script setup>
+import { ref, computed, onMounted } from "vue";
+import { useForm } from "vee-validate";
+
 const props = defineProps({
   modelValue: Boolean,
 });
-
+const { getRoles } = useRoleService();
+const { inviteStaff } = useInvitationService();
 const emit = defineEmits(["update:modelValue", "submit"]);
-
-const form = reactive({
-  email: "",
-  role: "",
+const { handleSubmit, values } = useForm({
+  initialValues: {
+    email: "",
+    role: "",
+  },
 });
 
 const isOpen = computed({
@@ -15,37 +20,85 @@ const isOpen = computed({
   set: (val) => emit("update:modelValue", val),
 });
 
-const submit = () => {
-  emit("submit", form);
+const roleOptions = ref([]);
+const loadingRoles = ref(false);
+
+const formatRole = (role) => {
+  return role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 };
+const fetchRoles = async () => {
+  try {
+    loadingRoles.value = true;
+
+    const res = await getRoles();
+    console.log("the fetched roles is", res);
+    roleOptions.value = res.map((role) => ({
+      id: role,
+      name: formatRole(role),
+    }));
+    console.log("the options", roleOptions.value);
+  } catch (err) {
+    console.error("Failed to fetch roles:", err);
+  } finally {
+    loadingRoles.value = false;
+  }
+};
+
+onMounted(fetchRoles);
+
+const submit = handleSubmit((formValues) => {
+  emit("submit", formValues);
+  isOpen.value = false;
+});
 </script>
 
 <template>
   <ModalsModal v-model="isOpen" title="Invite Staff" wrapperClass="max-w-lg">
     <template #content>
-      <div class="p-6 space-y-4">
-        <UiBaseInput v-model="form.email" name="email" rules="required|email">
-          <template #label>Email *</template>
+      <div class="p-8 space-y-8">
+        <UiBaseInput v-model="values.email" name="email" rules="required|email">
+          <template #label
+            ><h1
+              class="block text-md font-medium leading-6 text-gray-900 mb-1 duration-200"
+            >
+              Email address <span class="text-red-600">*</span>
+            </h1></template
+          >
         </UiBaseInput>
 
-        <UiListSelect name="role" :items="roleOptions" v-model="userData.role">
+        <UiListSelect
+          rules="required"
+          name="role"
+          :items="roleOptions"
+          v-model="values.role"
+          class="text-gray-600 focus:border-primary duration-200 py-3"
+        >
           <template #label>
-            <div class="flex items-center mb-1">
+            <div class="flex items-center mb-2">
               <Icon
-                name="mdi:gender-male-female"
-                class="text-xl text-primary dark:text-white mr-2"
+                name="carbon:user-role"
+                class="text-xl text-primary dark:text-white mr-2 mb-1"
               />
-              <span class="dark:text-white">Role</span>
+              <h1
+                class="block text-md font-medium leading-6 text-gray-900 mb-1 duration-200"
+              >
+                Role
+              </h1>
             </div>
           </template>
         </UiListSelect>
 
-        <div class="flex justify-end gap-3 mt-6">
-          <button @click="isOpen = false">Cancel</button>
+        <div class="flex justify-end gap-10 mt-10">
+          <button
+            @click="isOpen = false"
+            class="px-4 py-2 hover:bg-gray-200 rounded-full"
+          >
+            Cancel
+          </button>
 
           <button
             @click="submit"
-            class="bg-primary text-white px-4 py-2 rounded"
+            class="bg-primary text-white px-4 py-2 rounded-md"
           >
             Send Invite
           </button>

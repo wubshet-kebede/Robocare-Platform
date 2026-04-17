@@ -19,10 +19,10 @@ const submit = handleSubmit(async (values) => {
       password: values.password,
     });
     console.log("Login response:", res);
-    const user = await me();
-    user.value = user;
-    console.log("Logged user:", user);
-    await navigateTo(`/${user.hospital.slug}/dashboard`);
+    const userData = await me();
+    user.value = userData;
+    console.log("Logged user:", userData);
+    await navigateTo(`/${userData.hospital.slug}/dashboard`);
   } catch (err) {
     console.log(err);
   } finally {

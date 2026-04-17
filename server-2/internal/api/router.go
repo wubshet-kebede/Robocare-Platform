@@ -36,7 +36,7 @@ func SetupRouter() *mux.Router {
 	protected.HandleFunc("/robots", robot.CreateRobotHandler).Methods("POST")
 	protected.HandleFunc("/publish-nav-goal", mqttclient.PublishNavGoalHandler).Methods("POST")
     protected.HandleFunc("/me", auth.MeHandler).Methods("GET")
-	protected.HandleFunc("roles",role.GetRoles ).Methods("GET")
+	protected.HandleFunc("/roles",role.GetRoles ).Methods("GET")
 	manager := ws.NewManager()
     wsHandler := ws.NewHandler(manager)
 
