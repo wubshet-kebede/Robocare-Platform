@@ -14,7 +14,7 @@ import (
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/ws"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
 )
-func SetupRouter() *mux.Router {
+func SetupRouter(manager *ws.Manager) *mux.Router {
 	r := mux.NewRouter()
 	
 	api := r.PathPrefix("/api/v1").Subrouter()
@@ -37,7 +37,7 @@ func SetupRouter() *mux.Router {
 	protected.HandleFunc("/publish-nav-goal", mqttclient.PublishNavGoalHandler).Methods("POST")
     protected.HandleFunc("/me", auth.MeHandler).Methods("GET")
 	protected.HandleFunc("/roles",role.GetRoles ).Methods("GET")
-	manager := ws.NewManager()
+
     wsHandler := ws.NewHandler(manager)
 
     r.HandleFunc("/ws/vitals", wsHandler.ServeWS)

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/ws"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 )
@@ -28,7 +29,7 @@ func InitMQTTPublisher(broker string, port int) {
 	log.Println("MQTT publisher initialized with all hospitals")
 }
 
-func InitMQTTSubscriber(broker string, port int) {
+func InitMQTTSubscriber(broker string, port int,  wsManager *ws.Manager) {
     cfg := Config{
         Broker:   broker,
         Port:     port,
@@ -42,7 +43,7 @@ func InitMQTTSubscriber(broker string, port int) {
         log.Fatal("failed to init MQTT subscriber:", err)
     }
     token := mqttSub.client.Subscribe("hospital/+/robot/+/patient/+/vitals", 1, func(client mqtt.Client, msg mqtt.Message) {
-    HandleVitalsMessage(msg)
+    HandleVitalsMessage(wsManager, msg)
    })
     token.Wait()
     if token.Error() != nil {

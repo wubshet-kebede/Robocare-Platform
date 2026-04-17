@@ -30,6 +30,7 @@ func (m *Manager) RemoveClient(c *Client) {
 	defer m.mu.Unlock()
 
 	delete(m.clients, c)
+	close(c.Send) 
 	log.Printf("Client disconnected → hospital=%s patient=%s",
 		c.HospitalID, c.PatientID)
 }
@@ -39,21 +40,23 @@ func (m *Manager) BroadcastVitals(hospitalID string, patientID string, data []by
 
 	for client := range m.clients {
 
-		// 🔐 FILTER BY TENANT (hospital)
+	
 		if client.HospitalID != hospitalID {
 			continue
 		}
 
-		// 🎯 FILTER BY PATIENT (if subscribed)
+	
 		if client.PatientID != "" && client.PatientID != patientID {
 			continue
 		}
 
-		err := client.Conn.WriteMessage(1, data)
-		if err != nil {
-			log.Println("WS send error:", err)
-			client.Conn.Close()
-			delete(m.clients, client)
-		}
+		select {
+       case client.Send <- data:
+
+       default:
+	
+	log.Println("dropping slow client")
+}
+		
 	}
 }
