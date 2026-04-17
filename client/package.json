@@ -16,7 +16,7 @@
     "@nuxtjs/tailwindcss": "6.14.0",
     "@vee-validate/nuxt": "^4.15.1",
     "@vueuse/nuxt": "14.2.1",
-    "apexcharts": "^5.10.4",
+    "apexcharts": "^5.10.6",
     "lucide-vue-next": "^1.0.0",
     "nuxt": "^4.4.2",
     "vee-validate": "^4.15.1",
