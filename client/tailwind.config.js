@@ -35,7 +35,7 @@ export default {
         primary: "#d97706",
         "primary-foreground": "#0f0f10",
 
-        secondary: "#1f1f21",
+        secondary: "#fbf1ef",
         "secondary-foreground": "#f4f4f5",
 
         muted: "#1e1e20",
@@ -56,6 +56,7 @@ export default {
         border: "#2a2a2d",
         input: "#2a2a2d",
         ring: "#d97706",
+        "soft-pink": "oklch(96.5% 0.012 30)",
 
         chart: {
           1: "#d97706",
