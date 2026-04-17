@@ -17,6 +17,7 @@
     "@vee-validate/nuxt": "^4.15.1",
     "@vueuse/nuxt": "14.2.1",
     "apexcharts": "^5.10.4",
+    "lucide-vue-next": "^1.0.0",
     "nuxt": "^4.4.2",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.30",
