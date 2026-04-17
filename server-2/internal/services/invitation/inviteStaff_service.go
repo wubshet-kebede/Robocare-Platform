@@ -1,11 +1,14 @@
 package invitation
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	invitationRepo "github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/invitation"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/organization"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/services/mailer"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/utils"
 )
 
@@ -22,39 +25,27 @@ func  CreateStaffInvitation(hospitalID uuid.UUID, email string, role model.Role)
     }
 
     err := invitationRepo.SaveInvitation(invitation)
+    go func() {
+        
+        hospital, err:= organization.GetHospitalByHospitalID(hospitalID)
+
+        if err != nil {
+            fmt.Printf("Failed to get hospital by ID: %v\n", err)
+            return
+        }
+        
+        err = mailer.SendInvitationEmail(
+            invitation.Email, 
+            invitation.Token, 
+            string(invitation.Role), 
+            hospital.Name,
+        )
+        
+        if err != nil {
+            
+            fmt.Printf("Failed to send invite email to %s: %v\n", invitation.Email, err)
+        }
+    }()
     return invitation, err
 }
 
-// func  AcceptAndRegisterStaff(token, name, password, phone string) (model.User, error) {
-//     var newUser model.User
-
-//     // Start Transaction
-//     err := invitation.Transaction(func(txRepo *invitation.InvitationRepository) error {
-//         // 1. Find the invite
-//         invite, err := txRepo.GetInviteByToken(token)
-//         if err != nil || invite.IsAccepted || time.Now().After(invite.ExpiresAt) {
-//             return fmt.Errorf("invitation is no longer valid")
-//         }
-
-//         // 2. Create the User
-//         hashedPassword, _ := utils.HashPassword(password)
-//         newUser = model.User{
-//             ID:           uuid.New(),
-//             HospitalID:   invite.HospitalID, // Scoped to the same hospital!
-//             Email:        invite.Email,
-//             FullName:     name,
-//             PasswordHash: hashedPassword,
-//             Role:         invite.Role,
-//             Phone:        phone,
-//         }
-
-//         if err := txRepo.CreateUser(newUser); err != nil {
-//             return err
-//         }
-
-//         // 3. "Burn" the token
-//         return txRepo.MarkInviteAsAccepted(invite.ID)
-//     })
-
-//     return newUser, err
-// }

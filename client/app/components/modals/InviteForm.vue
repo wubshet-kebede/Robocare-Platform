@@ -5,40 +5,41 @@ import { useForm } from "vee-validate";
 const props = defineProps({
   modelValue: Boolean,
 });
+
+const emit = defineEmits(["update:modelValue", "success"]);
+
 const { getRoles } = useRoleService();
 const { inviteStaff } = useInvitationService();
-const emit = defineEmits(["update:modelValue", "submit"]);
-const { handleSubmit, values } = useForm({
-  initialValues: {
-    email: "",
-    role: "",
-  },
-});
 
 const isOpen = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
 
-const roleOptions = ref([]);
 const loadingRoles = ref(false);
+const loadingSubmit = ref(false);
 
-const formatRole = (role) => {
-  return role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-};
+const roleOptions = ref([]);
+
+const formatRole = (role) =>
+  role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+const { handleSubmit, values, resetForm } = useForm({
+  initialValues: {
+    email: "",
+    role: "",
+  },
+});
 const fetchRoles = async () => {
   try {
     loadingRoles.value = true;
 
     const res = await getRoles();
-    console.log("the fetched roles is", res);
+
     roleOptions.value = res.map((role) => ({
       id: role,
       name: formatRole(role),
     }));
-    console.log("the options", roleOptions.value);
-  } catch (err) {
-    console.error("Failed to fetch roles:", err);
   } finally {
     loadingRoles.value = false;
   }
@@ -46,9 +47,23 @@ const fetchRoles = async () => {
 
 onMounted(fetchRoles);
 
-const submit = handleSubmit((formValues) => {
-  emit("submit", formValues);
-  isOpen.value = false;
+const submit = handleSubmit(async (formValues) => {
+  try {
+    loadingSubmit.value = true;
+
+    await inviteStaff({
+      email: formValues.email,
+      role: formValues.role,
+    });
+    resetForm();
+    isOpen.value = false;
+
+    emit("success");
+  } catch (err) {
+    console.error("Invite failed:", err);
+  } finally {
+    loadingSubmit.value = false;
+  }
 });
 </script>
 
@@ -88,10 +103,12 @@ const submit = handleSubmit((formValues) => {
           </template>
         </UiListSelect>
 
-        <div class="flex justify-end gap-10 mt-10">
+        <
+        <div class="flex justify-end gap-6 mt-10">
           <button
             @click="isOpen = false"
             class="px-4 py-2 hover:bg-gray-200 rounded-full"
+            :disabled="loadingSubmit"
           >
             Cancel
           </button>
@@ -99,8 +116,9 @@ const submit = handleSubmit((formValues) => {
           <button
             @click="submit"
             class="bg-primary text-white px-4 py-2 rounded-md"
+            :disabled="loadingSubmit"
           >
-            Send Invite
+            {{ loadingSubmit ? "Sending..." : "Send Invite" }}
           </button>
         </div>
       </div>

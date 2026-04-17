@@ -3,7 +3,6 @@ definePageMeta({
   layout: "dashboard",
 });
 
-const { inviteStaff } = useInvitationService();
 const loading = ref(false);
 const isModalOpen = ref(false);
 const openInviteModal = () => {
