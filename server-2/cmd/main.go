@@ -20,8 +20,9 @@ func main() {
 
 	db.Connect()
 	db.Migrate()
-	mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
 	wsManager := ws.NewManager()
+	mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
+	mqttclient.InitMQTTSubscriber("tcp://localhost", 1883, wsManager)
 	r := api.SetupRouter(wsManager)
 	allowedOrigins := []string{"http://localhost:3000"}
 	allowedHeaders := []string{"Content-Type", "Authorization"}
