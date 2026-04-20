@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-slate-950 font-sans text-slate-200">
+  <div class="min-h-screen bg-white font-sans text-slate-200">
     <!-- Note the Navigation prefix -->
     <NavigationHeader />
 

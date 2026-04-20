@@ -1,67 +1,80 @@
 <template>
   <header
-    class="fixed top-0 w-full z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-xl"
+    class="fixed top-0 w-full z-50 border-b border-slate-200 bg-white/90 backdrop-blur-xl"
   >
-    <nav class="container mx-auto px-6 h-20 flex items-center justify-between">
-      <!-- Branding -->
+    <nav class="container mx-auto px-8 h-20 flex items-center justify-between">
       <NuxtLink to="/" class="flex items-center gap-3 group">
         <div
-          class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform rounded-full"
+          class="relative w-11 h-11 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-500 p-[2px] transition-all duration-300 group-hover:scale-105"
         >
-          <img
-            src="/assets/images/image.png"
-            alt="RoboCare Logo"
-            class="w-10 h-10 object-contain rounded-full"
-          />
+          <div
+            class="w-full h-full bg-white rounded-full flex items-center justify-center"
+          >
+            <img
+              src="/assets/images/image.png"
+              alt="RoboCare Logo"
+              class="w-9 h-9 object-contain rounded-full"
+            />
+          </div>
         </div>
-        <div class="flex flex-col">
-          <span class="text-white font-bold tracking-tight text-lg"
-            >RoboCare Platform
+
+        <div class="flex flex-col leading-tight">
+          <span
+            class="text-slate-900 font-semibold tracking-tight text-lg group-hover:text-cyan-600 transition-colors"
+          >
+            RoboCare Platform
           </span>
           <span
-            class="text-slate-500 text-[10px] font-bold tracking-[0.2em] uppercase"
-            >UoG · Ethiopia</span
+            class="text-slate-400 text-[10px] font-medium tracking-[0.25em] uppercase"
           >
+            UoG · Ethiopia
+          </span>
         </div>
       </NuxtLink>
-
-      <!-- Navigation Links -->
       <div
-        class="hidden lg:flex items-center gap-10 text-sm font-semibold text-slate-400"
+        class="hidden lg:flex items-center gap-10 text-sm font-medium text-slate-500"
       >
         <NuxtLink
           to="#about"
-          class="hover:text-cyan-400 transition-colors uppercase tracking-widest"
-          >About</NuxtLink
+          class="relative hover:text-slate-900 transition-colors uppercase tracking-wider after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-cyan-500 after:transition-all hover:after:w-full"
         >
+          About
+        </NuxtLink>
+
         <NuxtLink
           to="#features"
-          class="hover:text-cyan-400 transition-colors uppercase tracking-widest"
-          >Features</NuxtLink
+          class="relative hover:text-slate-900 transition-colors uppercase tracking-wider after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-cyan-500 after:transition-all hover:after:w-full"
         >
+          Features
+        </NuxtLink>
+
         <NuxtLink
           to="#team"
-          class="hover:text-cyan-400 transition-colors uppercase tracking-widest"
-          >Team</NuxtLink
+          class="relative hover:text-slate-900 transition-colors uppercase tracking-wider after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-cyan-500 after:transition-all hover:after:w-full"
         >
+          Team
+        </NuxtLink>
+
         <NuxtLink
           to="#contact"
-          class="hover:text-cyan-400 transition-colors uppercase tracking-widest"
-          >Contact</NuxtLink
+          class="relative hover:text-slate-900 transition-colors uppercase tracking-wider after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-cyan-500 after:transition-all hover:after:w-full"
         >
+          Contact
+        </NuxtLink>
       </div>
 
       <!-- Auth Actions -->
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-4">
         <NuxtLink
           to="/login"
-          class="text-sm font-bold text-slate-300 hover:text-white transition-colors"
+          class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
         >
           Sign In
         </NuxtLink>
+
         <NuxtLink
           to="/signup"
-          class="px-6 py-2.5 bg-white hover:bg-cyan-50 text-slate-950 font-bold rounded-full text-sm transition-all shadow-xl shadow-white/5 hover:shadow-cyan-500/10"
+          class="px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 transition-all shadow-md hover:shadow-lg"
         >
           Join Project
         </NuxtLink>
