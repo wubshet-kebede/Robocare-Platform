@@ -1,80 +1,76 @@
 <template>
-  <footer class="bg-slate-950 border-t border-slate-900 pt-20 pb-10">
-    <div class="container mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-        <!-- Project Summary -->
+  <footer class="bg-white border-t border-slate-200 pt-24 pb-10">
+    <div class="container mx-auto px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
         <div class="md:col-span-5">
-          <div class="flex items-center gap-2 mb-6">
-            <div class="w-2 h-8 bg-cyan-500 rounded-full"></div>
-            <h3 class="text-white font-bold text-lg uppercase tracking-tighter">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-1.5 h-10 bg-gradient-to-b from-cyan-500 to-emerald-500 rounded-full"
+            ></div>
+            <h3 class="text-slate-900 font-semibold text-lg tracking-tight">
               IoT-Integrated SLAM Framework
             </h3>
           </div>
-          <p class="text-slate-500 text-sm leading-relaxed max-w-sm">
+
+          <p class="text-slate-600 text-sm leading-relaxed max-w-md">
             Developed by the Department of Computer Engineering to address
             manual monitoring challenges in Ethiopian hospitals through
             autonomous robotics and real-time telemetry.
           </p>
         </div>
-
-        <!-- Team Credits -->
         <div class="md:col-span-4">
           <h4
-            class="text-white text-xs font-black uppercase tracking-[0.2em] mb-6 text-cyan-500/80"
+            class="text-slate-400 text-xs font-semibold uppercase tracking-[0.25em] mb-6"
           >
             Project Developers
           </h4>
-          <ul class="grid grid-cols-1 gap-3 text-slate-400 text-sm font-medium">
-            <li class="flex items-center gap-2">
-              <span class="w-1 h-1 bg-slate-700 rounded-full"></span> Wubshet
-              Ayellew
+
+          <ul class="space-y-3 text-slate-700 text-sm">
+            <li class="flex items-center gap-3 group">
+              <span
+                class="w-1.5 h-1.5 bg-slate-300 rounded-full group-hover:bg-cyan-500 transition-colors"
+              ></span>
+              <span class="group-hover:text-slate-900 transition-colors">
+                Wubshet Ayellew
+              </span>
             </li>
-            <!-- <li class="flex items-center gap-2">
-              <span class="w-1 h-1 bg-slate-700 rounded-full"></span> Tewodros
-              Kassanew
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="w-1 h-1 bg-slate-700 rounded-full"></span> Samuel
-              Ayalew
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="w-1 h-1 bg-slate-700 rounded-full"></span> Samuel
-              Teshale
-            </li> -->
           </ul>
         </div>
-
-        <!-- Institution -->
         <div class="md:col-span-3">
           <h4
-            class="text-white text-xs font-black uppercase tracking-[0.2em] mb-6 text-cyan-500/80"
+            class="text-slate-400 text-xs font-semibold uppercase tracking-[0.25em] mb-6"
           >
             Institution
           </h4>
-          <p class="text-slate-400 text-sm leading-relaxed">
-            University of Gondar<br />
+
+          <p class="text-slate-600 text-sm leading-relaxed">
+            <span class="text-slate-900 font-medium">
+              University of Gondar </span
+            ><br />
             Institute of Technology<br />
             Gondar, Ethiopia
           </p>
         </div>
       </div>
-
-      <!-- Copyright Bar -->
       <div
-        class="pt-8 border-t border-slate-900/50 flex flex-col md:flex-row justify-between items-center gap-4"
+        class="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4"
       >
-        <p
-          class="text-slate-600 text-[10px] font-bold uppercase tracking-widest"
-        >
-          © 2026 Health Robotics Framework.
+        <p class="text-slate-500 text-[11px] font-medium tracking-wide">
+          © 2026 Health Robotics Framework. All rights reserved.
         </p>
-        <div class="flex gap-6 text-slate-500 text-xs">
-          <span class="hover:text-cyan-500 cursor-pointer transition-colors"
-            >Documentation</span
+
+        <div class="flex gap-8 text-sm text-slate-500">
+          <span
+            class="relative cursor-pointer hover:text-slate-900 transition-colors after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-cyan-500 after:transition-all hover:after:w-full"
           >
-          <span class="hover:text-cyan-500 cursor-pointer transition-colors"
-            >Simulation Logs</span
+            Documentation
+          </span>
+
+          <span
+            class="relative cursor-pointer hover:text-slate-900 transition-colors after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-cyan-500 after:transition-all hover:after:w-full"
           >
+            Simulation Logs
+          </span>
         </div>
       </div>
     </div>
