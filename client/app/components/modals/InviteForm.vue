@@ -103,7 +103,6 @@ const submit = handleSubmit(async (formValues) => {
           </template>
         </UiListSelect>
 
-        <
         <div class="flex justify-end gap-6 mt-10">
           <button
             @click="isOpen = false"

@@ -126,10 +126,13 @@
             <div
               class="flex-1 bg-slate-100 rounded-2xl border border-slate-200 p-2 hidden md:block"
             >
-              <div
-                class="aspect-video bg-white rounded-lg flex items-center justify-center text-slate-400 text-xs italic"
-              >
-                [ Camera Stream Preview ]
+              <div class="aspect-video rounded-lg overflow-hidden relative">
+                <iframe
+                  src="https://www.loom.com/embed/834a7b10d2ad41b4a076a688ea3b1c99"
+                  class="w-full h-full"
+                  frameborder="0"
+                  allowfullscreen
+                ></iframe>
               </div>
             </div>
           </div>

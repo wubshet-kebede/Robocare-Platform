@@ -21,8 +21,8 @@ func (m *Manager) AddClient(c *Client) {
 	defer m.mu.Unlock()
 
 	m.clients[c] = true
-	log.Printf("Client connected → hospital=%s patient=%s",
-		c.HospitalID, c.PatientID)
+	log.Printf("Client connected → hospital=%s",
+		c.HospitalID)
 }
 
 func (m *Manager) RemoveClient(c *Client) {
@@ -31,10 +31,10 @@ func (m *Manager) RemoveClient(c *Client) {
 
 	delete(m.clients, c)
 	close(c.Send) 
-	log.Printf("Client disconnected → hospital=%s patient=%s",
-		c.HospitalID, c.PatientID)
+	log.Printf("Client disconnected → hospital=%s ",
+		c.HospitalID, )
 }
-func (m *Manager) BroadcastVitals(hospitalID string, patientID string, data []byte) {
+func (m *Manager) BroadcastVitals(hospitalID string, data []byte) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -44,12 +44,6 @@ func (m *Manager) BroadcastVitals(hospitalID string, patientID string, data []by
 		if client.HospitalID != hospitalID {
 			continue
 		}
-
-	
-		if client.PatientID != "" && client.PatientID != patientID {
-			continue
-		}
-
 		select {
        case client.Send <- data:
 
