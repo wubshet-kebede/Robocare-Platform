@@ -3,7 +3,10 @@ definePageMeta({
   layout: "dashboard",
 });
 import { Heart, Activity, Thermometer, Droplets } from "lucide-vue-next";
-
+const user = useAuthUser();
+const hospitalID = user.value?.hospital.id;
+const { vitalsMap, status } = useVitalsSocket(hospitalID);
+console.log("the value of the vitla map is ", vitalsMap.value);
 const patientData = [
   {
     initials: "MC",
@@ -166,6 +169,44 @@ const patientData = [
     ],
   },
 ];
+const livePatients = computed(() => {
+  return patientData.map((patient) => {
+    const live = vitalsMap.value[patient.id];
+    console.log("the value of the live is ", live);
+
+    if (!live) return patient;
+
+    return {
+      ...patient,
+      vitals: patient.vitals.map((v) => {
+        if (v.label === "Heart Rate") {
+          return {
+            ...v,
+            value: live.heart_rate ?? v.value,
+            trend: live.heart_rate > 100 ? "up" : "down",
+          };
+        }
+
+        if (v.label === "SpO2") {
+          return {
+            ...v,
+            value: live.spo2 ?? v.value,
+            trend: live.spo2 < 95 ? "down" : "up",
+          };
+        }
+
+        if (v.label === "Temperature") {
+          return {
+            ...v,
+            value: live.temperature ?? v.value,
+          };
+        }
+
+        return v;
+      }),
+    };
+  });
+});
 </script>
 
 <template>
@@ -177,6 +218,7 @@ const patientData = [
       <p class="mt-1 text-sm text-muted-foreground">
         Real-time patient monitoring
       </p>
+      <p>WS Status: {{ status }}</p>
     </div>
     <div
       class="inline-flex items-center rounded-full border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-50 dark:text-secondary-foreground w-fit gap-1.5 px-3 py-1 text-xs"
@@ -188,7 +230,7 @@ const patientData = [
   </div>
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
     <UiPatientVitals
-      v-for="patient in patientData"
+      v-for="patient in livePatients"
       :key="patient.name"
       :patient="patient"
     />

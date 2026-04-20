@@ -149,7 +149,7 @@ onMounted(() => {
         :placeholder="props.placeholder || 'Select'"
         :name="props.name"
         :id="id"
-        class="block w-full pr-10 focus:outline-none md:text-base text-sm rounded-md dark:bg-secondary-hover dark:text-white"
+        class="block w-full pr-10 focus:outline-none md:text-base text-sm rounded-md dark:text-white"
         :class="[
           errorMessage
             ? 'focus:ring-red-500 focus:border-red-500 hover:border-red-500 border-red-500 '
@@ -187,28 +187,28 @@ onMounted(() => {
     </div>
     <ul
       v-show="show"
-      class="absolute z-50 overflow-y-scroll overflow-x-hidden w-full bg-white dark:bg-secondary-hover border border-gray-300 shadow max-h-56 h-auto rounded-md text-base"
+      class="absolute z-50 overflow-y-scroll overflow-x-hidden w-full bg-white border border-gray-300 shadow max-h-56 h-auto rounded-md text-base"
       :class="listHeight ? listHeight : ''"
     >
       <li
         v-for="item in items"
         :key="item.id"
         @click="set(item)"
-        :class="{ 'bg-primaryLite dark:bg-gray-400/30': selected == item.id }"
-        class="border-b border-gray-200 select-none relative py-3 px-3 hover:bg-primary/5 text-secondary dark:text-white cursor-pointer overflow-auto"
+        :class="{ 'bg-white dark:bg-gray-400/30': selected == item.id }"
+        class="border-b border-gray-200 select-none relative py-3 px-3 dark:text-white cursor-pointer overflow-auto"
       >
         <div
           class="flex items-center justify-between"
           :class="[
             labelClass
               ? labelClass
-              : 'text-secondary dark:text-white font-normal block font-body',
+              : ' dark:text-white font-normal block font-body',
           ]"
         >
           <span class="block capitalize break-words">{{ item.name }}</span>
           <div class="flex space-x-1">
             <p
-              class="text-sm text-secondary dark:text-white font-light"
+              class="text-sm dark:text-white font-light"
               v-if="item.identifier"
             >
               {{ item.identifier }}

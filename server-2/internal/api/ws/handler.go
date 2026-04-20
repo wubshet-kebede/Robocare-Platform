@@ -23,10 +23,10 @@ func NewHandler(m *Manager) *Handler {
 
 func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 	hospitalID := r.URL.Query().Get("hospital_id")
-	patientID := r.URL.Query().Get("patient_id")
+	
 
-	if hospitalID == "" {
-		http.Error(w, "hospital_id is required", http.StatusBadRequest)
+	if hospitalID == ""{
+		http.Error(w, "hospital_id  and patient_id is required", http.StatusBadRequest)
 		return
 	}
 
@@ -38,7 +38,6 @@ func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 	client := &Client{
 		Conn:       conn,
 		HospitalID: hospitalID,
-		PatientID:  patientID,
 		Send:       make(chan []byte, 256),
 	}
 	h.manager.AddClient(client)
@@ -53,13 +52,14 @@ func (h *Handler) listen(c *Client) {
 	}()
 
 	for {
-	
 		_, _, err := c.Conn.ReadMessage()
 		if err != nil {
+			log.Println("Client disconnected:", err)
 			break
 		}
 	}
 }
+
 func (h *Handler) writePump(c *Client) {
 	defer func() {
 		c.Conn.Close()
