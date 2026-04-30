@@ -21,11 +21,23 @@ func InviteStaffHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	 hospitalID , ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
-	 if !ok  {
-		http.Error(w, "missing hosppital id", http.StatusBadRequest)
-		return
-	}
+	 hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+role, rok := r.Context().Value(middleware.RoleKey).(string)
+
+if !ok {
+    http.Error(w, "missing hospital id", http.StatusBadRequest)
+    return
+}
+
+if !rok {
+    http.Error(w, "missing role in context", http.StatusUnauthorized)
+    return
+}
+
+if role != "admin" {
+    http.Error(w, "only admin can invite staff", http.StatusForbidden)
+    return
+}
 
     invite, err := invitation.CreateStaffInvitation(hospitalID, input.Email, input.Role)
     if err != nil {
