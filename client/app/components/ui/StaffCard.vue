@@ -3,7 +3,6 @@ defineProps({
   staff: {
     type: Object,
     required: true,
-    // Expecting: { name, role, department, phone, email, rating, exp, shift, status }
   },
 });
 
@@ -15,6 +14,7 @@ const getStatusClasses = (status) => {
   };
   return statusMap[status] || "bg-gray-100 text-gray-600";
 };
+const emits = defineEmits(["view"]);
 </script>
 
 <template>
@@ -72,6 +72,11 @@ const getStatusClasses = (status) => {
       <div class="flex items-center gap-1">
         <Icon name="lucide:clock" class="h-4 w-4" />
         <span>{{ staff.shift }}</span>
+      </div>
+      <div>
+        <button @click="emits('view', staff)">
+          <Icon name="grommet-icons:view" class="px-2 py-2" />
+        </button>
       </div>
     </div>
   </div>
