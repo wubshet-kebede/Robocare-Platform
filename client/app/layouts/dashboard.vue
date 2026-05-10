@@ -35,7 +35,7 @@ const navSections = [
     items: [
       {
         name: "Patient Overview",
-        href: "/patients",
+        href: "/patient_overview",
         icon: "material-symbols:stethoscope",
       },
       {

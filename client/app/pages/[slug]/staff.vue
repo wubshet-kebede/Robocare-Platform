@@ -94,6 +94,35 @@ const filteredStaff = computed(() => {
   if (activeTab.value === "All Staff") return staffList.value;
   return staffList.value.filter((staff) => staff.role === activeTab.value);
 });
+const metrics = [
+  {
+    title: "Total Staff",
+    value: "186",
+    icon: "lucide:users",
+    colorTheme: "bg-rose-50 text-rose-500",
+  },
+
+  {
+    title: "On Duty",
+    value: "64",
+    icon: "lucide:user-check",
+    colorTheme: "bg-emerald-50 text-emerald-500",
+  },
+
+  {
+    title: "On Leave",
+    value: "8",
+    icon: "lucide:calendar",
+    colorTheme: "bg-amber-50 text-amber-500",
+  },
+
+  {
+    title: "Departments",
+    value: "12",
+    icon: "lucide:shield",
+    colorTheme: "bg-violet-50 text-violet-500",
+  },
+];
 </script>
 <template>
   <ModalsInviteForm v-if="isModalOpen" v-model="isModalOpen">
@@ -136,31 +165,12 @@ const filteredStaff = computed(() => {
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     <UiMetricCard
-      title="Total Staff"
-      value="186"
-      icon="lucide:users"
-      colorTheme="bg-rose-50 text-rose-500"
-    />
-
-    <UiMetricCard
-      title="On Duty"
-      value="64"
-      icon="lucide:user-check"
-      colorTheme="bg-emerald-50 text-emerald-500"
-    />
-
-    <UiMetricCard
-      title="On Leave"
-      value="8"
-      icon="lucide:calendar"
-      colorTheme="bg-amber-50 text-amber-500"
-    />
-
-    <UiMetricCard
-      title="Departments"
-      value="12"
-      icon="lucide:shield"
-      colorTheme="bg-violet-50 text-violet-500"
+      v-for="metric in metrics"
+      :key="metric.title"
+      :title="metric.title"
+      :value="metric.value"
+      :icon="metric.icon"
+      :colorTheme="metric.colorTheme"
     />
   </div>
   <div class="p-6">
