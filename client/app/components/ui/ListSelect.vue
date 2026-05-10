@@ -128,7 +128,9 @@ onMounted(() => {
         >*</span
       >
     </div>
-    <div class="relative rounded-md shadow-sm font-body">
+    <div
+      class="relative rounded-xl border bg-white shadow-sm transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 font-body"
+    >
       <div
         v-if="leadingIcon && !disabled"
         class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -149,7 +151,7 @@ onMounted(() => {
         :placeholder="props.placeholder || 'Select'"
         :name="props.name"
         :id="id"
-        class="block w-full pr-10 focus:outline-none md:text-base text-sm rounded-md dark:text-white"
+        class="block w-full py-3 pl-4 pr-10 text-sm text-gray-700 bg-transparent focus:outline-none"
         :class="[
           errorMessage
             ? 'focus:ring-red-500 focus:border-red-500 hover:border-red-500 border-red-500 '

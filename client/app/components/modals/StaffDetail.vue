@@ -5,9 +5,15 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update:modelValue"]);
+const isEditModalOpen = ref(false);
 </script>
 
 <template>
+  <ModalsEditStaff
+    v-model="isEditModalOpen"
+    :staff="staff"
+    @save="handleSave"
+  />
   <ModalsModal
     :model-value="modelValue"
     @update:modelValue="emits('update:modelValue', $event)"
@@ -65,6 +71,16 @@ const emits = defineEmits(["update:modelValue"]);
             <p class="text-sm text-gray-500">Experience</p>
             <p class="font-medium">{{ staff.exp }} years</p>
           </div>
+        </div>
+        <div class="mt-8 flex justify-end">
+          <button
+            @click="isEditModalOpen = true"
+            class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90"
+          >
+            <Icon name="lucide:square-pen" class="h-4 w-4" />
+
+            Edit Staff
+          </button>
         </div>
       </div>
     </template>
