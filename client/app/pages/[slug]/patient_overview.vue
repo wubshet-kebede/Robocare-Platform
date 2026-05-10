@@ -120,4 +120,7 @@ const metrics = [
       </div>
     </div>
   </div>
+  <div class="p-6">
+    <PatientList />
+  </div>
 </template>
