@@ -8,6 +8,14 @@ const isModalOpen = ref(false);
 const openInviteModal = () => {
   isModalOpen.value = true;
 };
+const selectedStaff = ref(null);
+const isStaffDetailOpen = ref(false);
+
+const openStaffDetail = (staff) => {
+  console.log("Viewing staff:", staff);
+  selectedStaff.value = staff;
+  isStaffDetailOpen.value = true;
+};
 // const submit = handleSubmit(async (values) => {
 //   console.log("Form values:", values);
 //   try {
@@ -90,6 +98,11 @@ const filteredStaff = computed(() => {
 <template>
   <ModalsInviteForm v-if="isModalOpen" v-model="isModalOpen">
   </ModalsInviteForm>
+  <ModalsStaffDetail
+    v-if="selectedStaff"
+    v-model="isStaffDetailOpen"
+    :staff="selectedStaff"
+  />
   <div
     class="mb-6 flex flex-col gap-4 sm:flex-row items-center justify-between"
   >
@@ -180,6 +193,7 @@ const filteredStaff = computed(() => {
         v-for="person in filteredStaff"
         :key="person.id"
         :staff="person"
+        @view="openStaffDetail"
       />
     </div>
 
