@@ -25,3 +25,17 @@ func  GetUserWithHospital(userID uuid.UUID) (*model.User, *model.Hospital, error
 
 	return &user, &hospital, nil
 }
+func GetStaffByHospital(hospitalID uuid.UUID) ([]model.User, error) {
+	var staff []model.User
+
+	err := db.DB.
+		Where("hospital_id = ?", hospitalID).
+		Find(&staff).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return staff, nil
+}

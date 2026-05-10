@@ -40,3 +40,30 @@ func UpdateStaffHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(updatedUser)
 }
+func GetStaffHandler(w http.ResponseWriter, r *http.Request) {
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+	if !ok {
+		http.Error(w, "missing hospital id", http.StatusUnauthorized)
+		return
+	}
+
+	role, ok := r.Context().Value(middleware.RoleKey).(string)
+	if !ok {
+		http.Error(w, "missing role", http.StatusUnauthorized)
+		return
+	}
+
+	if role != "admin" {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	staff, err := user.GetHospitalStaff(hospitalID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(staff)
+}

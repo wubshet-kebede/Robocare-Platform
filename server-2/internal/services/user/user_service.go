@@ -4,8 +4,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/features"
-	"github.com/wubshet-kebede/robocare-platform/server-2/internal/utils"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/user"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/utils"
 )
 
 func CreateUser(user model.User, password string) (model.User, error) {
@@ -76,7 +76,9 @@ func  GetMe(userID uuid.UUID) (*model.MeResponse, error) {
 		},
 	}, nil
 }
-
+func GetHospitalStaff(hospitalID uuid.UUID) ([]model.User, error) {
+	return user.GetStaffByHospital(hospitalID)
+}
 
 
 
