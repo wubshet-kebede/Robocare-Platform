@@ -40,8 +40,13 @@ const metrics = [
     colorTheme: "bg-violet-50 text-violet-500",
   },
 ];
+const isModalOpen = ref(false);
 </script>
 <template>
+  <ModalsPatientRegistration
+    v-if="isModalOpen"
+    v-model="isModalOpen"
+  ></ModalsPatientRegistration>
   <div
     class="mb-6 flex flex-col gap-4 sm:flex-row items-center justify-between"
   >
@@ -65,7 +70,7 @@ const metrics = [
       </div>
       <button
         type="button"
-        @click="openInviteModal"
+        @click="isModalOpen = true"
         class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
       >
         <Icon name="lucide:plus" class="h-3.5 w-3.5" />
