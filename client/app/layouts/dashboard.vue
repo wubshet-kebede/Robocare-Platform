@@ -71,8 +71,8 @@ const navSections = [
     icon: "material-symbols-light:chevron-right-rounded",
     items: [
       {
-        name: "Telemedicine",
-        href: "/telemedicine",
+        name: "Telepresence",
+        href: "/telepresence",
         icon: "lucide:video",
       },
       {
