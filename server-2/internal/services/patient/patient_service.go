@@ -9,7 +9,6 @@ func CreatePatient(newPatient model.Patient) (*model.Patient, error){
 	patient, err := patient.CreatePatient(newPatient)
 	return patient, err
 }
-func GetPatients(hospitalID uuid.UUID) ([]model.Patient, error) {
-	patients, err := patient.GetPatients(hospitalID)
-	return patients, err
+func GetPatientsWithAdmissions(hospitalID uuid.UUID) ([]model.PatientWithAdmission, error) {
+	return patient.GetPatientsWithAdmissions(hospitalID)
 }

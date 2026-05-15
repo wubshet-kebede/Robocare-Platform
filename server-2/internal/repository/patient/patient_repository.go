@@ -39,7 +39,7 @@ func GetPatientByID(id uuid.UUID) (*model.Patient, error) {
 
     return &patient, nil
 }
-func GetPatients(hospitalID uuid.UUID) ([]model.Patient, error) {
+func GetPatientsWithAdmissions(hospitalID uuid.UUID) ([]model.PatientWithAdmission, error) {
 	var patients []model.Patient
 
 	err := db.DB.
@@ -50,5 +50,31 @@ func GetPatients(hospitalID uuid.UUID) ([]model.Patient, error) {
 		return nil, err
 	}
 
-	return patients, nil
+	var response []model.PatientWithAdmission
+
+	for _, patient := range patients {
+
+		var admission model.Admission
+
+		err := db.DB.
+			Where("patient_id = ? AND is_active = ?", patient.ID, true).
+			First(&admission).Error
+
+		if err != nil {
+
+			response = append(response, model.PatientWithAdmission{
+				Patient:         patient,
+				ActiveAdmission: nil,
+			})
+
+			continue
+		}
+
+		response = append(response, model.PatientWithAdmission{
+			Patient:         patient,
+			ActiveAdmission: &admission,
+		})
+	}
+
+	return response, nil
 }

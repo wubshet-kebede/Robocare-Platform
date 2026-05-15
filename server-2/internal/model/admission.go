@@ -45,3 +45,12 @@ type Admission struct {
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
+type CreateAdmissionRequest struct {
+	PatientID          uuid.UUID `json:"patient_id"`
+	AssignedDoctorID   uuid.UUID `json:"assigned_doctor_id"`
+	RoomID             uuid.UUID `json:"room_id"`
+	BedNumber          string    `json:"bed_number"`
+	Diagnosis          string    `json:"diagnosis"`
+	ReasonForAdmission string    `json:"reason_for_admission"`
+	Urgency            string    `json:"urgency"`
+}
