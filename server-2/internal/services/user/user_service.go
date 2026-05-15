@@ -79,7 +79,9 @@ func  GetMe(userID uuid.UUID) (*model.MeResponse, error) {
 func GetHospitalStaff(hospitalID uuid.UUID) ([]model.User, error) {
 	return user.GetStaffByHospital(hospitalID)
 }
-
+func GetAssignableStaff(hospitalID uuid.UUID) ([]model.User, error) {
+	return user.GetAssignableStaffRepository(hospitalID)
+}
 
 
 

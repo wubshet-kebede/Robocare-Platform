@@ -39,3 +39,18 @@ func GetStaffByHospital(hospitalID uuid.UUID) ([]model.User, error) {
 
 	return staff, nil
 }
+func GetAssignableStaffRepository(hospitalID uuid.UUID) ([]model.User, error) {
+	var staff []model.User
+
+	err := db.DB.
+		Where("hospital_id = ?", hospitalID).
+		Where("role NOT IN ?", []string{"admin", "receptionist"}).
+		Find(&staff).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return staff, nil
+}

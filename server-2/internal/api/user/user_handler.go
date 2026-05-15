@@ -67,3 +67,31 @@ func GetStaffHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(staff)
 }
+func GetAssignableStaffHandler(w http.ResponseWriter, r *http.Request) {
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+	if !ok {
+		http.Error(w, "missing hospital id", http.StatusUnauthorized)
+		return
+	}
+
+	role, ok := r.Context().Value(middleware.RoleKey).(string)
+	if !ok {
+		http.Error(w, "missing role", http.StatusUnauthorized)
+		return
+	}
+
+	
+	if role != "admin" && role != "receptionist" {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	staff, err := user.GetAssignableStaff(hospitalID)
+	if err != nil {
+		http.Error(w, "failed to fetch staff", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(staff)
+}
