@@ -12,6 +12,11 @@ export const usePatientService = () => {
       method: "GET",
     });
   };
-
-  return { registerPatient, fetchPatients };
+  const admitPatient = (patientId: string) => {
+    return $api("/admit-patient", {
+      method: "POST",
+      body: { patient_id: patientId },
+    });
+  };
+  return { registerPatient, fetchPatients, admitPatient };
 };
