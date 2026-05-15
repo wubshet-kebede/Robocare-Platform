@@ -35,3 +35,24 @@ func CreatePatientHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(newPatient)
 }
+func GetPatientHandler(w http.ResponseWriter, r*http.Request){
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+	role, Rok := r.Context().Value(middleware.RoleKey).(string)
+	
+	if !ok || !Rok  {
+		http.Error(w, "missing hospital_id, role, or user_id", http.StatusBadRequest)
+		return
+	}
+	if role != "receptionist" {
+		http.Error(w, "forbidden: only receptionists can view patients", http.StatusForbidden)
+		return
+	}
+	patients, err := patient.GetPatients(hospitalID)
+    if err != nil {
+        http.Error(w, "Failed to fetch patients", http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(patients)
+}

@@ -2,11 +2,16 @@ export const usePatientService = () => {
   const { $api } = useNuxtApp();
 
   const registerPatient = (data: Record<string, any>) => {
-    return $api("/patients", {
+    return $api("/register-patient", {
       method: "POST",
       body: data,
     });
   };
+  const fetchPatients = () => {
+    return $api("/fetch-patients", {
+      method: "GET",
+    });
+  };
 
-  return { registerPatient };
+  return { registerPatient, fetchPatients };
 };
