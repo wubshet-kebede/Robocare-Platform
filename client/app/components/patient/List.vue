@@ -1,128 +1,107 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const activeTab = ref("all");
-
+const activeTab = ref("registered");
 const patients = [
   {
     id: "P-1001",
-    name: "Margaret Chen",
+    fullName: "Margaret Chen",
     initials: "MC",
-    status: "active",
-    condition: "Type 2 Diabetes",
+
     age: 64,
     gender: "Female",
-    doctor: "Dr. Sarah Mitchell",
-    room: "204-A",
+
     bloodType: "A+",
     allergies: "Penicillin",
-    emergencyContact: "David Chen",
+
     phone: "(555) 234-5678",
+    emergencyContact: "David Chen",
+
+    admission: {
+      status: "active",
+      urgency: "normal",
+      diagnosis: "Type 2 Diabetes",
+      assignedDoctor: "Dr. Sarah Mitchell",
+      room: "204-A",
+      bed: "B-12",
+    },
   },
 
   {
     id: "P-1002",
-    name: "James O'Sullivan",
+    fullName: "James O'Sullivan",
     initials: "JO",
-    status: "critical",
-    condition: "Hypertension",
+
     age: 72,
     gender: "Male",
-    doctor: "Dr. Robert Kim",
-    room: "ICU-3",
+
     bloodType: "B+",
     allergies: "None",
-    emergencyContact: "Emma Sullivan",
+
     phone: "(555) 888-2222",
+    emergencyContact: "Emma Sullivan",
+
+    admission: {
+      status: "critical",
+      urgency: "high",
+      diagnosis: "Hypertension",
+      assignedDoctor: "Dr. Robert Kim",
+      room: "ICU-3",
+      bed: "ICU-02",
+    },
   },
 
   {
     id: "P-1003",
-    name: "Aisha Rahman",
+    fullName: "Aisha Rahman",
     initials: "AR",
-    status: "recovering",
-    condition: "Post-op Recovery (Knee)",
+
     age: 45,
     gender: "Female",
-    doctor: "Dr. Michael Torres",
-    room: "312-B",
+
     bloodType: "O+",
     allergies: "Latex",
-    emergencyContact: "Ahmed Rahman",
+
     phone: "(555) 123-9876",
+    emergencyContact: "Ahmed Rahman",
+
+    admission: null,
   },
 
   {
     id: "P-1004",
-    name: "Robert Nakamura",
+    fullName: "Robert Nakamura",
     initials: "RN",
-    status: "critical",
-    condition: "Chronic Heart Failure",
+
     age: 58,
     gender: "Male",
-    doctor: "Dr. Sarah Mitchell",
-    room: "ICU-7",
+
     bloodType: "AB+",
     allergies: "Aspirin",
-    emergencyContact: "Linda Nakamura",
+
     phone: "(555) 555-2222",
-  },
+    emergencyContact: "Linda Nakamura",
 
-  {
-    id: "P-1005",
-    name: "Elena Vasquez",
-    initials: "EV",
-    status: "active",
-    condition: "Pneumonia",
-    age: 34,
-    gender: "Female",
-    doctor: "Dr. Angela Park",
-    room: "118-A",
-    bloodType: "A-",
-    allergies: "None",
-    emergencyContact: "Carlos Vasquez",
-    phone: "(555) 777-9999",
-  },
-
-  {
-    id: "P-1006",
-    name: "Thomas Bergstrom",
-    initials: "TB",
-    status: "active",
-    condition: "Atrial Fibrillation",
-    age: 81,
-    gender: "Male",
-    doctor: "Dr. Robert Kim",
-    room: "205-C",
-    bloodType: "O-",
-    allergies: "Sulfa Drugs",
-    emergencyContact: "Mia Bergstrom",
-    phone: "(555) 444-1212",
-  },
-
-  {
-    id: "P-1007",
-    name: "Priya Patel",
-    initials: "PP",
-    status: "discharged",
-    condition: "Appendectomy Recovery",
-    age: 29,
-    gender: "Female",
-    doctor: "Dr. Michael Torres",
-    room: "—",
-    bloodType: "B-",
-    allergies: "None",
-    emergencyContact: "Raj Patel",
-    phone: "(555) 222-3333",
+    admission: {
+      status: "discharged",
+      urgency: "normal",
+      diagnosis: "Chronic Heart Failure",
+      assignedDoctor: "Dr. Sarah Mitchell",
+      room: "ICU-7",
+      bed: "ICU-08",
+    },
   },
 ];
-
 const selectedPatient = ref(patients[0]);
-
 const tabs = [
   {
-    label: "All Patients",
-    value: "all",
+    label: "Registered",
+    value: "registered",
+  },
+
+  {
+    label: "Admitted",
+    value: "admitted",
   },
 
   {
@@ -135,23 +114,56 @@ const tabs = [
     value: "discharged",
   },
 ];
-
 const filteredPatients = computed(() => {
-  if (activeTab.value === "all") {
-    return patients;
+  if (activeTab.value === "registered") {
+    return patients.filter((patient) => patient.admission === null);
+  }
+  if (activeTab.value === "admitted") {
+    return patients.filter(
+      (patient) =>
+        patient.admission && patient.admission.status !== "discharged",
+    );
   }
 
-  return patients.filter((patient) => patient.status === activeTab.value);
+  if (activeTab.value === "critical") {
+    return patients.filter(
+      (patient) => patient.admission?.status === "critical",
+    );
+  }
+  if (activeTab.value === "discharged") {
+    return patients.filter(
+      (patient) => patient.admission?.status === "discharged",
+    );
+  }
+
+  return patients;
 });
-
 const getCount = (status) => {
-  if (status === "all") {
-    return patients.length;
+  if (status === "registered") {
+    return patients.filter((patient) => patient.admission === null).length;
   }
 
-  return patients.filter((patient) => patient.status === status).length;
-};
+  if (status === "admitted") {
+    return patients.filter(
+      (patient) =>
+        patient.admission && patient.admission.status !== "discharged",
+    ).length;
+  }
 
+  if (status === "critical") {
+    return patients.filter(
+      (patient) => patient.admission?.status === "critical",
+    ).length;
+  }
+
+  if (status === "discharged") {
+    return patients.filter(
+      (patient) => patient.admission?.status === "discharged",
+    ).length;
+  }
+
+  return 0;
+};
 const statusClasses = {
   active: "bg-green-100 text-green-700",
 
@@ -160,10 +172,26 @@ const statusClasses = {
   recovering: "bg-yellow-100 text-yellow-700",
 
   discharged: "bg-gray-100 text-gray-700",
+
+  registered: "bg-blue-100 text-blue-700",
+};
+const isAdmissionModalOpen = ref(false);
+
+// const selectedPatient = ref(null);
+
+const openAdmissionModal = (patient) => {
+  selectedPatient.value = patient;
+
+  isAdmissionModalOpen.value = true;
 };
 </script>
 
 <template>
+  <ModalsPatientAdmission
+    v-if="selectedPatient"
+    v-model="isAdmissionModalOpen"
+    :patient="selectedPatient"
+  />
   <div class="bg-[#faf7f7] min-h-screen p-6">
     <div class="grid grid-cols-12 gap-6">
       <div class="col-span-8 space-y-4">
@@ -205,35 +233,40 @@ const statusClasses = {
           "
         >
           <div class="flex items-center justify-between">
-            <!-- LEFT -->
             <div class="flex items-center gap-4">
-              <!-- AVATAR -->
               <div
                 class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3eeee] text-sm font-bold"
               >
                 {{ patient.initials }}
               </div>
+
               <div>
                 <div class="flex items-center gap-2">
                   <h3 class="font-semibold text-xl">
-                    {{ patient.name }}
+                    {{ patient.fullName }}
                   </h3>
-
                   <span
+                    v-if="patient.admission"
                     class="rounded-full px-3 py-1 text-xs font-medium capitalize"
-                    :class="statusClasses[patient.status]"
+                    :class="statusClasses[patient.admission.status]"
                   >
-                    {{ patient.status }}
+                    {{ patient.admission.status }}
+                  </span>
+                  <span
+                    v-else
+                    class="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium"
+                  >
+                    registered
                   </span>
                 </div>
-
-                <p class="text-sm text-gray-500">
-                  {{ patient.condition }}
+                <p v-if="patient.admission" class="text-sm text-gray-500">
+                  {{ patient.admission.diagnosis }}
+                </p>
+                <p v-else class="text-sm text-gray-400">
+                  Patient not admitted yet
                 </p>
               </div>
             </div>
-
-            <!-- RIGHT -->
             <div class="flex items-center gap-10 text-sm">
               <div>
                 <p class="text-gray-400 text-xs">Age</p>
@@ -242,23 +275,28 @@ const statusClasses = {
                   {{ patient.age }} · {{ patient.gender }}
                 </p>
               </div>
-
-              <div>
+              <div v-if="patient.admission">
                 <p class="text-gray-400 text-xs">Doctor</p>
 
                 <p class="font-semibold">
-                  {{ patient.doctor }}
+                  {{ patient.admission.assignedDoctor }}
                 </p>
               </div>
-
-              <div>
+              <div v-if="patient.admission">
                 <p class="text-gray-400 text-xs">Room</p>
 
                 <p class="font-semibold">
-                  {{ patient.room }}
+                  {{ patient.admission.room }}
                 </p>
               </div>
-
+              <div v-else>
+                <button
+                  class="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:opacity-90"
+                  @click="openAdmissionModal(patient)"
+                >
+                  Admit Patient
+                </button>
+              </div>
               <div>
                 <p class="text-gray-400 text-xs">ID</p>
 
@@ -281,12 +319,11 @@ const statusClasses = {
 
             <div>
               <h2 class="text-2xl font-bold">
-                {{ selectedPatient.name }}
+                {{ selectedPatient.fullName }}
               </h2>
 
               <p class="text-sm text-gray-500">
                 {{ selectedPatient.id }}
-                · Room {{ selectedPatient.room }}
               </p>
             </div>
           </div>
@@ -317,23 +354,75 @@ const statusClasses = {
 
             <div>
               <p class="text-sm text-gray-400">Status</p>
-
               <span
+                v-if="selectedPatient.admission"
                 class="rounded-full px-3 py-1 text-xs font-medium capitalize"
-                :class="statusClasses[selectedPatient.status]"
+                :class="statusClasses[selectedPatient.admission.status]"
               >
-                {{ selectedPatient.status }}
+                {{ selectedPatient.admission.status }}
+              </span>
+              <span
+                v-else
+                class="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium"
+              >
+                registered
               </span>
             </div>
           </div>
+          <template v-if="selectedPatient.admission">
+            <div class="mt-8">
+              <p class="text-sm text-gray-400">Diagnosis</p>
 
-          <div class="mt-8">
-            <p class="text-sm text-gray-400">Diagnosis</p>
+              <p class="mt-1 text-lg font-semibold">
+                {{ selectedPatient.admission.diagnosis }}
+              </p>
+            </div>
+            <div class="mt-8">
+              <p class="text-sm text-gray-400">Assigned Doctor</p>
 
-            <p class="mt-1 text-lg font-semibold">
-              {{ selectedPatient.condition }}
-            </p>
-          </div>
+              <p class="mt-1 font-semibold">
+                {{ selectedPatient.admission.assignedDoctor }}
+              </p>
+            </div>
+            <div class="mt-8">
+              <p class="text-sm text-gray-400">Room</p>
+
+              <p class="mt-1 font-semibold">
+                {{ selectedPatient.admission.room }}
+              </p>
+            </div>
+            <div class="mt-8">
+              <p class="text-sm text-gray-400">Bed</p>
+
+              <p class="mt-1 font-semibold">
+                {{ selectedPatient.admission.bed }}
+              </p>
+            </div>
+          </template>
+          <template v-else>
+            <div
+              class="mt-8 rounded-2xl border border-dashed border-gray-300 p-6 text-center"
+            >
+              <div
+                class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50"
+              >
+                <Icon name="lucide:bed-single" class="h-6 w-6 text-blue-600" />
+              </div>
+
+              <h3 class="text-lg font-semibold">Patient Not Admitted</h3>
+
+              <p class="mt-2 text-sm text-gray-500">
+                This patient is registered but has not yet been admitted.
+              </p>
+
+              <button
+                @click="openAdmissionModal(patient)"
+                class="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-medium text-white hover:opacity-90"
+              >
+                Admit Patient
+              </button>
+            </div>
+          </template>
           <div class="mt-8">
             <p class="text-sm text-gray-400">Allergies</p>
 
