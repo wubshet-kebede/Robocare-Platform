@@ -3,19 +3,7 @@ definePageMeta({
   layout: "dashboard",
 });
 const { fetchPatients } = usePatientService();
-const loadingRoles = ref(false);
-const getPatients = async () => {
-  try {
-    loadingRoles.value = true;
 
-    const res = await fetchPatients();
-
-    console.log(res);
-  } finally {
-    loadingRoles.value = false;
-  }
-};
-onMounted(getPatients);
 const metrics = [
   {
     title: "Total Patients",

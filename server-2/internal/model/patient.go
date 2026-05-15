@@ -23,8 +23,8 @@ type Patient struct {
 	DateOfBirth time.Time `gorm:"not null" json:"date_of_birth"`
 	Gender      string    `gorm:"type:text" json:"gender"`
 
-	Email  string `gorm:"size:255;uniqueIndex;not null" json:"email"`
-	Phone  string `gorm:"size:20;uniqueIndex;not null" json:"phone"`
+	Email  string `gorm:"uniqueIndex:idx_hospital_email;not null" json:"email"`
+	Phone  string `gorm:"size:20;uniqueIndex:idx_hospital_phone;not null" json:"phone"`
 	Address string `gorm:"size:255" json:"address"`
 
 	EmergencyContactName  string `gorm:"type:text" json:"emergency_contact_name"`
