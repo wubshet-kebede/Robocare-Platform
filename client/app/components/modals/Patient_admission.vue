@@ -83,18 +83,13 @@ const submit = handleSubmit(async (formValues) => {
 
 const urgencyOptions = [
   {
-    id: "Low",
-    name: "Low",
-  },
-
-  {
     id: "Normal",
     name: "Normal",
   },
 
   {
-    id: "High",
-    name: "High",
+    id: "Urgent",
+    name: "Urgent",
   },
 
   {
@@ -115,11 +110,14 @@ const statusOptions = [
   },
 
   {
-    id: "recovering",
-    name: "Recovering",
+    id: "warning",
+    name: "Warning",
+  },
+  {
+    id: "unknown",
+    name: "Unknown",
   },
 ];
-
 const admissionStatusOptions = [
   {
     id: "Waiting",
@@ -129,6 +127,15 @@ const admissionStatusOptions = [
   {
     id: "Admitted",
     name: "Admitted",
+  },
+  {
+    id: "Discharged",
+    name: "Discharged",
+  },
+
+  {
+    id: "Deceased",
+    name: "Deceased",
   },
 ];
 

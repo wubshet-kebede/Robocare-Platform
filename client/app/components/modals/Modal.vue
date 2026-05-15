@@ -81,7 +81,7 @@ const open = computed({
                 tabindex="0"
                 class="relative transform rounded-lg bg-white dark:bg-gray-700 px-4 max-md:px-0 pb-4 pt-5 text-left shadow-xl transition-all p-6 w-full my-8 max-md:my-8 max-md:w-[90%] max-md:p-6"
               >
-                <div class="mb-6 flex items-start justify-between">
+                <div class="flex items-start justify-between">
                   <DialogTitle
                     as="h3"
                     class="flex-1 text-base font-semibold leading-6 text-gray-900 dark:text-secondary-lite"

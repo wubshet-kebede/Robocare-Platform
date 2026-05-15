@@ -15,6 +15,7 @@ const (
 	StatusWarning  MedicalStatus = "warning"
 	StatusCritical MedicalStatus = "critical"
 )
+
 type Patient struct {
 	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	HospitalID  uuid.UUID `gorm:"type:uuid;not null;index" json:"hospital_id"`

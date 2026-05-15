@@ -2,6 +2,32 @@
 import { ref, computed } from "vue";
 
 const activeTab = ref("registered");
+
+const patientsnew = ref([]);
+
+const loadingPatients = ref(false);
+
+const { fetchPatients } = usePatientService();
+
+const getPatients = async () => {
+  try {
+    loadingPatients.value = true;
+
+    const response = await fetchPatients();
+
+    patientsnew.value = response;
+
+    console.log("Fetched Patients:", response);
+  } catch (error) {
+    console.log("Fetch Patients Error:", error);
+  } finally {
+    loadingPatients.value = false;
+  }
+};
+
+onMounted(() => {
+  getPatients();
+});
 const patients = [
   {
     id: "P-1001",
