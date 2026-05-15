@@ -38,3 +38,7 @@ type Patient struct {
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
+type PatientWithAdmission struct {
+    Patient         Patient     `json:"patient"`
+    ActiveAdmission *Admission  `json:"active_admission,omitempty"`
+}
