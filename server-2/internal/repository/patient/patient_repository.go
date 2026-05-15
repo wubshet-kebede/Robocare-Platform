@@ -39,3 +39,16 @@ func GetPatientByID(id uuid.UUID) (*model.Patient, error) {
 
     return &patient, nil
 }
+func GetPatients(hospitalID uuid.UUID) ([]model.Patient, error) {
+	var patients []model.Patient
+
+	err := db.DB.
+		Where("hospital_id = ?", hospitalID).
+		Find(&patients).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return patients, nil
+}
