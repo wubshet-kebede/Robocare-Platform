@@ -1,71 +1,125 @@
 <script setup>
-const isOpen = ref(true);
+import { useForm } from "vee-validate";
 
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emits = defineEmits(["update:modelValue", "success"]);
+
+const isOpen = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(value) {
+    emits("update:modelValue", value);
+  },
+});
 const loadingSubmit = ref(false);
 
-const values = ref({
-  firstName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  gender: "",
-  age: "",
-  bloodType: "",
-  status: "",
-  doctor: "",
-  room: "",
-  diagnosis: "",
-  allergies: "",
-  emergencyContact: "",
-  emergencyPhone: "",
+const { registerPatient } = usePatientService();
+
+const { handleSubmit, resetForm, values } = useForm({
+  initialValues: {
+    fullName: "",
+    dateOfBirth: "",
+    gender: "",
+    email: "",
+    phone: "",
+    address: "",
+    bloodType: "",
+    allergies: "",
+    chronicConditions: "",
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+  },
+});
+const submit = handleSubmit(async (formValues) => {
+  try {
+    loadingSubmit.value = true;
+
+    const payload = {
+      full_name: formValues.fullName,
+      date_of_birth: new Date(formValues.dateOfBirth).toISOString(),
+      gender: formValues.gender,
+
+      email: formValues.email,
+      phone: formValues.phone,
+      address: formValues.address,
+
+      blood_type: formValues.bloodType,
+      allergies: formValues.allergies,
+      chronic_conditions: formValues.chronicConditions,
+
+      emergency_contact_name: formValues.emergencyContactName,
+      emergency_contact_phone: formValues.emergencyContactPhone,
+    };
+    console.log(payload);
+    const response = await registerPatient(payload);
+
+    console.log("Patient Registered:", response);
+
+    resetForm();
+
+    isOpen.value = false;
+
+    emits("success", response);
+  } catch (error) {
+    console.log("Patient Registration Error:", error);
+  } finally {
+    loadingSubmit.value = false;
+  }
 });
 
 const genderOptions = [
   {
-    label: "Male",
-    value: "male",
+    id: "male",
+    name: "Male",
   },
 
   {
-    label: "Female",
-    value: "female",
+    id: "female",
+    name: "Female",
   },
 ];
 
 const bloodTypeOptions = [
   {
-    label: "A+",
-    value: "A+",
+    id: "A+",
+    name: "A+",
   },
 
   {
-    label: "A-",
-    value: "A-",
+    id: "A-",
+    name: "A-",
   },
 
   {
-    label: "B+",
-    value: "B+",
+    id: "B+",
+    name: "B+",
   },
 
   {
-    label: "B-",
-    value: "B-",
+    id: "B-",
+    name: "B-",
   },
 
   {
-    label: "AB+",
-    value: "AB+",
+    id: "AB+",
+    name: "AB+",
   },
 
   {
-    label: "AB-",
-    value: "AB-",
+    id: "AB-",
+    name: "AB-",
   },
 
   {
-    label: "O+",
-    value: "O+",
+    id: "O+",
+    name: "O+",
   },
 
   {
@@ -73,65 +127,6 @@ const bloodTypeOptions = [
     value: "O-",
   },
 ];
-
-const statusOptions = [
-  {
-    label: "Active",
-    value: "active",
-  },
-
-  {
-    label: "Critical",
-    value: "critical",
-  },
-
-  {
-    label: "Recovering",
-    value: "recovering",
-  },
-
-  {
-    label: "Discharged",
-    value: "discharged",
-  },
-];
-
-const doctorOptions = [
-  {
-    label: "Dr. Sarah Mitchell",
-    value: "Dr. Sarah Mitchell",
-  },
-
-  {
-    label: "Dr. Robert Kim",
-    value: "Dr. Robert Kim",
-  },
-
-  {
-    label: "Dr. Michael Torres",
-    value: "Dr. Michael Torres",
-  },
-
-  {
-    label: "Dr. Angela Park",
-    value: "Dr. Angela Park",
-  },
-];
-
-const submit = async () => {
-  loadingSubmit.value = true;
-
-  try {
-    console.log(values.value);
-
-    setTimeout(() => {
-      loadingSubmit.value = false;
-      isOpen.value = false;
-    }, 1500);
-  } catch (error) {
-    loadingSubmit.value = false;
-  }
-};
 </script>
 
 <template>
@@ -142,51 +137,73 @@ const submit = async () => {
   >
     <template #content>
       <div class="p-8 space-y-8">
-        <!-- PERSONAL INFO -->
         <div>
           <h2 class="text-xl font-semibold mb-6">Personal Information</h2>
 
           <div class="grid grid-cols-2 gap-6">
-            <!-- FIRST NAME -->
             <UiBaseInput
-              v-model="values.firstName"
-              name="firstName"
+              v-model="values.fullName"
+              name="fullName"
               rules="required"
             >
               <template #label>
                 <h1 class="text-md font-medium mb-2">
-                  First Name
+                  Full Name
                   <span class="text-red-500">*</span>
                 </h1>
               </template>
             </UiBaseInput>
-
-            <!-- LAST NAME -->
             <UiBaseInput
-              v-model="values.lastName"
-              name="lastName"
+              v-model="values.dateOfBirth"
+              name="dateOfBirth"
+              type="date"
               rules="required"
             >
               <template #label>
                 <h1 class="text-md font-medium mb-2">
-                  Last Name
+                  Date of Birth
                   <span class="text-red-500">*</span>
                 </h1>
               </template>
             </UiBaseInput>
+            <UiListSelect
+              v-model="values.gender"
+              :items="genderOptions"
+              name="gender"
+              rules="required"
+            >
+              <template #label>
+                <h1 class="text-md font-medium mb-2">Gender</h1>
+              </template>
+            </UiListSelect>
+            <UiListSelect
+              v-model="values.bloodType"
+              :items="bloodTypeOptions"
+              name="bloodType"
+              rules="required"
+            >
+              <template #label>
+                <h1 class="text-md font-medium mb-2">Blood Type</h1>
+              </template>
+            </UiListSelect>
+          </div>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold mb-6">Contact Information</h2>
 
-            <!-- EMAIL -->
+          <div class="grid grid-cols-2 gap-6">
             <UiBaseInput
               v-model="values.email"
               name="email"
               rules="required|email"
             >
               <template #label>
-                <h1 class="text-md font-medium mb-2">Email Address</h1>
+                <h1 class="text-md font-medium mb-2">
+                  Email Address
+                  <span class="text-red-500">*</span>
+                </h1>
               </template>
             </UiBaseInput>
-
-            <!-- PHONE -->
             <UiBaseInput v-model="values.phone" name="phone" rules="required">
               <template #label>
                 <h1 class="text-md font-medium mb-2">
@@ -195,135 +212,48 @@ const submit = async () => {
                 </h1>
               </template>
             </UiBaseInput>
-
-            <!-- AGE -->
-            <UiBaseInput
-              v-model="values.age"
-              name="age"
-              rules="required"
-              type="number"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Age
-                  <span class="text-red-500">*</span>
-                </h1>
-              </template>
-            </UiBaseInput>
-
-            <!-- GENDER -->
-            <UiListSelect
-              v-model="values.gender"
-              :items="genderOptions"
-              name="gender"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Gender
-                  <span class="text-red-500">*</span>
-                </h1>
-              </template>
-            </UiListSelect>
+            <div class="col-span-2">
+              <UiBaseInput
+                v-model="values.address"
+                name="address"
+                rules="required"
+              >
+                <template #label>
+                  <h1 class="text-md font-medium mb-2">
+                    Address
+                    <span class="text-red-500">*</span>
+                  </h1>
+                </template>
+              </UiBaseInput>
+            </div>
           </div>
         </div>
-
-        <!-- MEDICAL INFO -->
         <div>
           <h2 class="text-xl font-semibold mb-6">Medical Information</h2>
 
-          <div class="grid grid-cols-2 gap-6">
-            <!-- BLOOD TYPE -->
-            <UiListSelect
-              v-model="values.bloodType"
-              :items="bloodTypeOptions"
-              name="bloodType"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Blood Type
-                  <span class="text-red-500">*</span>
-                </h1>
-              </template>
-            </UiListSelect>
-
-            <!-- STATUS -->
-            <UiListSelect
-              v-model="values.status"
-              :items="statusOptions"
-              name="status"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Patient Status
-                  <span class="text-red-500">*</span>
-                </h1>
-              </template>
-            </UiListSelect>
-
-            <!-- DOCTOR -->
-            <UiListSelect
-              v-model="values.doctor"
-              :items="doctorOptions"
-              name="doctor"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Assigned Doctor
-                  <span class="text-red-500">*</span>
-                </h1>
-              </template>
-            </UiListSelect>
-
-            <!-- ROOM -->
-            <UiBaseInput v-model="values.room" name="room" rules="required">
-              <template #label>
-                <h1 class="text-md font-medium mb-2">Room Number</h1>
-              </template>
-            </UiBaseInput>
-          </div>
-        </div>
-
-        <!-- DIAGNOSIS -->
-        <div>
-          <h2 class="text-xl font-semibold mb-6">Diagnosis & Notes</h2>
-
           <div class="space-y-6">
-            <!-- DIAGNOSIS -->
-            <UiBaseInput
-              v-model="values.diagnosis"
-              name="diagnosis"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Diagnosis
-                  <span class="text-red-500">*</span>
-                </h1>
-              </template>
-            </UiBaseInput>
-
-            <!-- ALLERGIES -->
             <UiBaseInput v-model="values.allergies" name="allergies">
               <template #label>
                 <h1 class="text-md font-medium mb-2">Allergies</h1>
               </template>
             </UiBaseInput>
+            <UiBaseInput
+              v-model="values.chronicConditions"
+              name="chronicConditions"
+            >
+              <template #label>
+                <h1 class="text-md font-medium mb-2">Chronic Conditions</h1>
+              </template>
+            </UiBaseInput>
           </div>
         </div>
-
-        <!-- EMERGENCY CONTACT -->
         <div>
           <h2 class="text-xl font-semibold mb-6">Emergency Contact</h2>
 
           <div class="grid grid-cols-2 gap-6">
-            <!-- CONTACT NAME -->
             <UiBaseInput
-              v-model="values.emergencyContact"
-              name="emergencyContact"
+              v-model="values.emergencyContactName"
+              name="emergencyContactName"
               rules="required"
             >
               <template #label>
@@ -333,11 +263,9 @@ const submit = async () => {
                 </h1>
               </template>
             </UiBaseInput>
-
-            <!-- CONTACT PHONE -->
             <UiBaseInput
-              v-model="values.emergencyPhone"
-              name="emergencyPhone"
+              v-model="values.emergencyContactPhone"
+              name="emergencyContactPhone"
               rules="required"
             >
               <template #label>
@@ -349,8 +277,6 @@ const submit = async () => {
             </UiBaseInput>
           </div>
         </div>
-
-        <!-- ACTIONS -->
         <div class="flex justify-end gap-4 pt-6">
           <button
             @click="isOpen = false"
@@ -365,7 +291,7 @@ const submit = async () => {
             class="rounded-xl bg-primary px-6 py-3 text-white hover:opacity-90 transition"
             :disabled="loadingSubmit"
           >
-            {{ loadingSubmit ? "Saving Patient..." : "Register Patient" }}
+            {{ loadingSubmit ? "Registering Patient..." : "Register Patient" }}
           </button>
         </div>
       </div>
