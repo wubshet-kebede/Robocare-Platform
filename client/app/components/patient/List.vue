@@ -1,23 +1,89 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 const activeTab = ref("registered");
-
+const tabs = [
+  { label: "Registered", value: "registered" },
+  { label: "Admitted", value: "admitted" },
+  { label: "Critical", value: "critical" },
+  { label: "Discharged", value: "discharged" },
+];
 const patientsnew = ref([]);
-
 const loadingPatients = ref(false);
 
 const { fetchPatients } = usePatientService();
+const { getAssignableStaff } = useStaffService();
+
+const assignableStaff = ref([]);
+
+const isAdmissionModalOpen = ref(false);
+const selectedPatient = ref(null);
+
+const calculateAge = (dob) => {
+  const birth = new Date(dob);
+  const today = new Date();
+
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  return age;
+};
+const getInitials = (fullName) => {
+  if (!fullName) return "";
+
+  return fullName
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+};
+const formatPatients = (data) => {
+  return data.map((item) => {
+    const p = item.patient;
+    const admission = item.active_admission;
+
+    return {
+      id: p.id,
+      fullName: p.full_name,
+      initials: getInitials(p.full_name),
+      age: calculateAge(p.date_of_birth),
+      gender: p.gender,
+      bloodType: p.blood_type,
+      allergies: p.allergies,
+      phone: p.phone,
+      emergencyContact: p.emergency_contact_name,
+
+      admission: admission
+        ? {
+            status: admission.admission_status,
+            urgency: admission.urgency,
+            diagnosis: admission.diagnosis,
+            assignedDoctor: admission.assigned_doctor_id,
+            staffName: admission.staff_name,
+            room: admission.room_id,
+            bed: admission.bed_number,
+          }
+        : null,
+    };
+  });
+};
 
 const getPatients = async () => {
   try {
     loadingPatients.value = true;
 
     const response = await fetchPatients();
+    console.log("Raw Patients Data:", response);
 
-    patientsnew.value = response;
+    patientsnew.value = formatPatients(response);
 
-    console.log("Fetched Patients:", response);
+    console.log("Fetched Patients:", patientsnew.value);
   } catch (error) {
     console.log("Fetch Patients Error:", error);
   } finally {
@@ -25,190 +91,86 @@ const getPatients = async () => {
   }
 };
 
-onMounted(() => {
-  getPatients();
-});
-const patients = [
-  {
-    id: "P-1001",
-    fullName: "Margaret Chen",
-    initials: "MC",
+const fetchAssignableStaff = async () => {
+  try {
+    const response = await getAssignableStaff();
 
-    age: 64,
-    gender: "Female",
+    assignableStaff.value = response;
 
-    bloodType: "A+",
-    allergies: "Penicillin",
-
-    phone: "(555) 234-5678",
-    emergencyContact: "David Chen",
-
-    admission: {
-      status: "active",
-      urgency: "normal",
-      diagnosis: "Type 2 Diabetes",
-      assignedDoctor: "Dr. Sarah Mitchell",
-      room: "204-A",
-      bed: "B-12",
-    },
-  },
-
-  {
-    id: "P-1002",
-    fullName: "James O'Sullivan",
-    initials: "JO",
-
-    age: 72,
-    gender: "Male",
-
-    bloodType: "B+",
-    allergies: "None",
-
-    phone: "(555) 888-2222",
-    emergencyContact: "Emma Sullivan",
-
-    admission: {
-      status: "critical",
-      urgency: "high",
-      diagnosis: "Hypertension",
-      assignedDoctor: "Dr. Robert Kim",
-      room: "ICU-3",
-      bed: "ICU-02",
-    },
-  },
-
-  {
-    id: "P-1003",
-    fullName: "Aisha Rahman",
-    initials: "AR",
-
-    age: 45,
-    gender: "Female",
-
-    bloodType: "O+",
-    allergies: "Latex",
-
-    phone: "(555) 123-9876",
-    emergencyContact: "Ahmed Rahman",
-
-    admission: null,
-  },
-
-  {
-    id: "P-1004",
-    fullName: "Robert Nakamura",
-    initials: "RN",
-
-    age: 58,
-    gender: "Male",
-
-    bloodType: "AB+",
-    allergies: "Aspirin",
-
-    phone: "(555) 555-2222",
-    emergencyContact: "Linda Nakamura",
-
-    admission: {
-      status: "discharged",
-      urgency: "normal",
-      diagnosis: "Chronic Heart Failure",
-      assignedDoctor: "Dr. Sarah Mitchell",
-      room: "ICU-7",
-      bed: "ICU-08",
-    },
-  },
-];
-const selectedPatient = ref(patients[0]);
-const tabs = [
-  {
-    label: "Registered",
-    value: "registered",
-  },
-
-  {
-    label: "Admitted",
-    value: "admitted",
-  },
-
-  {
-    label: "Critical",
-    value: "critical",
-  },
-
-  {
-    label: "Discharged",
-    value: "discharged",
-  },
-];
-const filteredPatients = computed(() => {
-  if (activeTab.value === "registered") {
-    return patients.filter((patient) => patient.admission === null);
+    console.log("Assignable Staff:", response);
+  } catch (error) {
+    console.log("Fetch Assignable Staff Error:", error);
   }
+};
+const openAdmissionModal = (patient) => {
+  selectedPatient.value = patient;
+  isAdmissionModalOpen.value = true;
+};
+const filteredPatients = computed(() => {
+  console.log("patientsnew:", patientsnew.value);
+  if (activeTab.value === "registered") {
+    return patientsnew.value.filter((p) => p.admission === null);
+  }
+
   if (activeTab.value === "admitted") {
-    return patients.filter(
-      (patient) =>
-        patient.admission && patient.admission.status !== "discharged",
+    return patientsnew.value.filter(
+      (p) => p.admission && p.admission.status !== "discharged",
     );
   }
 
   if (activeTab.value === "critical") {
-    return patients.filter(
-      (patient) => patient.admission?.status === "critical",
-    );
+    return patientsnew.value.filter((p) => p.admission?.status === "critical");
   }
+
   if (activeTab.value === "discharged") {
-    return patients.filter(
-      (patient) => patient.admission?.status === "discharged",
+    return patientsnew.value.filter(
+      (p) => p.admission?.status === "discharged",
     );
   }
 
-  return patients;
+  return patientsnew.value;
 });
+console.log("Filtered Patients:", filteredPatients.value);
 const getCount = (status) => {
   if (status === "registered") {
-    return patients.filter((patient) => patient.admission === null).length;
+    return patientsnew.value.filter((p) => p.admission === null).length;
   }
 
   if (status === "admitted") {
-    return patients.filter(
-      (patient) =>
-        patient.admission && patient.admission.status !== "discharged",
+    return patientsnew.value.filter(
+      (p) => p.admission && p.admission.status !== "discharged",
     ).length;
   }
 
   if (status === "critical") {
-    return patients.filter(
-      (patient) => patient.admission?.status === "critical",
-    ).length;
+    return patientsnew.value.filter((p) => p.admission?.status === "critical")
+      .length;
   }
 
   if (status === "discharged") {
-    return patients.filter(
-      (patient) => patient.admission?.status === "discharged",
-    ).length;
+    return patientsnew.value.filter((p) => p.admission?.status === "discharged")
+      .length;
   }
 
   return 0;
 };
+
 const statusClasses = {
   active: "bg-green-100 text-green-700",
-
   critical: "bg-red-100 text-red-700",
-
   recovering: "bg-yellow-100 text-yellow-700",
-
   discharged: "bg-gray-100 text-gray-700",
-
   registered: "bg-blue-100 text-blue-700",
 };
-const isAdmissionModalOpen = ref(false);
 
-// const selectedPatient = ref(null);
+onMounted(() => {
+  getPatients();
+  fetchAssignableStaff();
+});
+const formatPatientId = (id) => {
+  if (typeof id !== "string") return "";
 
-const openAdmissionModal = (patient) => {
-  selectedPatient.value = patient;
-
-  isAdmissionModalOpen.value = true;
+  return `PID-${id.slice(0, 6).toUpperCase()}`;
 };
 </script>
 
@@ -217,6 +179,7 @@ const openAdmissionModal = (patient) => {
     v-if="selectedPatient"
     v-model="isAdmissionModalOpen"
     :patient="selectedPatient"
+    :assignable-staff="assignableStaff"
   />
   <div class="bg-[#faf7f7] min-h-screen p-6">
     <div class="grid grid-cols-12 gap-6">
@@ -249,11 +212,11 @@ const openAdmissionModal = (patient) => {
         </div>
         <div
           v-for="patient in filteredPatients"
-          :key="patient.id"
+          :key="patient?.id"
           @click="selectedPatient = patient"
           class="cursor-pointer rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md"
           :class="
-            selectedPatient.id === patient.id
+            selectedPatient?.id === patient.id
               ? 'border-red-200 ring-1 ring-red-100'
               : 'border-gray-200'
           "
@@ -263,20 +226,20 @@ const openAdmissionModal = (patient) => {
               <div
                 class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3eeee] text-sm font-bold"
               >
-                {{ patient.initials }}
+                {{ patient?.initials }}
               </div>
 
               <div>
                 <div class="flex items-center gap-2">
                   <h3 class="font-semibold text-xl">
-                    {{ patient.fullName }}
+                    {{ patient?.fullName }}
                   </h3>
                   <span
-                    v-if="patient.admission"
+                    v-if="patient?.admission"
                     class="rounded-full px-3 py-1 text-xs font-medium capitalize"
                     :class="statusClasses[patient.admission.status]"
                   >
-                    {{ patient.admission.status }}
+                    {{ patient?.admission.status }}
                   </span>
                   <span
                     v-else
@@ -285,8 +248,8 @@ const openAdmissionModal = (patient) => {
                     registered
                   </span>
                 </div>
-                <p v-if="patient.admission" class="text-sm text-gray-500">
-                  {{ patient.admission.diagnosis }}
+                <p v-if="patient?.admission" class="text-sm text-gray-500">
+                  {{ patient?.admission.diagnosis }}
                 </p>
                 <p v-else class="text-sm text-gray-400">
                   Patient not admitted yet
@@ -298,21 +261,21 @@ const openAdmissionModal = (patient) => {
                 <p class="text-gray-400 text-xs">Age</p>
 
                 <p class="font-semibold">
-                  {{ patient.age }} · {{ patient.gender }}
+                  {{ patient?.age }} · {{ patient?.gender }}
                 </p>
               </div>
               <div v-if="patient.admission">
                 <p class="text-gray-400 text-xs">Doctor</p>
 
                 <p class="font-semibold">
-                  {{ patient.admission.assignedDoctor }}
+                  {{ patient?.admission?.assignedDoctor }}
                 </p>
               </div>
-              <div v-if="patient.admission">
+              <div v-if="patient?.admission">
                 <p class="text-gray-400 text-xs">Room</p>
 
                 <p class="font-semibold">
-                  {{ patient.admission.room }}
+                  {{ patient?.admission?.room }}
                 </p>
               </div>
               <div v-else>
@@ -327,7 +290,7 @@ const openAdmissionModal = (patient) => {
                 <p class="text-gray-400 text-xs">ID</p>
 
                 <p class="font-semibold">
-                  {{ patient.id }}
+                  {{ formatPatientId(patient.id) }}
                 </p>
               </div>
             </div>
@@ -340,16 +303,16 @@ const openAdmissionModal = (patient) => {
             <div
               class="flex h-14 w-14 items-center justify-center rounded-full bg-[#f3eeee] text-lg font-bold"
             >
-              {{ selectedPatient.initials }}
+              {{ selectedPatient?.initials }}
             </div>
 
             <div>
               <h2 class="text-2xl font-bold">
-                {{ selectedPatient.fullName }}
+                {{ selectedPatient?.fullName }}
               </h2>
 
               <p class="text-sm text-gray-500">
-                {{ selectedPatient.id }}
+                {{ formatPatientId(selectedPatient?.id) }}
               </p>
             </div>
           </div>
@@ -358,7 +321,7 @@ const openAdmissionModal = (patient) => {
               <p class="text-sm text-gray-400">Age</p>
 
               <p class="font-semibold text-lg">
-                {{ selectedPatient.age }} years
+                {{ selectedPatient?.age }} years
               </p>
             </div>
 
@@ -366,7 +329,7 @@ const openAdmissionModal = (patient) => {
               <p class="text-sm text-gray-400">Gender</p>
 
               <p class="font-semibold text-lg">
-                {{ selectedPatient.gender }}
+                {{ selectedPatient?.gender }}
               </p>
             </div>
 
@@ -374,18 +337,18 @@ const openAdmissionModal = (patient) => {
               <p class="text-sm text-gray-400">Blood Type</p>
 
               <p class="font-semibold text-lg">
-                {{ selectedPatient.bloodType }}
+                {{ selectedPatient?.bloodType }}
               </p>
             </div>
 
             <div>
               <p class="text-sm text-gray-400">Status</p>
               <span
-                v-if="selectedPatient.admission"
+                v-if="selectedPatient?.admission"
                 class="rounded-full px-3 py-1 text-xs font-medium capitalize"
-                :class="statusClasses[selectedPatient.admission.status]"
+                :class="statusClasses[selectedPatient?.admission?.status]"
               >
-                {{ selectedPatient.admission.status }}
+                {{ selectedPatient?.admission?.status }}
               </span>
               <span
                 v-else
@@ -395,33 +358,33 @@ const openAdmissionModal = (patient) => {
               </span>
             </div>
           </div>
-          <template v-if="selectedPatient.admission">
+          <template v-if="selectedPatient?.admission">
             <div class="mt-8">
               <p class="text-sm text-gray-400">Diagnosis</p>
 
               <p class="mt-1 text-lg font-semibold">
-                {{ selectedPatient.admission.diagnosis }}
+                {{ selectedPatient?.admission?.diagnosis }}
               </p>
             </div>
             <div class="mt-8">
               <p class="text-sm text-gray-400">Assigned Doctor</p>
 
               <p class="mt-1 font-semibold">
-                {{ selectedPatient.admission.assignedDoctor }}
+                {{ selectedPatient?.admission?.assignedDoctor }}
               </p>
             </div>
             <div class="mt-8">
               <p class="text-sm text-gray-400">Room</p>
 
               <p class="mt-1 font-semibold">
-                {{ selectedPatient.admission.room }}
+                {{ selectedPatient?.admission?.room }}
               </p>
             </div>
             <div class="mt-8">
               <p class="text-sm text-gray-400">Bed</p>
 
               <p class="mt-1 font-semibold">
-                {{ selectedPatient.admission.bed }}
+                {{ selectedPatient?.admission?.bed }}
               </p>
             </div>
           </template>
@@ -456,7 +419,7 @@ const openAdmissionModal = (patient) => {
               <span
                 class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700"
               >
-                {{ selectedPatient.allergies }}
+                {{ selectedPatient?.allergies }}
               </span>
             </div>
           </div>
@@ -464,11 +427,11 @@ const openAdmissionModal = (patient) => {
             <p class="text-sm text-gray-400">Emergency Contact</p>
 
             <p class="mt-1 font-semibold">
-              {{ selectedPatient.emergencyContact }}
+              {{ selectedPatient?.emergencyContact }}
             </p>
 
             <p class="text-sm text-gray-500">
-              {{ selectedPatient.phone }}
+              {{ selectedPatient?.phone }}
             </p>
           </div>
         </div>

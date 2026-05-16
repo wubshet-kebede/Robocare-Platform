@@ -11,6 +11,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  assignableStaff: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emits = defineEmits(["update:modelValue", "success"]);
@@ -26,12 +30,18 @@ const isOpen = computed({
 });
 
 const loadingSubmit = ref(false);
-
+const selectedStaffId = ref("");
+const staffOptions = computed(() => {
+  return props.assignableStaff.map((staff) => ({
+    id: staff.id,
+    name: staff.full_name,
+  }));
+});
 const { admitPatient } = usePatientService();
 
 const { handleSubmit, resetForm, values } = useForm({
   initialValues: {
-    assignedDoctorId: "",
+    selectedStaffId: "",
     roomId: "",
     bedNumber: "",
     diagnosis: "",
@@ -50,7 +60,7 @@ const submit = handleSubmit(async (formValues) => {
     const payload = {
       patient_id: props.patient.id,
 
-      assigned_doctor_id: formValues.assignedDoctorId,
+      assigned_doctor_id: formValues.selectedStaffId,
       room_id: formValues.roomId,
 
       bed_number: formValues.bedNumber,
@@ -139,22 +149,6 @@ const admissionStatusOptions = [
   },
 ];
 
-const doctorOptions = [
-  {
-    id: "doctor-1",
-    name: "Dr. Sarah Mitchell",
-  },
-
-  {
-    id: "doctor-2",
-    name: "Dr. Robert Kim",
-  },
-
-  {
-    id: "doctor-3",
-    name: "Dr. Michael Torres",
-  },
-];
 
 const roomOptions = [
   {
@@ -226,9 +220,9 @@ const roomOptions = [
 
           <div class="grid grid-cols-2 gap-6">
             <UiListSelect
-              v-model="values.assignedDoctorId"
-              :items="doctorOptions"
-              name="assignedDoctorId"
+              v-model="values.selectedStaffId"
+              :items="staffOptions"
+              name="selectedStaffId"
               rules="required"
             >
               <template #label>
