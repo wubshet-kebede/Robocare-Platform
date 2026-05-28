@@ -76,8 +76,8 @@ const navSections = [
         icon: "lucide:video",
       },
       {
-        name: "Bed Management",
-        href: "/bed-management",
+        name: "Room Management",
+        href: "/room_management",
         icon: "lucide:bed-double",
       },
       {
