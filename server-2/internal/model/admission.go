@@ -53,4 +53,7 @@ type CreateAdmissionRequest struct {
 	Diagnosis          string    `json:"diagnosis"`
 	ReasonForAdmission string    `json:"reason_for_admission"`
 	Urgency            string    `json:"urgency"`
+	AdmissionDate      time.Time `json:"admission_date"`
+	AdmissionStatus    string    `json:"admission_status"`
+	Status			 string    `json:"status"`
 }

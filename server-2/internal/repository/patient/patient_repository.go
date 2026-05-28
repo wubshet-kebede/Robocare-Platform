@@ -39,42 +39,46 @@ func GetPatientByID(id uuid.UUID) (*model.Patient, error) {
 
     return &patient, nil
 }
-func GetPatientsWithAdmissions(hospitalID uuid.UUID) ([]model.PatientWithAdmission, error) {
-	var patients []model.Patient
+func GetPatientsWithAdmissions(hospitalID uuid.UUID) ([]model.PatientAdmissionView, error) {
+
+	var result []model.PatientAdmissionView
 
 	err := db.DB.
-		Where("hospital_id = ?", hospitalID).
-		Find(&patients).Error
+		Table("patients").
+		Select(`
+			patients.id as patient_id,
+			patients.full_name,
+			patients.date_of_birth,
+			patients.gender,
+			patients.blood_type,
+
+			admissions.status as admission_status,
+			admissions.urgency,
+			admissions.diagnosis,
+
+			users.full_name as assigned_doctor_name,
+
+			rooms.room_number
+		`).
+		Joins(`
+			LEFT JOIN admissions
+			ON admissions.patient_id = patients.id
+			AND admissions.is_active = true
+		`).
+		Joins(`
+			LEFT JOIN users
+			ON users.id = admissions.assigned_doctor_id
+		`).
+		Joins(`
+			LEFT JOIN rooms
+			ON rooms.id = admissions.room_id
+		`).
+		Where("patients.hospital_id = ?", hospitalID).
+		Scan(&result).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	var response []model.PatientWithAdmission
-
-	for _, patient := range patients {
-
-		var admission model.Admission
-
-		err := db.DB.
-			Where("patient_id = ? AND is_active = ?", patient.ID, true).
-			First(&admission).Error
-
-		if err != nil {
-
-			response = append(response, model.PatientWithAdmission{
-				Patient:         patient,
-				ActiveAdmission: nil,
-			})
-
-			continue
-		}
-
-		response = append(response, model.PatientWithAdmission{
-			Patient:         patient,
-			ActiveAdmission: &admission,
-		})
-	}
-
-	return response, nil
+	return result, nil
 }

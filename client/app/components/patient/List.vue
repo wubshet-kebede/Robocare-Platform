@@ -43,7 +43,7 @@ const getInitials = (fullName) => {
     .join("")
     .toUpperCase();
 };
-const formatPatients = (data) => {
+const formatPatients1 = (data) => {
   return data.map((item) => {
     const p = item.patient;
     const admission = item.active_admission;
@@ -64,10 +64,51 @@ const formatPatients = (data) => {
             status: admission.admission_status,
             urgency: admission.urgency,
             diagnosis: admission.diagnosis,
-            assignedDoctor: admission.assigned_doctor_id,
+            assignedDoctor: admission.assigned_doctor_name,
+            room: admission.room_number,
             staffName: admission.staff_name,
-            room: admission.room_id,
             bed: admission.bed_number,
+          }
+        : null,
+    };
+  });
+};
+const formatPatients = (data) => {
+  return data.map((p) => {
+    const hasAdmission = p.admission_status !== null;
+
+    return {
+      id: p.patient_id,
+
+      fullName: p.full_name,
+
+      initials: getInitials(p.full_name),
+
+      age: calculateAge(p.date_of_birth),
+
+      gender: p.gender,
+
+      bloodType: p.blood_type,
+
+      allergies: p.allergies,
+
+      phone: p.phone,
+
+      emergencyContact: p.emergency_contact,
+
+      admission: hasAdmission
+        ? {
+            status: p.admission_status,
+
+            urgency: p.urgency,
+
+            diagnosis: p.diagnosis,
+
+            assignedDoctor: p.assigned_doctor_name,
+
+            room: p.room_number,
+
+            bed: p.bed_number,
           }
         : null,
     };
@@ -210,86 +251,97 @@ const formatPatientId = (id) => {
             </span>
           </button>
         </div>
+
         <div
           v-for="patient in filteredPatients"
           :key="patient?.id"
           @click="selectedPatient = patient"
-          class="cursor-pointer rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md"
+          class="cursor-pointer rounded-2xl border bg-white px-6 py-5 shadow-sm transition-all duration-200 hover:shadow-md"
           :class="
             selectedPatient?.id === patient.id
               ? 'border-red-200 ring-1 ring-red-100'
               : 'border-gray-200'
           "
         >
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
+          <div
+            class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
+          >
+            <div class="flex items-center gap-4 min-w-0">
               <div
-                class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3eeee] text-sm font-bold"
+                class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f5ecec] text-sm font-bold text-gray-700"
               >
                 {{ patient?.initials }}
               </div>
-
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-xl">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-3">
+                  <h3 class="truncate text-lg font-semibold text-gray-900">
                     {{ patient?.fullName }}
                   </h3>
+
                   <span
                     v-if="patient?.admission"
-                    class="rounded-full px-3 py-1 text-xs font-medium capitalize"
+                    class="rounded-full px-3 py-1 text-xs font-semibold capitalize"
                     :class="statusClasses[patient.admission.status]"
                   >
                     {{ patient?.admission.status }}
                   </span>
+
                   <span
                     v-else
-                    class="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium"
+                    class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700"
                   >
-                    registered
+                    Registered
                   </span>
                 </div>
-                <p v-if="patient?.admission" class="text-sm text-gray-500">
+
+                <p
+                  v-if="patient?.admission"
+                  class="mt-1 text-sm text-gray-500 truncate"
+                >
                   {{ patient?.admission.diagnosis }}
                 </p>
-                <p v-else class="text-sm text-gray-400">
+
+                <p v-else class="mt-1 text-sm text-gray-400">
                   Patient not admitted yet
                 </p>
               </div>
             </div>
-            <div class="flex items-center gap-10 text-sm">
+            <div
+              class="grid grid-cols-2 gap-x-10 gap-y-4 xl:flex xl:items-center xl:gap-10"
+            >
               <div>
-                <p class="text-gray-400 text-xs">Age</p>
+                <p class="text-xs text-gray-400">Age</p>
 
-                <p class="font-semibold">
+                <p class="font-semibold text-gray-800">
                   {{ patient?.age }} · {{ patient?.gender }}
                 </p>
               </div>
-              <div v-if="patient.admission">
-                <p class="text-gray-400 text-xs">Doctor</p>
+              <div v-if="patient?.admission">
+                <p class="text-xs text-gray-400">Doctor</p>
 
-                <p class="font-semibold">
+                <p class="font-semibold text-gray-800">
                   {{ patient?.admission?.assignedDoctor }}
                 </p>
               </div>
               <div v-if="patient?.admission">
-                <p class="text-gray-400 text-xs">Room</p>
+                <p class="text-xs text-gray-400">Room</p>
 
-                <p class="font-semibold">
+                <p class="font-semibold text-gray-800">
                   {{ patient?.admission?.room }}
                 </p>
               </div>
-              <div v-else>
+              <div v-else class="flex items-end">
                 <button
-                  class="rounded-lg bg-primary px-4 py-2 text-xs font-medium text-white hover:opacity-90"
-                  @click="openAdmissionModal(patient)"
+                  class="rounded-xl bg-primary px-4 py-2 text-xs font-medium text-white transition hover:opacity-90"
+                  @click.stop="openAdmissionModal(patient)"
                 >
                   Admit Patient
                 </button>
               </div>
               <div>
-                <p class="text-gray-400 text-xs">ID</p>
+                <p class="text-xs text-gray-400">ID</p>
 
-                <p class="font-semibold">
+                <p class="font-semibold text-gray-800">
                   {{ formatPatientId(patient.id) }}
                 </p>
               </div>
