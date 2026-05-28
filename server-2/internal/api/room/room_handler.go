@@ -1,7 +1,8 @@
 package room
+
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
@@ -10,11 +11,16 @@ import (
 )
 
 func CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
-    role := r.Context().Value(middleware.RoleKey).(string)
-    if role != "admin" {
-        http.Error(w, "Forbidden: Only admins can manage infrastructure", http.StatusForbidden)
-        return
-    }
+   role, ok := r.Context().Value(middleware.RoleKey).(string)
+if !ok {
+    http.Error(w, "Unauthorized", http.StatusUnauthorized)
+    return
+}
+
+if role != "admin" {
+    http.Error(w, "Forbidden: Only admins can manage infrastructure", http.StatusForbidden)
+    return
+}
 
     hospitalID := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
 
