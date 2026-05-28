@@ -76,7 +76,7 @@
           to="/signup"
           class="px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 transition-all shadow-md hover:shadow-lg"
         >
-          Join Project
+          Sign Up
         </NuxtLink>
       </div>
     </nav>
