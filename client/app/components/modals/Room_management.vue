@@ -1,97 +1,131 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { useForm } from "vee-validate";
 
-const isOpen = ref(false);
-const loadingSubmit = ref(false);
-
-const values = reactive({
-  roomNumber: "",
-  floor: null,
-  capacity: 1,
-  status: "available",
-  departmentId: "",
-  locationName: "",
-  x: 0,
-  y: 0,
-  yaw: 0,
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const roomStatusOptions = [
-  {
-    id: "Available",
-    name: "available",
-  },
-  {
-    id: "Occupied",
-    name: "occupied",
-  },
-  {
-    id: "Cleaning",
-    name: "Cleaning",
-  },
-];
+const emits = defineEmits(["update:modelValue", "success"]);
 
-const departmentOptions = [
-  {
-    id: "Emergency",
-    name: "dept-1",
+const isOpen = computed({
+  get() {
+    return props.modelValue;
   },
-  {
-    id: "ICU",
-    name: "dept-2",
+  set(value) {
+    emits("update:modelValue", value);
   },
-  {
-    id: "Surgery",
-    name: "dept-3",
-  },
-];
+});
 
-const resetForm = () => {
-  values.roomNumber = "";
-  values.floor = null;
-  values.capacity = 1;
-  values.status = "available";
-  values.departmentId = "";
-  values.locationName = "";
-  values.x = 0;
-  values.y = 0;
-  values.yaw = 0;
+const loadingSubmit = ref(false);
+
+const { registerRoom } = useRoomService();
+const { getDepartments } = useDepartmentService();
+const departments = ref([]);
+const loadingDepartments = ref(false);
+const fetchDepartments = async () => {
+  try {
+    loadingDepartments.value = true;
+
+    const res = await getDepartments();
+
+    console.log("raw:", res);
+    console.log("type:", typeof res);
+
+    const data = typeof res === "string" ? JSON.parse(res) : res;
+
+    departments.value = data;
+
+    console.log("Normalized:", departments.value);
+  } catch (err) {
+    console.error("Failed to fetch departments:", err);
+    departments.value = [];
+  } finally {
+    loadingDepartments.value = false;
+  }
 };
 
-const submit = async () => {
+onMounted(() => {
+  fetchDepartments();
+});
+const departmentOptions = computed(() => {
+  if (!departments.value.length) return [];
+
+  return departments.value.map((d) => ({
+    id: d.id,
+    name: d.name,
+  }));
+});
+console.log("departmentOptions:", departmentOptions.value);
+const { handleSubmit, resetForm, values } = useForm({
+  initialValues: {
+    roomNumber: "",
+    locationName: "",
+    floor: 1,
+    capacity: 1,
+    status: "available",
+    departmentId: "",
+    x: 0,
+    y: 0,
+    yaw: 0,
+  },
+});
+
+const submit = handleSubmit(async (formValues) => {
   try {
     loadingSubmit.value = true;
 
     const payload = {
-      room_number: values.roomNumber,
-      floor: Number(values.floor),
-      capacity: Number(values.capacity),
-      status: values.status,
-      department_id: values.departmentId,
-      location_name: values.locationName,
-      x: Number(values.x),
-      y: Number(values.y),
-      yaw: Number(values.yaw),
+      room_number: formValues.roomNumber,
+      location_name: formValues.locationName,
+
+      floor: Number(formValues.floor),
+      capacity: Number(formValues.capacity),
+      department_id: formValues.departmentId,
+
+      status: formValues.status,
+
+      x: Number(formValues.x),
+      y: Number(formValues.y),
+      yaw: Number(formValues.yaw),
     };
 
-    console.log("Submitting Room:", payload);
+    console.log("Room Payload:", payload);
 
-    /**
-     * Example API Call
-     */
-    // await $fetch("/api/rooms", {
-    //   method: "POST",
-    //   body: payload,
-    // });
+    const response = await registerRoom(payload);
+
+    console.log("Room Registered:", response);
 
     resetForm();
+
     isOpen.value = false;
+
+    emits("success", response);
   } catch (error) {
-    console.error("Failed to create room:", error);
+    console.log("Room Registration Error:", error);
   } finally {
     loadingSubmit.value = false;
   }
-};
+});
+
+const roomStatusOptions = [
+  {
+    id: "available",
+    name: "Available",
+  },
+
+  {
+    id: "occupied",
+    name: "Occupied",
+  },
+
+  {
+    id: "cleaning",
+    name: "Cleaning",
+  },
+];
 </script>
 <template>
   <ModalsModal
@@ -164,7 +198,10 @@ const submit = async () => {
               rules="required"
             >
               <template #label>
-                <h1 class="text-md font-medium mb-2">Department</h1>
+                <h1 class="text-md font-medium mb-2">
+                  Department
+                  <!-- <span class="text-red-500">*</span> -->
+                </h1>
               </template>
             </UiListSelect>
 

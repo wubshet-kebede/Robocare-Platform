@@ -12,10 +12,6 @@ func CreateDepartment(dept model.Department) (*model.Department, error) {
 	}
 	return createDept, nil
 }
-func GetDepartments(hospitalID uuid.UUID)([]model.Department, error) {
-	depts, err := department.GetDepartments(hospitalID)
-	if err != nil {
-		return []model.Department{}, err
-	}
-	return depts, err
+func GetDepartments(hospitalID uuid.UUID) ([]model.Department, error) {
+	return department.GetDepartmentsByHospital(hospitalID)
 }

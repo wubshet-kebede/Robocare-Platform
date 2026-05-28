@@ -40,9 +40,8 @@ func CreateDepartmentHandler(w http.ResponseWriter, r *http.Request) {
 }
 func GetDepartmentsHandler(w http.ResponseWriter, r*http.Request) {
 	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
-    ///role, Rok := r.Context().Value(middleware.RoleKey).(string)
-	if !ok  {
-		http.Error(w, "missing hospital id ", http.StatusBadRequest)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 	depts, err := department.GetDepartments(hospitalID)

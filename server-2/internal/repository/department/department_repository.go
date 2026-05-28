@@ -30,11 +30,17 @@ func CreateDepartment(dept model.Department) (*model.Department, error) {
 
 	return &dept, nil
 }
-func GetDepartments(hospitalID uuid.UUID) ([]model.Department, error) {
-	var depts []model.Department
-	err:= db.DB.Where("hospital_id = ?", hospitalID).Find(&depts).Error
+func GetDepartmentsByHospital(hospitalID uuid.UUID) ([]model.Department, error) {
+	var departments []model.Department
+
+	err := db.DB.
+		Where("hospital_id = ?", hospitalID).
+		Order("name ASC").
+		Find(&departments).Error
+
 	if err != nil {
 		return nil, err
 	}
-	return depts, nil
+
+	return departments, nil
 }
