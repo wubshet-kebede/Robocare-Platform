@@ -51,13 +51,15 @@ func GetPatientsWithAdmissions(hospitalID uuid.UUID) ([]model.PatientAdmissionVi
 			patients.date_of_birth,
 			patients.gender,
 			patients.blood_type,
-
 			admissions.status as admission_status,
 			admissions.urgency,
 			admissions.diagnosis,
-
+			admissions.bed_number,
+			patients.Allergies,
+			patients.Phone,
+			patients.Emergency_contact_name,
+			patients.Emergency_contact_phone,
 			users.full_name as assigned_doctor_name,
-
 			rooms.room_number
 		`).
 		Joins(`

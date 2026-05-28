@@ -433,7 +433,7 @@ const formatPatientId = (id) => {
               </p>
             </div>
             <div class="mt-8">
-              <p class="text-sm text-gray-400">Bed</p>
+              <p class="text-sm text-gray-400">Bed Number</p>
 
               <p class="mt-1 font-semibold">
                 {{ selectedPatient?.admission?.bed }}
