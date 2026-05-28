@@ -25,3 +25,17 @@ func GetRoomByID(id uuid.UUID) (*model.Room, error) {
     err := db.DB.First(&room, "id = ?", id).Error
     return &room, err
 }
+func GetRooms(hospitalID uuid.UUID) ([]model.Room, error) {
+	var rooms []model.Room
+
+	err := db.DB.
+		Where("hospital_id = ?", hospitalID).
+		Order("created_at DESC").
+		Find(&rooms).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
+}

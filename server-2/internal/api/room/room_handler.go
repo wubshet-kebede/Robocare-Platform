@@ -41,3 +41,29 @@ if role != "admin" {
     w.WriteHeader(http.StatusCreated)
     json.NewEncoder(w).Encode(room)
 }
+func GetRoomsHandler(w http.ResponseWriter, r *http.Request) {
+	role, ok := r.Context().Value(middleware.RoleKey).(string)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+	if !ok {
+		http.Error(w, "Unauthorized: missing hospital context", http.StatusUnauthorized)
+		return
+	}
+	if role == "" {
+		http.Error(w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
+	rooms, err := room.GetRooms(hospitalID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rooms)
+}
