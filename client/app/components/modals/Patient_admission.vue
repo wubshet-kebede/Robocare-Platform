@@ -38,7 +38,39 @@ const staffOptions = computed(() => {
   }));
 });
 const { admitPatient } = usePatientService();
+const { getRooms } = useRoomService();
+const rooms = ref([]);
+const loadingRooms = ref(false);
 
+const fetchRooms = async () => {
+  try {
+    loadingRooms.value = true;
+
+    const res = await getRooms();
+
+    console.log("RAW ROOMS:", res);
+    rooms.value = Array.isArray(res) ? res : (res?.data ?? []);
+
+    console.log("NORMALIZED ROOMS:", rooms.value);
+  } catch (err) {
+    console.error("Failed to fetch rooms:", err);
+    rooms.value = [];
+  } finally {
+    loadingRooms.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchRooms();
+});
+const roomOptions = computed(() => {
+  if (!Array.isArray(rooms.value)) return [];
+
+  return rooms.value.map((room) => ({
+    id: room.id,
+    name: room.room_number + " - " + room.location_name,
+  }));
+});
 const { handleSubmit, resetForm, values } = useForm({
   initialValues: {
     selectedStaffId: "",
@@ -59,23 +91,17 @@ const submit = handleSubmit(async (formValues) => {
 
     const payload = {
       patient_id: props.patient.id,
-
       assigned_doctor_id: formValues.selectedStaffId,
       room_id: formValues.roomId,
-
       bed_number: formValues.bedNumber,
-
       diagnosis: formValues.diagnosis,
       reason_for_admission: formValues.reasonForAdmission,
-
       urgency: formValues.urgency,
       status: formValues.status,
       admission_status: formValues.admissionStatus,
-
       admission_date: new Date(formValues.admissionDate).toISOString(),
     };
-
-    const response = await createAdmission(payload);
+    const response = await admitPatient(payload);
 
     console.log("Admission Created:", response);
 
@@ -146,24 +172,6 @@ const admissionStatusOptions = [
   {
     id: "Deceased",
     name: "Deceased",
-  },
-];
-
-
-const roomOptions = [
-  {
-    id: "room-101",
-    name: "Room 101",
-  },
-
-  {
-    id: "room-102",
-    name: "Room 102",
-  },
-
-  {
-    id: "room-icu-1",
-    name: "ICU - 1",
   },
 ];
 </script>

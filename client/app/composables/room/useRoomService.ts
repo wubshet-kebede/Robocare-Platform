@@ -7,6 +7,11 @@ export const useRoomService = () => {
       body: JSON.stringify(data),
     });
   };
+  const getRooms = () => {
+    return $api("/get-rooms", {
+      method: "GET",
+    });
+  };
 
-  return { registerRoom };
+  return { registerRoom, getRooms };
 };

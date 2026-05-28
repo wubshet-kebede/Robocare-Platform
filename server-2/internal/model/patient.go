@@ -43,3 +43,17 @@ type PatientWithAdmission struct {
     Patient         Patient     `json:"patient"`
     ActiveAdmission *Admission  `json:"active_admission,omitempty"`
 }
+type PatientAdmissionView struct {
+	PatientID           uuid.UUID `json:"patient_id"`
+	FullName            string    `json:"full_name"`
+	DateOfBirth         time.Time `json:"date_of_birth"`
+	Gender              string    `json:"gender"`
+	BloodType           string    `json:"blood_type"`
+
+	AdmissionStatus     *string   `json:"admission_status"`
+	Urgency             *string   `json:"urgency"`
+	Diagnosis           *string   `json:"diagnosis"`
+
+	AssignedDoctorName  *string   `json:"assigned_doctor_name"`
+	RoomNumber          *string   `json:"room_number"`
+}
