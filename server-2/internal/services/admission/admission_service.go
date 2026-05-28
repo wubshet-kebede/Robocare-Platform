@@ -28,6 +28,7 @@ func AdmissionService(
 		Diagnosis:             input.Diagnosis,
 		ReasonForAdmission:    input.ReasonForAdmission,
 		Urgency:               model.UrgencyLevel(input.Urgency),
+		Status:                model.MedicalStatus(input.Status),
 		MedicalRecordNumber:   mrnNumber,
 		IsActive:              true,
 		AdmissionStatus:       model.AdmissionStatus("Admitted"),
