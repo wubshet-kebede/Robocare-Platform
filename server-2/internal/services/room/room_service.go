@@ -3,6 +3,7 @@ package room
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/model"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/repository/room"
 )
@@ -20,4 +21,9 @@ if input.Floor < 0 {
 }
 
     return room.RoomRepository(input)
+}
+
+func GetRooms(hospitalID uuid.UUID) ([]model.Room, error) {
+	
+	return room.GetRooms(hospitalID)
 }

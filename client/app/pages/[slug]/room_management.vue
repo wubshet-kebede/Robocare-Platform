@@ -6,7 +6,7 @@ const metrics = [
   {
     title: "Total Rooms",
     value: "186",
-    icon: "lucide:users",
+    icon: "iconoir:house-rooms",
     colorTheme: "bg-rose-50 text-rose-500",
   },
 
