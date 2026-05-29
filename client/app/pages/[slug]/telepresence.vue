@@ -27,6 +27,12 @@ const getAdmittedPatients = async () => {
       doctorName: patient.assigned_doctor_name,
       urgency: patient.urgency,
       status: patient.admission_status,
+      heart_rate: patient.heart_rate,
+      spo2: patient.spo2,
+      temperature: patient.temperature,
+      // systolic_bp: patient.systolic_bp,
+      // diastolic_bp: patient.diastolic_bp,
+
       robot: "AURA-01",
     }));
 
@@ -71,14 +77,7 @@ const metrics = [
     colorTheme: "bg-violet-50 text-violet-500",
   },
 ];
-const vitals = ref({
-  heartRate: 88,
-  spo2: 97,
-  temperature: 36.8,
-  bloodPressure: "120/80",
-  battery: 81,
-  latency: "40ms",
-});
+const vitals = ref({});
 onMounted(() => {
   getAdmittedPatients();
 });
@@ -87,6 +86,22 @@ watch(admittedPatients, (list) => {
     selectedPatient.value = list[0];
   }
 });
+watch(
+  selectedPatient,
+  (patient) => {
+    if (!patient) return;
+
+    vitals.value = {
+      heartRate: patient.heart_rate,
+      spo2: patient.spo2,
+      temperature: patient.temperature,
+      // bloodPressure: patient.systolic_bp
+      //   ? `${patient.systolic_bp}/${patient.diastolic_bp}`
+      //   : "—",
+    };
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -313,7 +328,7 @@ watch(admittedPatients, (list) => {
                 <p class="text-sm text-gray-500">Heart Rate</p>
 
                 <p class="text-xl font-bold">
-                  {{ vitals.heartRate }}
+                  {{ vitals?.heartRate || "—" }}
                 </p>
               </div>
 
@@ -326,7 +341,7 @@ watch(admittedPatients, (list) => {
               <div>
                 <p class="text-sm text-gray-500">SpO2</p>
 
-                <p class="text-xl font-bold">{{ vitals.spo2 }}%</p>
+                <p class="text-xl font-bold">{{ vitals?.spo2 || "—" }}%</p>
               </div>
 
               <Icon name="lucide:activity" class="h-6 w-6 text-blue-500" />
@@ -338,7 +353,9 @@ watch(admittedPatients, (list) => {
               <div>
                 <p class="text-sm text-gray-500">Temperature</p>
 
-                <p class="text-xl font-bold">{{ vitals.temperature }}°C</p>
+                <p class="text-xl font-bold">
+                  {{ vitals?.temperature || "—" }}°C
+                </p>
               </div>
 
               <Icon name="lucide:thermometer" class="h-6 w-6 text-orange-500" />
@@ -359,7 +376,7 @@ watch(admittedPatients, (list) => {
               <span class="text-sm text-gray-500">Battery</span>
 
               <span class="font-semibold text-emerald-600">
-                {{ vitals.battery }}%
+                {{ vitals?.battery || "—" }}%
               </span>
             </div>
 
@@ -367,7 +384,7 @@ watch(admittedPatients, (list) => {
               <span class="text-sm text-gray-500">Latency</span>
 
               <span class="font-semibold">
-                {{ vitals.latency }}
+                {{ vitals?.latency || "—" }}
               </span>
             </div>
 

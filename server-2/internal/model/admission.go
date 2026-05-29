@@ -69,4 +69,10 @@ type AssignedPatientResponse struct {
 
 	RoomNumber         string    `json:"room_number"`
 	AssignedDoctorName string    `json:"assigned_doctor_name"`
+	HeartRate *float64 `json:"heart_rate"`
+    SpO2 *float64 `json:"spo2"`
+    Temperature *float64 `json:"temperature"`
+    // SystolicBP *int `json:"systolic_bp"`
+    // DiastolicBP *int `json:"diastolic_bp"`
+    MeasuredAt *time.Time `json:"measured_at"`
 }

@@ -105,37 +105,51 @@ func GetAssignedPatientsRepository(staffID uuid.UUID) ([]model.AssignedPatientRe
 	var patients []model.AssignedPatientResponse
 
 	err := db.DB.Table("admissions").
-		Select(`
-			patients.id as patient_id,
-			patients.full_name,
-			patients.gender,
-			patients.date_of_birth,
-			admissions.diagnosis,
-			admissions.admission_status,
-			admissions.urgency,
-			rooms.room_number,
-			assigned_doctor.full_name as assigned_doctor_name
-		`).
-		Joins(`
-			JOIN patients 
-			ON patients.id = admissions.patient_id
-		`).
-		Joins(`
-			LEFT JOIN rooms 
-			ON rooms.id = admissions.room_id
-		`).
-		Joins(`
-			LEFT JOIN users as assigned_doctor 
-			ON assigned_doctor.id = admissions.assigned_doctor_id
-		`).
-		Where(`
-			(
-				admissions.assigned_doctor_id = ?
-			)
-			AND admissions.is_active = ?
-		`, staffID, true).
-		Scan(&patients).Error
+	Select(`
+		patients.id as patient_id,
+		patients.full_name,
+		patients.gender,
+		patients.date_of_birth,
 
+		admissions.diagnosis,
+		admissions.admission_status,
+		admissions.urgency,
+
+		rooms.room_number,
+
+		vs.heart_rate,
+		vs.sp_o2,
+		vs.temperature,
+		vs.measured_at,
+
+		assigned_doctor.full_name as assigned_doctor_name
+	`).
+	Joins(`
+		JOIN patients 
+		ON patients.id = admissions.patient_id
+	`).
+	Joins(`
+		LEFT JOIN rooms 
+		ON rooms.id = admissions.room_id
+	`).
+	Joins(`
+		LEFT JOIN users as assigned_doctor 
+		ON assigned_doctor.id = admissions.assigned_doctor_id
+	`).
+	Joins(`
+		LEFT JOIN LATERAL (
+			SELECT *
+			FROM vital_signs
+			WHERE vital_signs.patient_id = patients.id
+			ORDER BY measured_at DESC
+			LIMIT 1
+		) vs ON true
+	`).
+	Where(`
+		admissions.assigned_doctor_id = ?
+		AND admissions.is_active = ?
+	`, staffID, true).
+	Scan(&patients).Error
 	if err != nil {
 		return nil, err
 	}
