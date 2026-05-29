@@ -5,9 +5,41 @@ definePageMeta({
 
 const search = ref("");
 const isSessionModalOpen = ref(false);
-
+const admittedPatients = ref([]);
+const selectedPatient = ref(null);
 const openSessionModal = () => {
   isSessionModalOpen.value = true;
+};
+const { getAssignedPatients } = useAdmittedPatientService();
+const loadingPatients = ref(false);
+const getAdmittedPatients = async () => {
+  try {
+    loadingPatients.value = true;
+
+    const response = await getAssignedPatients();
+
+    admittedPatients.value = response.map((patient) => ({
+      id: patient.patient_id,
+      name: patient.full_name,
+      gender: patient.gender,
+      diagnosis: patient.diagnosis,
+      room: patient.room_number,
+      doctorName: patient.assigned_doctor_name,
+      urgency: patient.urgency,
+      status: patient.admission_status,
+      robot: "AURA-01",
+    }));
+
+    if (admittedPatients.value.length > 0) {
+      selectedPatient.value = admittedPatients.value[0];
+    }
+
+    console.log("Admitted Patients:", admittedPatients.value);
+  } catch (error) {
+    console.log("Fetch Patients Error:", error);
+  } finally {
+    loadingPatients.value = false;
+  }
 };
 
 const metrics = [
@@ -39,38 +71,6 @@ const metrics = [
     colorTheme: "bg-violet-50 text-violet-500",
   },
 ];
-
-const assignedPatients = [
-  {
-    id: 1,
-    name: "Abel Tesfaye",
-    room: "103",
-    urgency: "Normal",
-    robot: "AURA-01",
-    status: "online",
-  },
-
-  {
-    id: 2,
-    name: "Dawit Tilahun",
-    room: "106",
-    urgency: "Critical",
-    robot: "AURA-02",
-    status: "busy",
-  },
-
-  {
-    id: 3,
-    name: "Woyinshet Amare",
-    room: "110",
-    urgency: "Stable",
-    robot: "AURA-01",
-    status: "waiting",
-  },
-];
-
-const selectedPatient = ref(assignedPatients[0]);
-
 const vitals = ref({
   heartRate: 88,
   spo2: 97,
@@ -78,6 +78,14 @@ const vitals = ref({
   bloodPressure: "120/80",
   battery: 81,
   latency: "40ms",
+});
+onMounted(() => {
+  getAdmittedPatients();
+});
+watch(admittedPatients, (list) => {
+  if (list.length && !selectedPatient.value) {
+    selectedPatient.value = list[0];
+  }
 });
 </script>
 
@@ -138,18 +146,18 @@ const vitals = ref({
           <span
             class="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
           >
-            {{ assignedPatients.length }}
+            {{ admittedPatients.length }}
           </span>
         </div>
 
         <div class="space-y-4">
           <div
-            v-for="patient in assignedPatients"
+            v-for="patient in admittedPatients"
             :key="patient.id"
             @click="selectedPatient = patient"
             class="cursor-pointer rounded-2xl border p-4 transition-all duration-200 hover:shadow-md"
             :class="
-              selectedPatient.id === patient.id
+              selectedPatient?.id === patient.id
                 ? 'border-primary bg-primary/5'
                 : 'border-gray-200'
             "
@@ -188,12 +196,11 @@ const vitals = ref({
                       : 'bg-gray-100 text-gray-700'
                 "
               >
-                {{ patient.urgency }}
+                {{ patient?.urgency }}
               </span>
 
               <div class="flex items-center gap-2 text-xs text-gray-500">
                 <Icon name="lucide:bot" class="h-4 w-4" />
-                {{ patient.robot }}
               </div>
             </div>
           </div>
@@ -208,12 +215,11 @@ const vitals = ref({
           >
             <div>
               <h2 class="text-lg font-semibold text-white">
-                {{ selectedPatient.name }}
+                {{ selectedPatient?.name || "No patient selected" }}
               </h2>
 
               <p class="text-sm text-gray-400">
-                Room {{ selectedPatient.room }} · Robot
-                {{ selectedPatient.robot }}
+                Room {{ selectedPatient?.room || "-" }}
               </p>
             </div>
 
@@ -346,9 +352,7 @@ const vitals = ref({
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Robot</span>
 
-              <span class="font-semibold">
-                {{ selectedPatient.robot }}
-              </span>
+              <span class="font-semibold"> </span>
             </div>
 
             <div class="flex items-center justify-between">
