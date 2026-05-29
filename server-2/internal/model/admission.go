@@ -57,3 +57,16 @@ type CreateAdmissionRequest struct {
 	AdmissionStatus    string    `json:"admission_status"`
 	Status			 string    `json:"status"`
 }
+type AssignedPatientResponse struct {
+	PatientID          uuid.UUID `json:"patient_id"`
+	FullName           string    `json:"full_name"`
+	Gender             string    `json:"gender"`
+	DateOfBirth        time.Time `json:"date_of_birth"`
+
+	Diagnosis          string    `json:"diagnosis"`
+	AdmissionStatus    string    `json:"admission_status"`
+	Urgency            string    `json:"urgency"`
+
+	RoomNumber         string    `json:"room_number"`
+	AssignedDoctorName string    `json:"assigned_doctor_name"`
+}

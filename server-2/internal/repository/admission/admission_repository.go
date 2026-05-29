@@ -100,4 +100,35 @@ func GetPatientAdmissionID(patientID uuid.UUID) (*model.Admission, error) {
 }
 // repository/admission.go
 
+func GetAssignedPatientsRepository(staffID uuid.UUID) ([]model.AssignedPatientResponse, error) {
 
+	var patients []model.AssignedPatientResponse
+
+	err := db.DB.Table("admissions").
+		Select(`
+			patients.id as patient_id,
+			patients.full_name,
+			patients.gender,
+			patients.date_of_birth,
+			admissions.diagnosis,
+			admissions.admission_status,
+			admissions.urgency,
+			rooms.room_number,
+			staff.full_name as assigned_doctor_name
+		`).
+		Joins("JOIN patients ON patients.id = admissions.patient_id").
+		Joins("LEFT JOIN rooms ON rooms.id = admissions.room_id").
+		Joins("LEFT JOIN staffs as staff ON staff.id = admissions.assigned_doctor_id").
+		Where(`
+			(admissions.assigned_doctor_id = ? 
+			OR admissions.assigned_nurse_id = ?)
+			AND admissions.is_active = ?
+		`, staffID, staffID, true).
+		Scan(&patients).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return patients, nil
+}

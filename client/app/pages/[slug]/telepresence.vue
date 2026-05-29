@@ -2,6 +2,14 @@
 definePageMeta({
   layout: "dashboard",
 });
+
+const search = ref("");
+const isSessionModalOpen = ref(false);
+
+const openSessionModal = () => {
+  isSessionModalOpen.value = true;
+};
+
 const metrics = [
   {
     title: "Live Consultations",
@@ -13,14 +21,14 @@ const metrics = [
   {
     title: "Patients Waiting",
     value: "5",
-    icon: "lucide:users",
+    icon: "mdi:patient",
     colorTheme: "bg-amber-50 text-amber-500",
   },
 
   {
     title: "Robots Available",
     value: "2",
-    icon: "lucide:bot",
+    icon: "material-symbols:robot",
     colorTheme: "bg-emerald-50 text-emerald-500",
   },
 
@@ -31,58 +39,346 @@ const metrics = [
     colorTheme: "bg-violet-50 text-violet-500",
   },
 ];
-const isSessionModalOpen = ref(false);
 
-const openSessionModal = () => {
-  isSessionModalOpen.value = true;
-};
+const assignedPatients = [
+  {
+    id: 1,
+    name: "Abel Tesfaye",
+    room: "103",
+    urgency: "Normal",
+    robot: "AURA-01",
+    status: "online",
+  },
+
+  {
+    id: 2,
+    name: "Dawit Tilahun",
+    room: "106",
+    urgency: "Critical",
+    robot: "AURA-02",
+    status: "busy",
+  },
+
+  {
+    id: 3,
+    name: "Woyinshet Amare",
+    room: "110",
+    urgency: "Stable",
+    robot: "AURA-01",
+    status: "waiting",
+  },
+];
+
+const selectedPatient = ref(assignedPatients[0]);
+
+const vitals = ref({
+  heartRate: 88,
+  spo2: 97,
+  temperature: 36.8,
+  bloodPressure: "120/80",
+  battery: 81,
+  latency: "40ms",
+});
 </script>
+
 <template>
   <ModalsTelepresenceSession v-model="isSessionModalOpen" />
-  <div
-    class="mb-6 flex flex-col gap-4 sm:flex-row items-center justify-between"
-  >
-    <div>
-      <h1 class="text-2xl font-bold tracking-tight">Robot Telepresence</h1>
 
-      <p class="mt-1 text-sm text-muted-foreground">
-        Manage remote consultations, live robot sessions, and patient
-        interactions.
-      </p>
-    </div>
+  <div class="space-y-6">
+    <div
+      class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+    >
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">Robot Telepresence</h1>
 
-    <div class="flex items-center gap-3">
-      <div class="relative">
-        <UiBaseInput
-          v-model="search"
-          class="w-64 pl-9"
-          placeholder="Search sessions..."
-          value=""
-          leading-icon="lucide:search"
-          leadingIconClass="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-        >
-        </UiBaseInput>
+        <p class="mt-1 text-sm text-gray-500">
+          Remote patient consultation, robot monitoring, and live interaction
+          center.
+        </p>
       </div>
 
-      <button
-        type="button"
-        @click="openSessionModal"
-        class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
-      >
-        <Icon name="lucide:video" class="mr-2 h-4 w-4" />
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <UiBaseInput
+            v-model="search"
+            class="w-72 pl-10"
+            placeholder="Search patients or sessions..."
+            leading-icon="lucide:search"
+            leadingIconClass="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+          />
+        </div>
 
-        Start New Session
-      </button>
+        <button
+          type="button"
+          @click="openSessionModal"
+          class="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+        >
+          <Icon name="lucide:video" class="h-4 w-4" />
+          Start Session
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <UiMetricCard
-      v-for="metric in metrics"
-      :key="metric.title"
-      :title="metric.title"
-      :value="metric.value"
-      :icon="metric.icon"
-      :colorTheme="metric.colorTheme"
-    />
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <UiMetricCard
+        v-for="metric in metrics"
+        :key="metric.title"
+        :title="metric.title"
+        :value="metric.value"
+        :icon="metric.icon"
+        :colorTheme="metric.colorTheme"
+      />
+    </div>
+    <div class="grid grid-cols-12 gap-6">
+      <div
+        class="col-span-12 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm xl:col-span-3"
+      >
+        <div class="mb-5 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Assigned Patients</h2>
+
+          <span
+            class="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+          >
+            {{ assignedPatients.length }}
+          </span>
+        </div>
+
+        <div class="space-y-4">
+          <div
+            v-for="patient in assignedPatients"
+            :key="patient.id"
+            @click="selectedPatient = patient"
+            class="cursor-pointer rounded-2xl border p-4 transition-all duration-200 hover:shadow-md"
+            :class="
+              selectedPatient.id === patient.id
+                ? 'border-primary bg-primary/5'
+                : 'border-gray-200'
+            "
+          >
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="font-semibold">
+                  {{ patient.name }}
+                </h3>
+
+                <p class="mt-1 text-sm text-gray-500">
+                  Room {{ patient.room }}
+                </p>
+              </div>
+
+              <div
+                class="h-3 w-3 rounded-full"
+                :class="
+                  patient.status === 'online'
+                    ? 'bg-green-500'
+                    : patient.status === 'busy'
+                      ? 'bg-red-500'
+                      : 'bg-yellow-500'
+                "
+              />
+            </div>
+
+            <div class="mt-4 flex items-center justify-between">
+              <span
+                class="rounded-full px-3 py-1 text-xs font-medium"
+                :class="
+                  patient.urgency === 'Critical'
+                    ? 'bg-red-100 text-red-700'
+                    : patient.urgency === 'Normal'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-gray-100 text-gray-700'
+                "
+              >
+                {{ patient.urgency }}
+              </span>
+
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <Icon name="lucide:bot" class="h-4 w-4" />
+                {{ patient.robot }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-12 xl:col-span-6">
+        <div
+          class="overflow-hidden rounded-3xl border border-gray-200 bg-black shadow-sm"
+        >
+          <div
+            class="flex items-center justify-between border-b border-white/10 px-6 py-4"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-white">
+                {{ selectedPatient.name }}
+              </h2>
+
+              <p class="text-sm text-gray-400">
+                Room {{ selectedPatient.room }} · Robot
+                {{ selectedPatient.robot }}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <div class="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
+
+              <span class="text-sm font-medium text-red-400"> LIVE </span>
+            </div>
+          </div>
+          <div
+            class="relative flex h-[500px] items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-950"
+          >
+            <div class="text-center">
+              <Icon
+                name="lucide:video"
+                class="mx-auto h-20 w-20 text-white/20"
+              />
+
+              <p class="mt-4 text-lg font-medium text-white/80">
+                Live Robot Camera Stream
+              </p>
+
+              <p class="mt-1 text-sm text-gray-500">
+                Waiting for robot connection...
+              </p>
+            </div>
+            <div
+              class="absolute bottom-5 left-5 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-md"
+            >
+              <div class="flex items-center gap-3">
+                <div class="h-3 w-3 rounded-full bg-green-400" />
+
+                <div>
+                  <p class="text-xs text-gray-300">Connection Stable</p>
+
+                  <p class="text-sm font-medium text-white">1080p · 40ms</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex flex-wrap items-center justify-center gap-3 border-t border-white/10 p-5"
+          >
+            <button
+              class="rounded-xl bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur hover:bg-white/20"
+            >
+              <Icon name="lucide:mic" class="mr-2 inline h-4 w-4" />
+              Audio
+            </button>
+
+            <button
+              class="rounded-xl bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur hover:bg-white/20"
+            >
+              <Icon name="lucide:move" class="mr-2 inline h-4 w-4" />
+              Move Robot
+            </button>
+
+            <button
+              class="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-600"
+            >
+              <Icon name="lucide:activity" class="mr-2 inline h-4 w-4" />
+              Measure Vitals
+            </button>
+
+            <button
+              class="rounded-xl bg-red-500 px-5 py-3 text-sm font-medium text-white hover:bg-red-600"
+            >
+              <Icon name="lucide:siren" class="mr-2 inline h-4 w-4" />
+              Emergency
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-12 space-y-6 xl:col-span-3">
+        <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div class="mb-5 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Live Vitals</h2>
+
+            <span
+              class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700"
+            >
+              Real-time
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div
+              class="flex items-center justify-between rounded-2xl bg-gray-50 p-4"
+            >
+              <div>
+                <p class="text-sm text-gray-500">Heart Rate</p>
+
+                <p class="text-xl font-bold">
+                  {{ vitals.heartRate }}
+                </p>
+              </div>
+
+              <Icon name="lucide:heart-pulse" class="h-6 w-6 text-rose-500" />
+            </div>
+
+            <div
+              class="flex items-center justify-between rounded-2xl bg-gray-50 p-4"
+            >
+              <div>
+                <p class="text-sm text-gray-500">SpO2</p>
+
+                <p class="text-xl font-bold">{{ vitals.spo2 }}%</p>
+              </div>
+
+              <Icon name="lucide:activity" class="h-6 w-6 text-blue-500" />
+            </div>
+
+            <div
+              class="flex items-center justify-between rounded-2xl bg-gray-50 p-4"
+            >
+              <div>
+                <p class="text-sm text-gray-500">Temperature</p>
+
+                <p class="text-xl font-bold">{{ vitals.temperature }}°C</p>
+              </div>
+
+              <Icon name="lucide:thermometer" class="h-6 w-6 text-orange-500" />
+            </div>
+          </div>
+        </div>
+        <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 class="mb-5 text-lg font-semibold">Robot Status</h2>
+
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">Robot</span>
+
+              <span class="font-semibold">
+                {{ selectedPatient.robot }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">Battery</span>
+
+              <span class="font-semibold text-emerald-600">
+                {{ vitals.battery }}%
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">Latency</span>
+
+              <span class="font-semibold">
+                {{ vitals.latency }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">Connection</span>
+
+              <span
+                class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
+              >
+                Stable
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
