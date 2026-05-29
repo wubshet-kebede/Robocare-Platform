@@ -114,16 +114,26 @@ func GetAssignedPatientsRepository(staffID uuid.UUID) ([]model.AssignedPatientRe
 			admissions.admission_status,
 			admissions.urgency,
 			rooms.room_number,
-			staff.full_name as assigned_doctor_name
+			assigned_doctor.full_name as assigned_doctor_name
 		`).
-		Joins("JOIN patients ON patients.id = admissions.patient_id").
-		Joins("LEFT JOIN rooms ON rooms.id = admissions.room_id").
-		Joins("LEFT JOIN staffs as staff ON staff.id = admissions.assigned_doctor_id").
+		Joins(`
+			JOIN patients 
+			ON patients.id = admissions.patient_id
+		`).
+		Joins(`
+			LEFT JOIN rooms 
+			ON rooms.id = admissions.room_id
+		`).
+		Joins(`
+			LEFT JOIN users as assigned_doctor 
+			ON assigned_doctor.id = admissions.assigned_doctor_id
+		`).
 		Where(`
-			(admissions.assigned_doctor_id = ? 
-			OR admissions.assigned_nurse_id = ?)
+			(
+				admissions.assigned_doctor_id = ?
+			)
 			AND admissions.is_active = ?
-		`, staffID, staffID, true).
+		`, staffID, true).
 		Scan(&patients).Error
 
 	if err != nil {
