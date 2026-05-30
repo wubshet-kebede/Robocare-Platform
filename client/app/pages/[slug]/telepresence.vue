@@ -81,11 +81,15 @@ const vitals = ref({});
 onMounted(() => {
   getAdmittedPatients();
 });
-watch(admittedPatients, (list) => {
-  if (list.length && !selectedPatient.value) {
-    selectedPatient.value = list[0];
-  }
-});
+watch(
+  admittedPatients,
+  (list) => {
+    if (list.length && !selectedPatient.value) {
+      selectedPatient.value = list[0];
+    }
+  },
+  { deep: true },
+);
 watch(
   selectedPatient,
   (patient) => {
@@ -105,7 +109,10 @@ watch(
 </script>
 
 <template>
-  <ModalsTelepresenceSession v-model="isSessionModalOpen" />
+  <ModalsTelepresenceSession
+    v-model="isSessionModalOpen"
+    :patient="selectedPatient"
+  />
 
   <div class="space-y-6">
     <div

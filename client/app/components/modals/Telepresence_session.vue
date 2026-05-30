@@ -4,8 +4,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  patient: Object,
 });
-
+console.log(props.patient?.id);
+console.log(props.patient?.name);
 const emits = defineEmits(["update:modelValue"]);
 
 const isOpen = computed({

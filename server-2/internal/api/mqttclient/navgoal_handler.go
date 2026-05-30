@@ -35,7 +35,6 @@ func PublishNavGoalHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "room not found", http.StatusNotFound)
         return
     }
-    // check if there is an active admission for the patient in this room and get the patient id
     patient, err := admission.GetPatientByRoomID(body.RoomID)
     if err != nil {
 	    http.Error(w, "patient not found in this room", http.StatusNotFound)
