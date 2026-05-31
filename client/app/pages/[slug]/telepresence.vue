@@ -11,6 +11,7 @@ const openSessionModal = () => {
   isSessionModalOpen.value = true;
 };
 const { getAssignedPatients } = useAdmittedPatientService();
+const { getRobots } = useRobotService();
 const loadingPatients = ref(false);
 const getAdmittedPatients = async () => {
   try {
@@ -47,7 +48,27 @@ const getAdmittedPatients = async () => {
     loadingPatients.value = false;
   }
 };
+const loadingRobots = ref(false);
+const robots = ref([]);
+const getAvailableRobots = async () => {
+  try {
+    loadingRobots.value = true;
 
+    const response = await getRobots();
+
+    robots.value = response.map((robot) => ({
+      id: robot.id,
+      name: robot.name,
+      status: robot.status,
+    }));
+
+    console.log("Available Robots:", robots.value);
+  } catch (error) {
+    console.log("Fetch Robots Error:", error);
+  } finally {
+    loadingRobots.value = false;
+  }
+};
 const metrics = [
   {
     title: "Live Consultations",
@@ -80,6 +101,7 @@ const metrics = [
 const vitals = ref({});
 onMounted(() => {
   getAdmittedPatients();
+  getAvailableRobots();
 });
 watch(
   admittedPatients,

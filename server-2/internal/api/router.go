@@ -42,9 +42,11 @@ func SetupRouter(manager *ws.Manager) *mux.Router {
 	protected.HandleFunc("/publish-nav-goal", mqttclient.PublishNavGoalHandler).Methods("POST")
     protected.HandleFunc("/me", auth.MeHandler).Methods("GET")
 	protected.HandleFunc("/roles",role.GetRoles ).Methods("GET")
+	protected.HandleFunc("/get-robots", robot.GetRobotsHandler).Methods("GET")
 
     wsHandler := ws.NewHandler(manager)
 
-    r.HandleFunc("/ws/vitals", wsHandler.ServeWS)
+    r.HandleFunc("/ws", wsHandler.ServeWS)
+	
 	return  r
 }

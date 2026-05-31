@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
 )
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
@@ -20,16 +22,13 @@ func NewHandler(m *Manager) *Handler {
 	return &Handler{manager: m}
 }
 func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+	role, Rok := r.Context().Value(middleware.RoleKey).(string)
 
-	hospitalID := r.URL.Query().Get("hospital_id")
-	role := r.URL.Query().Get("role")
-	robotID := r.URL.Query().Get("robotId")
-
-	if hospitalID == "" {
-		http.Error(w, "hospital_id is required", http.StatusBadRequest)
+	if !ok || !Rok {
+		http.Error(w, "missing hospital id or role", http.StatusBadRequest)
 		return
 	}
-
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("WebSocket upgrade failed:", err)
@@ -38,9 +37,9 @@ func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 
 	client := &Client{
 		Conn:       conn,
-		HospitalID: hospitalID,
+		HospitalID: hospitalID.String(),
 		Role:       role,
-		RobotID:    robotID,
+		RobotID:    " ",
 		Send:       make(chan []byte, 256),
 	}
 
