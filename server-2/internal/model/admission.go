@@ -62,6 +62,7 @@ type AssignedPatientResponse struct {
 	FullName           string    `json:"full_name"`
 	Gender             string    `json:"gender"`
 	DateOfBirth        time.Time `json:"date_of_birth"`
+	RoomID             uuid.UUID `json:"room_id"`
 
 	Diagnosis          string    `json:"diagnosis"`
 	AdmissionStatus    string    `json:"admission_status"`

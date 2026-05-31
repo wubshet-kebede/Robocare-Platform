@@ -25,6 +25,7 @@ const getAdmittedPatients = async () => {
       gender: patient.gender,
       diagnosis: patient.diagnosis,
       room: patient.room_number,
+      room_id: patient.room_id,
       doctorName: patient.assigned_doctor_name,
       urgency: patient.urgency,
       status: patient.admission_status,

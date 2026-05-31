@@ -114,6 +114,7 @@ func GetAssignedPatientsRepository(staffID uuid.UUID) ([]model.AssignedPatientRe
 		admissions.diagnosis,
 		admissions.admission_status,
 		admissions.urgency,
+		admissions.room_id,
 
 		rooms.room_number,
 

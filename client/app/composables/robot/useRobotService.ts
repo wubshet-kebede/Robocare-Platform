@@ -6,6 +6,16 @@ export const useRobotService = () => {
       method: "GET",
     });
   };
+  const publishNavGoal = (data: {
+    patient_id: string;
+    robot_id: string;
+    room_id: string;
+  }) => {
+    return $api("/publish-nav-goal", {
+      method: "POST",
+      body: data,
+    });
+  };
 
-  return { getRobots };
+  return { getRobots, publishNavGoal };
 };
