@@ -21,6 +21,7 @@ const isOpen = computed({
 });
 const { getRobots } = useRobotService();
 const { publishNavGoal } = useRobotService();
+const { setRobot, connectWS, startWebRTC } = useTelepresence();
 const loadingRobots = ref(false);
 const robots = ref([]);
 const getAvailableRobots = async () => {
@@ -114,6 +115,7 @@ const submit = async () => {
     console.log("Robot ID:", values.robot);
     console.log("Room ID:", values.roomId);
 
+    // 1. NAVIGATION (can run independently)
     const response = await publishNavGoal({
       patient_id: values.patient,
       robot_id: values.robot,
@@ -121,6 +123,16 @@ const submit = async () => {
     });
 
     console.log("Navigation Goal Response:", response);
+
+    // 2. TELEPRESENCE SETUP
+    setRobot(values.robot);
+
+    // IMPORTANT: connect WS first
+
+    await connectWS();
+
+    // 4. START WEBRTC
+    await startWebRTC();
 
     isOpen.value = false;
   } catch (error) {

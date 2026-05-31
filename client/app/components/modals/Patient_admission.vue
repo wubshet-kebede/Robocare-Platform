@@ -16,7 +16,7 @@ const props = defineProps({
     default: () => [],
   },
 });
-
+console.log("the props we accepted from the parent is", props.assignableStaff);
 const emits = defineEmits(["update:modelValue", "success"]);
 
 const isOpen = computed({

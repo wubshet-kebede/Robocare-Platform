@@ -90,6 +90,11 @@ func (m *Manager) RouteMessage(sender *Client, msg Message, raw []byte) {
         "Robot registered -> %s",
         sender.RobotID,
     )
+
+    case "register_session":
+         sender.HospitalID = msg.HospitalID
+         sender.Role = "doctor"
+         log.Println("Session registered:", sender.HospitalID)
 	}
 	
 }
