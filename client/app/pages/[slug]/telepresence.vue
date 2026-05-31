@@ -7,10 +7,11 @@ const search = ref("");
 const isSessionModalOpen = ref(false);
 const admittedPatients = ref([]);
 const selectedPatient = ref(null);
-const openSessionModal = () => {
-  isSessionModalOpen.value = true;
-};
+
 const { getAssignedPatients } = useAdmittedPatientService();
+const localVideoRef = ref(null);
+const { setRobot, connectWS, startWebRTC, videoRef, robotId } =
+  useTelepresence();
 const { getRobots } = useRobotService();
 const loadingPatients = ref(false);
 const getAdmittedPatients = async () => {
@@ -25,6 +26,7 @@ const getAdmittedPatients = async () => {
       gender: patient.gender,
       diagnosis: patient.diagnosis,
       room: patient.room_number,
+      room_id: patient.room_id,
       doctorName: patient.assigned_doctor_name,
       urgency: patient.urgency,
       status: patient.admission_status,
@@ -128,6 +130,31 @@ watch(
   },
   { immediate: true },
 );
+// const openSessionModal = () => {
+//   isSessionModalOpen.value = true;
+//   // pick robot from selected patient
+//   robotId.value = selectedPatient.value?.robot || "robot-1";
+
+//   // start telepresence
+//   connect();
+// };
+const openSessionModal = async () => {
+  isSessionModalOpen.value = true;
+  robotId.value = selectedPatient.value?.robot || "robot-1";
+  setRobot(robotId.value);
+
+  try {
+    console.log("[Page] Connecting to WebSocket...");
+    await connectWS();
+    if (localVideoRef.value) {
+      videoRef.value = localVideoRef.value;
+    }
+    console.log("[Page] WebSocket ready. Starting WebRTC handshake...");
+    await startWebRTC();
+  } catch (error) {
+    console.error("[Page] Failed to start telepresence session:", error);
+  }
+};
 </script>
 
 <template>
@@ -276,16 +303,22 @@ watch(
           <div
             class="relative flex h-[500px] items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-950"
           >
-            <div class="text-center">
+            <video
+              ref="localVideoRef"
+              autoplay
+              playsinline
+              muted
+              class="h-full w-full object-cover"
+            />
+
+            <div v-if="!localVideoRef?.srcObject" class="text-center">
               <Icon
                 name="lucide:video"
                 class="mx-auto h-20 w-20 text-white/20"
               />
-
               <p class="mt-4 text-lg font-medium text-white/80">
                 Live Robot Camera Stream
               </p>
-
               <p class="mt-1 text-sm text-gray-500">
                 Waiting for robot connection...
               </p>

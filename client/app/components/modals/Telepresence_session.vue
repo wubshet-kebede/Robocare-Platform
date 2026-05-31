@@ -8,6 +8,7 @@ const props = defineProps({
 });
 console.log(props.patient?.id);
 console.log(props.patient?.name);
+console.log("the props we accepted from the parent is", props.patient);
 const emits = defineEmits(["update:modelValue"]);
 
 const isOpen = computed({
@@ -19,6 +20,8 @@ const isOpen = computed({
   },
 });
 const { getRobots } = useRobotService();
+const { publishNavGoal } = useRobotService();
+const { setRobot, connectWS, startWebRTC } = useTelepresence();
 const loadingRobots = ref(false);
 const robots = ref([]);
 const getAvailableRobots = async () => {
@@ -40,43 +43,14 @@ const getAvailableRobots = async () => {
     loadingRobots.value = false;
   }
 };
-onMounted(() => {
-  getAvailableRobots();
-});
-const loadingSubmit = ref(false);
 
+const loadingSubmit = ref(false);
 const values = reactive({
   patient: "",
-  room: "",
+  roomId: "",
   robot: "",
-  sessionType: "",
-  priority: "",
   notes: "",
 });
-
-const patientOptions = [
-  {
-    id: "patient-1",
-    name: "John Doe",
-    room: "ICU-101",
-    department: "ICU",
-  },
-
-  {
-    id: "patient-2",
-    name: "Sarah Johnson",
-    room: "ER-203",
-    department: "Emergency",
-  },
-
-  {
-    id: "patient-3",
-    name: "Michael Brown",
-    room: "WARD-12",
-    department: "Cardiology",
-  },
-];
-
 const robotOptions = computed(() =>
   robots.value.map((robot) => ({
     id: robot.id,
@@ -84,73 +58,92 @@ const robotOptions = computed(() =>
   })),
 );
 console.log("the manual case", robotOptions.value);
-const sessionTypeOptions = [
-  {
-    id: "Routine Check",
-    name: "Routine Check",
-  },
+// const sessionTypeOptions = [
+//   {
+//     id: "Routine Check",
+//     name: "Routine Check",
+//   },
 
-  {
-    id: "Follow-up",
-    name: "Follow-up",
-  },
+//   {
+//     id: "Follow-up",
+//     name: "Follow-up",
+//   },
 
-  {
-    id: "Emergency Consultation",
-    name: "Emergency Consultation",
-  },
-];
+//   {
+//     id: "Emergency Consultation",
+//     name: "Emergency Consultation",
+//   },
+// ];
 
-const priorityOptions = [
-  {
-    id: "Low",
-    name: "Low",
-  },
+// const priorityOptions = [
+//   {
+//     id: "Low",
+//     name: "Low",
+//   },
 
-  {
-    id: "Medium",
-    name: "Medium",
-  },
+//   {
+//     id: "Medium",
+//     name: "Medium",
+//   },
 
-  {
-    id: "High",
-    name: "High",
-  },
+//   {
+//     id: "High",
+//     name: "High",
+//   },
 
-  {
-    id: "Critical",
-    name: "Critical",
-  },
-];
+//   {
+//     id: "Critical",
+//     name: "Critical",
+//   },
+// ];
 
 watch(
-  () => values.patient,
-  (newPatient) => {
-    const selectedPatient = patientOptions.find(
-      (patient) => patient.id === newPatient,
-    );
+  () => props.patient,
+  (patient) => {
+    if (!patient) return;
 
-    if (selectedPatient) {
-      values.room = selectedPatient.room;
-    }
+    values.patient = patient.id;
+    values.roomId = patient.room_id;
   },
+  { immediate: true },
 );
-
 const submit = async () => {
   try {
     loadingSubmit.value = true;
 
-    console.log("Telepresence Session:", values);
+    console.log("Patient ID:", values.patient);
+    console.log("Robot ID:", values.robot);
+    console.log("Room ID:", values.roomId);
 
-    setTimeout(() => {
-      loadingSubmit.value = false;
-      isOpen.value = false;
-    }, 1500);
+    // 1. NAVIGATION (can run independently)
+    const response = await publishNavGoal({
+      patient_id: values.patient,
+      robot_id: values.robot,
+      room_id: values.roomId,
+    });
+
+    console.log("Navigation Goal Response:", response);
+
+    // 2. TELEPRESENCE SETUP
+    setRobot(values.robot);
+
+    // IMPORTANT: connect WS first
+
+    await connectWS();
+
+    // 4. START WEBRTC
+    await startWebRTC();
+
+    isOpen.value = false;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+  } finally {
     loadingSubmit.value = false;
   }
 };
+onMounted(() => {
+  getAvailableRobots();
+});
 </script>
 
 <template>
@@ -165,17 +158,6 @@ const submit = async () => {
           <h2 class="text-xl font-semibold mb-6">Session Information</h2>
 
           <div class="grid grid-cols-2 gap-6">
-            <UiListSelect
-              v-model="values.patient"
-              :items="patientOptions"
-              name="patient"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">Select Patient</h1>
-              </template>
-            </UiListSelect>
-
             <!-- ROBOT -->
             <UiListSelect
               v-model="values.robot"
@@ -187,7 +169,7 @@ const submit = async () => {
                 <h1 class="text-md font-medium mb-2">Select Robot</h1>
               </template>
             </UiListSelect>
-            <UiListSelect
+            <!-- <UiListSelect
               v-model="values.sessionType"
               :items="sessionTypeOptions"
               name="sessionType"
@@ -206,19 +188,7 @@ const submit = async () => {
               <template #label>
                 <h1 class="text-md font-medium mb-2">Priority Level</h1>
               </template>
-            </UiListSelect>
-          </div>
-        </div>
-        <div>
-          <h2 class="text-xl font-semibold mb-6">Robot Destination</h2>
-
-          <div class="grid grid-cols-2 gap-6">
-            <UiBaseInput v-model="values.room" name="room" disabled>
-              <template #label>
-                <h1 class="text-md font-medium mb-2">Patient Room</h1>
-              </template>
-            </UiBaseInput>
-
+            </UiListSelect> -->
             <UiBaseInput
               modelValue="Ready for Navigation"
               name="status"

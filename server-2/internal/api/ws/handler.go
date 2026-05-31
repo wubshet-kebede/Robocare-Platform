@@ -5,9 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/wubshet-kebede/robocare-platform/server-2/internal/middleware"
 )
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
@@ -21,14 +19,34 @@ type Handler struct {
 func NewHandler(m *Manager) *Handler {
 	return &Handler{manager: m}
 }
-func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
-	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
-	role, Rok := r.Context().Value(middleware.RoleKey).(string)
+// func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
+// 	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+// 	role, Rok := r.Context().Value(middleware.RoleKey).(string)
 
-	if !ok || !Rok {
-		http.Error(w, "missing hospital id or role", http.StatusBadRequest)
-		return
-	}
+// 	if !ok || !Rok {
+// 		http.Error(w, "missing hospital id or role", http.StatusBadRequest)
+// 		return
+// 	}
+// 	conn, err := upgrader.Upgrade(w, r, nil)
+// 	if err != nil {
+// 		log.Println("WebSocket upgrade failed:", err)
+// 		return
+// 	}
+
+// 	client := &Client{
+// 		Conn:       conn,
+// 		HospitalID: hospitalID.String(),
+// 		Role:       role,
+// 		RobotID:    " ",
+// 		Send:       make(chan []byte, 256),
+// 	}
+
+// 	h.manager.AddClient(client)
+
+// 	go h.writePump(client)
+// 	go h.listen(client)
+// }
+func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("WebSocket upgrade failed:", err)
@@ -36,11 +54,13 @@ func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &Client{
-		Conn:       conn,
-		HospitalID: hospitalID.String(),
-		Role:       role,
-		RobotID:    " ",
-		Send:       make(chan []byte, 256),
+		Conn: conn,
+		Send: make(chan []byte, 256),
+
+		// unknown at connection time
+		HospitalID: "",
+		Role:       "",
+		RobotID:    "",
 	}
 
 	h.manager.AddClient(client)
