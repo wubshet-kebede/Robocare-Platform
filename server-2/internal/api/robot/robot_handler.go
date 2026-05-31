@@ -40,3 +40,18 @@ func CreateRobotHandler(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusCreated)
     json.NewEncoder(w).Encode(newRobot)
 }
+
+func GetRobotsHandler(w http.ResponseWriter, r *http.Request) {
+    hospitalID , ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+     if !ok  {
+        http.Error(w, "missing hosppital id", http.StatusBadRequest)
+        return
+    }
+    robots, err := robot.GetRobotsByHospitalID(hospitalID)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(robots)
+}

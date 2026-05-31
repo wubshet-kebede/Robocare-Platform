@@ -43,3 +43,6 @@ func RegisterRobot(hospitalID uuid.UUID, serial string, modelName string) (*mode
 
 	return newRobot, nil
 }
+func GetRobotsByHospitalID(hospitalID uuid.UUID) ([]*model.Robot, error) {
+	return robot.GetByHospitalID(hospitalID)
+}

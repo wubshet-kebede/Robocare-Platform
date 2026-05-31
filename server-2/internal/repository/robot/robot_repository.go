@@ -34,3 +34,13 @@ func GetRobotByID(id uuid.UUID) (*model.Robot, error) {
 
     return &robot, nil
 }
+func GetByHospitalID(hospitalID uuid.UUID) ([]*model.Robot, error) {
+	var robots []*model.Robot
+
+	err := db.DB.Where("hospital_id = ?", hospitalID).Find(&robots).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return robots, nil
+}

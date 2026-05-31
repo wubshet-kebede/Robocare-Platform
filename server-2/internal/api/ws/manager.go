@@ -82,5 +82,14 @@ func (m *Manager) RouteMessage(sender *Client, msg Message, raw []byte) {
 				}
 			}
 		}
+	case "register_robot":
+
+        sender.RobotID = msg.RobotID
+
+        log.Printf(
+        "Robot registered -> %s",
+        sender.RobotID,
+    )
 	}
+	
 }

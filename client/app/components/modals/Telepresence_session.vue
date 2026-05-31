@@ -18,7 +18,31 @@ const isOpen = computed({
     emits("update:modelValue", value);
   },
 });
+const { getRobots } = useRobotService();
+const loadingRobots = ref(false);
+const robots = ref([]);
+const getAvailableRobots = async () => {
+  try {
+    loadingRobots.value = true;
 
+    const response = await getRobots();
+    console.log("API Response:", response);
+    robots.value = response.map((robot) => ({
+      id: robot.id,
+      name: robot.model,
+      status: robot.status,
+    }));
+
+    console.log("Available Robots:", robots.value);
+  } catch (error) {
+    console.log("Fetch Robots Error:", error);
+  } finally {
+    loadingRobots.value = false;
+  }
+};
+onMounted(() => {
+  getAvailableRobots();
+});
 const loadingSubmit = ref(false);
 
 const values = reactive({
@@ -53,23 +77,13 @@ const patientOptions = [
   },
 ];
 
-const robotOptions = [
-  {
-    id: "robot-1",
-    name: "MediRover-01",
-  },
-
-  {
-    id: "robot-2",
-    name: "MediRover-02",
-  },
-
-  {
-    id: "robot-3",
-    name: "MediRover-03",
-  },
-];
-
+const robotOptions = computed(() =>
+  robots.value.map((robot) => ({
+    id: robot.id,
+    name: robot.name,
+  })),
+);
+console.log("the manual case", robotOptions.value);
 const sessionTypeOptions = [
   {
     id: "Routine Check",
@@ -158,10 +172,7 @@ const submit = async () => {
               rules="required"
             >
               <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Select Patient
-                  <span class="text-red-500">*</span>
-                </h1>
+                <h1 class="text-md font-medium mb-2">Select Patient</h1>
               </template>
             </UiListSelect>
 
@@ -173,10 +184,7 @@ const submit = async () => {
               rules="required"
             >
               <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Select Robot
-                  <span class="text-red-500">*</span>
-                </h1>
+                <h1 class="text-md font-medium mb-2">Select Robot</h1>
               </template>
             </UiListSelect>
             <UiListSelect
@@ -186,10 +194,7 @@ const submit = async () => {
               rules="required"
             >
               <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Session Type
-                  <span class="text-red-500">*</span>
-                </h1>
+                <h1 class="text-md font-medium mb-2">Session Type</h1>
               </template>
             </UiListSelect>
             <UiListSelect
@@ -199,10 +204,7 @@ const submit = async () => {
               rules="required"
             >
               <template #label>
-                <h1 class="text-md font-medium mb-2">
-                  Priority Level
-                  <span class="text-red-500">*</span>
-                </h1>
+                <h1 class="text-md font-medium mb-2">Priority Level</h1>
               </template>
             </UiListSelect>
           </div>
