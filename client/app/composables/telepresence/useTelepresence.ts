@@ -4,26 +4,16 @@ export const useTelepresence = () => {
   const ws = ref<WebSocket | null>(null);
   const pc = ref<RTCPeerConnection | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
-
   const robotId = ref<string | null>(null);
 
-  // =========================
-  // STATE CONTROL (IMPORTANT)
-  // =========================
   const sessionReady = ref(false);
   const isConnecting = ref(false);
   const isWSOpen = ref(false);
 
-  // =========================
-  // SET ROBOT ID
-  // =========================
   const setRobot = (id: string) => {
     robotId.value = id;
   };
 
-  // =========================
-  // CONNECT WEBSOCKET
-  // =========================
   const connectWS = (): Promise<void> => {
     return new Promise((resolve, reject) => {
       if (!robotId.value) {
@@ -35,17 +25,14 @@ export const useTelepresence = () => {
 
       ws.value.onopen = () => {
         console.log("[Telepresence] WS connected");
-
         ws.value?.send(
           JSON.stringify({
             type: "register_robot",
             robotId: robotId.value,
           }),
         );
-
         isWSOpen.value = true;
         sessionReady.value = true;
-
         console.log("[Telepresence] Robot registered");
         resolve();
       };
@@ -60,90 +47,95 @@ export const useTelepresence = () => {
         isWSOpen.value = false;
         sessionReady.value = false;
       };
-
-      ws.value.onmessage = async (event) => {
-        const msg = JSON.parse(event.data);
-
-        switch (msg.type) {
-          case "answer":
-            await handleAnswer(msg.sdp);
-            break;
-
-          case "candidate":
-            await handleCandidate(msg.candidate);
-            break;
-        }
-      };
     });
   };
 
-  // =========================
-  // START WEBRTC
-  // =========================
   const startWebRTC = async () => {
-    // 🔥 HARD GUARDS
-    if (!sessionReady.value || !isWSOpen.value) {
-      console.error("[Telepresence] WS not ready");
-      return;
-    }
-
-    if (isConnecting.value) {
-      console.warn("[Telepresence] Already connecting...");
-      return;
-    }
-
-    if (!robotId.value) {
-      console.error("[Telepresence] Missing robotId");
+    if (
+      !sessionReady.value ||
+      !isWSOpen.value ||
+      isConnecting.value ||
+      !robotId.value
+    ) {
+      console.error(
+        "[Telepresence] Connection dependencies unmet or busy state.",
+      );
       return;
     }
 
     isConnecting.value = true;
 
     try {
-      // =========================
-      // CLEAN OLD PEER CONNECTION
-      // =========================
       if (pc.value) {
         pc.value.close();
         pc.value = null;
       }
 
-      // =========================
-      // CREATE NEW PEER CONNECTION
-      // =========================
       pc.value = new RTCPeerConnection({
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
       });
+
+      // Force browser to create an inbound media descriptor block in the SDP offer
       pc.value.addTransceiver("video", { direction: "recvonly" });
-      // =========================
-      // RECEIVE VIDEO
-      // =========================
+
       pc.value.ontrack = (event) => {
-        const stream = event.streams?.[0];
+        console.log("[WebRTC Frontend] Video stream track received!");
+        const stream = event.streams[0];
 
         if (videoRef.value && stream) {
+          console.log(
+            "[WebRTC Composable] Binding stream to video element and forcing playback!",
+          );
           videoRef.value.srcObject = stream;
+          videoRef.value.play().catch((err) => {
+            console.error(
+              "[WebRTC Composable] Playback blocked by browser policies:",
+              err,
+            );
+          });
+        } else {
+          console.warn(
+            "[WebRTC Composable] Missing element reference or media stream pointer!",
+          );
         }
       };
 
-      // =========================
-      // SEND ICE CANDIDATES
-      // =========================
       pc.value.onicecandidate = (event) => {
         if (event.candidate && ws.value) {
           ws.value.send(
             JSON.stringify({
               type: "candidate",
               robotId: robotId.value,
-              candidate: event.candidate,
+              candidate: {
+                candidate: event.candidate.candidate,
+                sdpMid: event.candidate.sdpMid,
+                sdpMLineIndex: event.candidate.sdpMLineIndex,
+              },
             }),
           );
         }
       };
 
-      // =========================
-      // CREATE OFFER
-      // =========================
+      // Wrap assigning .onmessage inside a condition to fix TypeScript null errors
+      if (ws.value) {
+        ws.value.onmessage = async (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.type === "answer") {
+            console.log(
+              "[Telepresence] Local state is ready. Applying remote Answer safely.",
+            );
+            await handleAnswer(msg.sdp);
+          } else if (msg.type === "candidate") {
+            await handleCandidate(msg.candidate);
+          }
+        };
+      } else {
+        console.error(
+          "[Telepresence] Cannot attach message framework; WebSocket is null",
+        );
+        return;
+      }
+
       const offer = await pc.value.createOffer();
       await pc.value.setLocalDescription(offer);
 
@@ -162,17 +154,21 @@ export const useTelepresence = () => {
 
       console.log("[Telepresence] Offer sent");
     } catch (err) {
-      console.error("[Telepresence] WebRTC error:", err);
+      console.error("[Telepresence] WebRTC execution error:", err);
     } finally {
       isConnecting.value = false;
     }
   };
 
-  // =========================
-  // HANDLE ANSWER
-  // =========================
   const handleAnswer = async (sdp: string) => {
     if (!pc.value) return;
+
+    if (pc.value.signalingState === "stable") {
+      console.warn(
+        "[Telepresence] Connection is already stable. Ignoring duplicate answer message.",
+      );
+      return;
+    }
 
     try {
       await pc.value.setRemoteDescription(
@@ -182,37 +178,38 @@ export const useTelepresence = () => {
         }),
       );
 
-      console.log("[Telepresence] Answer applied");
+      console.log("[Telepresence] Answer applied successfully");
     } catch (err) {
       console.error("[Telepresence] Answer error:", err);
     }
   };
 
-  // =========================
-  // HANDLE ICE
-  // =========================
   const handleCandidate = async (candidate: any) => {
     try {
-      await pc.value?.addIceCandidate(candidate);
+      if (!pc.value || !candidate) return;
+      await pc.value.addIceCandidate(
+        new RTCIceCandidate({
+          candidate: candidate.candidate,
+          sdpMid: candidate.sdpMid,
+          sdpMLineIndex: candidate.sdpMLineIndex,
+        }),
+      );
+      console.log(
+        "[Telepresence Frontend] Remote ICE candidate applied successfully",
+      );
     } catch (err) {
       console.error("[Telepresence] ICE error:", err);
     }
   };
 
-  // =========================
-  // CLEANUP
-  // =========================
   const disconnect = () => {
     ws.value?.close();
     pc.value?.close();
-
     ws.value = null;
     pc.value = null;
-
     sessionReady.value = false;
     isConnecting.value = false;
     isWSOpen.value = false;
-
     console.log("[Telepresence] Disconnected");
   };
 
