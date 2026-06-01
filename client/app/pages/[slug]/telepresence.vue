@@ -12,8 +12,10 @@ const { getAssignedPatients } = useAdmittedPatientService();
 const localVideoRef = ref(null);
 const { setRobot, connectWS, startWebRTC, videoRef, robotId } =
   useTelepresence();
+const isStreamActive = ref(false);
 const { getRobots } = useRobotService();
 const loadingPatients = ref(false);
+
 const getAdmittedPatients = async () => {
   try {
     loadingPatients.value = true;
@@ -146,11 +148,15 @@ const openSessionModal = async () => {
   try {
     console.log("[Page] Connecting to WebSocket...");
     await connectWS();
-    if (localVideoRef.value) {
-      videoRef.value = localVideoRef.value;
-    }
     console.log("[Page] WebSocket ready. Starting WebRTC handshake...");
     await startWebRTC();
+    const checkStreamInterval = setInterval(() => {
+      if (videoRef.value && videoRef.value.srcObject) {
+        console.log("[Page] Live Video source detected! Revealing container.");
+        isStreamActive.value = true;
+        clearInterval(checkStreamInterval);
+      }
+    }, 200);
   } catch (error) {
     console.error("[Page] Failed to start telepresence session:", error);
   }
@@ -303,35 +309,42 @@ const openSessionModal = async () => {
           <div
             class="relative flex h-[500px] items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-950"
           >
+            <!-- 🔥 THE FIX: Bind directly to 'videoRef' from the composable, toggle visibility using 'isStreamActive' -->
             <video
-              ref="localVideoRef"
+              ref="videoRef"
               autoplay
               playsinline
               muted
               class="h-full w-full object-cover"
+              :class="{ hidden: !isStreamActive }"
             />
 
-            <div v-if="!localVideoRef?.srcObject" class="text-center">
+            <!-- 🔥 THE FIX: Fallback overlay now tracks the 'isStreamActive' state flag -->
+            <div
+              v-if="!isStreamActive"
+              class="text-center absolute inset-0 flex flex-col items-center justify-center bg-black/40"
+            >
               <Icon
                 name="lucide:video"
                 class="mx-auto h-20 w-20 text-white/20"
               />
+
               <p class="mt-4 text-lg font-medium text-white/80">
                 Live Robot Camera Stream
               </p>
+
               <p class="mt-1 text-sm text-gray-500">
                 Waiting for robot connection...
               </p>
             </div>
+
             <div
               class="absolute bottom-5 left-5 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-md"
             >
               <div class="flex items-center gap-3">
                 <div class="h-3 w-3 rounded-full bg-green-400" />
-
                 <div>
                   <p class="text-xs text-gray-300">Connection Stable</p>
-
                   <p class="text-sm font-medium text-white">1080p · 40ms</p>
                 </div>
               </div>
