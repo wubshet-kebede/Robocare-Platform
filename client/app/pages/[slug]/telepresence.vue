@@ -35,10 +35,6 @@ const getAdmittedPatients = async () => {
       heart_rate: patient.heart_rate,
       spo2: patient.spo2,
       temperature: patient.temperature,
-      // systolic_bp: patient.systolic_bp,
-      // diastolic_bp: patient.diastolic_bp,
-
-      robot: "AURA-01",
     }));
 
     if (admittedPatients.value.length > 0) {
@@ -142,17 +138,23 @@ watch(
 // };
 const openSessionModal = async () => {
   isSessionModalOpen.value = true;
-  robotId.value = selectedPatient.value?.robot || "robot-1";
+  robotId.value = robots.value?.[0]?.id || "robot-1";
+  console.log("[Page] Selected Robot ID:", robotId.value);
   setRobot(robotId.value);
 
   try {
     console.log("[Page] Connecting to WebSocket...");
     await connectWS();
+    if (localVideoRef.value) {
+      videoRef.value = localVideoRef.value;
+    }
     console.log("[Page] WebSocket ready. Starting WebRTC handshake...");
     await startWebRTC();
     const checkStreamInterval = setInterval(() => {
-      if (videoRef.value && videoRef.value.srcObject) {
-        console.log("[Page] Live Video source detected! Revealing container.");
+      if (localVideoRef.value && localVideoRef.value.srcObject) {
+        console.log(
+          "[Page] Live Video source detected! Revealing container view.",
+        );
         isStreamActive.value = true;
         clearInterval(checkStreamInterval);
       }
@@ -309,32 +311,30 @@ const openSessionModal = async () => {
           <div
             class="relative flex h-[500px] items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-950"
           >
-            <!-- 🔥 THE FIX: Bind directly to 'videoRef' from the composable, toggle visibility using 'isStreamActive' -->
             <video
-              ref="videoRef"
+              ref="localVideoRef"
               autoplay
               playsinline
               muted
-              class="h-full w-full object-cover"
-              :class="{ hidden: !isStreamActive }"
+              class="h-full w-full object-cover transition-opacity duration-300"
+              :class="{
+                'opacity-0 absolute': !isStreamActive,
+                'opacity-100': isStreamActive,
+              }"
             />
-
-            <!-- 🔥 THE FIX: Fallback overlay now tracks the 'isStreamActive' state flag -->
             <div
               v-if="!isStreamActive"
-              class="text-center absolute inset-0 flex flex-col items-center justify-center bg-black/40"
+              class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-950 text-center z-10"
             >
               <Icon
                 name="lucide:video"
-                class="mx-auto h-20 w-20 text-white/20"
+                class="mx-auto h-20 w-20 text-white/20 animate-pulse"
               />
-
               <p class="mt-4 text-lg font-medium text-white/80">
                 Live Robot Camera Stream
               </p>
-
               <p class="mt-1 text-sm text-gray-500">
-                Waiting for robot connection...
+                Synchronizing real-time framework pipeline...
               </p>
             </div>
 

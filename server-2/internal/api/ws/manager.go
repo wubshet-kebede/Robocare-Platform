@@ -169,34 +169,21 @@ func (m *Manager) RouteMessage(sender *Client, msg Message, raw []byte) {
 		m.mu.RLock()
 		defer m.mu.RUnlock()
 
-		// Track if we successfully found a recipient to route to
 		routed := false
 
 		for client := range m.clients {
+			// Skip sending the message back to ourselves
 			if client == sender {
 				continue
 			}
 
-			// CASE 1: Message is coming from the Browser (Sender has NO RobotID)
-			// Route it to the Robot that matches msg.RobotID
-			if sender.RobotID == "" && client.RobotID == msg.RobotID {
+			// 🔥 DIRECT ROUTE: If the other client's RobotID matches the target ID, route it!
+			if client.RobotID == msg.RobotID {
 				select {
 				case client.Send <- raw:
 					routed = true
 				default:
-					log.Println("telepresence robot target slow")
-				}
-				break // Found the unique robot, exit loop
-			}
-
-			// CASE 2: Message is coming from the Robot (Sender HAS a RobotID)
-			// Route it back to the active Web Client web session looking for this robot
-			if sender.RobotID != "" && client.RobotID == "" {
-				select {
-				case client.Send <- raw:
-					routed = true
-				default:
-					log.Println("telepresence web client slow")
+					log.Printf("Slow connection client dropped for robot: %s", msg.RobotID)
 				}
 			}
 		}
@@ -204,7 +191,6 @@ func (m *Manager) RouteMessage(sender *Client, msg Message, raw []byte) {
 		if !routed {
 			log.Printf("[Warning] Telepresence message %s for robot %s could not find matching peer", msg.Type, msg.RobotID)
 		}
-
 	case "register_robot":
 		m.mu.Lock()
 		sender.RobotID = msg.RobotID

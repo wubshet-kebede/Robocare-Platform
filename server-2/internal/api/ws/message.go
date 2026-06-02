@@ -1,11 +1,14 @@
 package ws
 
 type Message struct {
-	Type       string `json:"type"`
-	HospitalID string `json:"hospitalId,omitempty"`
-	RobotID string `json:"robotId,omitempty"`
-	SDP       string `json:"sdp,omitempty"`
-	Candidate string `json:"candidate,omitempty"`
-	Data string `json:"data,omitempty"`
+	Type       string        `json:"type"`
+	RobotID    string        `json:"robotId"`
+	HospitalID string        `json:"hospitalId,omitempty"`
+	SDP        string        `json:"sdp,omitempty"`
+	Candidate  *IceCandidate `json:"candidate,omitempty"` 
 }
-
+type IceCandidate struct {
+	Candidate     string `json:"candidate"`
+	SdpMid        string `json:"sdpMid"`
+	SdpMLineIndex int    `json:"sdpMLineIndex"`
+}

@@ -8,7 +8,7 @@
               class="w-1.5 h-10 bg-gradient-to-b from-cyan-500 to-emerald-500 rounded-full"
             ></div>
             <h3 class="text-slate-900 font-semibold text-lg tracking-tight">
-              IoT-Integrated SLAM Framework
+              IoT-Integrated Robotic Framework
             </h3>
           </div>
 
