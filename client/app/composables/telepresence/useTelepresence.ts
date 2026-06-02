@@ -79,23 +79,37 @@ export const useTelepresence = () => {
       pc.value.addTransceiver("video", { direction: "recvonly" });
 
       pc.value.ontrack = (event) => {
-        console.log("[WebRTC Frontend] Video stream track received!");
-        const stream = event.streams[0];
+        console.log(
+          "[WebRTC Frontend] Direct media track received! Kind:",
+          event.track.kind,
+        );
 
-        if (videoRef.value && stream) {
-          console.log(
-            "[WebRTC Composable] Binding stream to video element and forcing playback!",
-          );
-          videoRef.value.srcObject = stream;
-          videoRef.value.play().catch((err) => {
-            console.error(
-              "[WebRTC Composable] Playback blocked by browser policies:",
-              err,
+        if (videoRef.value) {
+          // 🔥 THE FIX: If the stream array is empty, dynamically construct a MediaStream
+          // using the active incoming track object directly!
+          if (event.streams && event.streams[0]) {
+            videoRef.value.srcObject = event.streams[0];
+          } else {
+            console.log(
+              "[WebRTC Frontend] Empty streams array. Building stream from track object directly.",
             );
-          });
+            videoRef.value.srcObject = new MediaStream([event.track]);
+          }
+
+          // Force playback execution
+          videoRef.value
+            .play()
+            .then(() => {
+              console.log(
+                "[WebRTC Frontend] Stream hardware playback active and rendering.",
+              );
+            })
+            .catch((err) => {
+              console.error("[WebRTC Frontend] Playback error triggered:", err);
+            });
         } else {
           console.warn(
-            "[WebRTC Composable] Missing element reference or media stream pointer!",
+            "[WebRTC Composable] Video DOM reference element pointer is missing!",
           );
         }
       };
