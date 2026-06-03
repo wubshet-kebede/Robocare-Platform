@@ -21,3 +21,17 @@ type VitalSign struct {
 	MeasuredAt time.Time `gorm:"index;not null" json:"measured_at"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
+type AdmittedPatientVitalResponse struct {
+	PatientID      uuid.UUID `json:"patient_id"`
+	AdmissionID    uuid.UUID `json:"admission_id"`
+	PatientName    string    `json:"patient_name"`
+	Status string `json:"status"`
+
+	HeartRate      float64   `json:"heart_rate"`
+	SpO2           float64   `json:"spo2"`
+	Temperature    float64   `json:"temperature"`
+	SystolicBP     int       `json:"systolic_bp"`
+	DiastolicBP    int       `json:"diastolic_bp"`
+
+	MeasuredAt     time.Time `json:"measured_at"`
+}

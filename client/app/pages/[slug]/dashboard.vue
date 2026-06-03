@@ -43,25 +43,26 @@ const series = [
     </div>
   </div>
   <div
-    data-slot="card"
-    class="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200 mb-6"
+    class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all"
   >
-    <div data-slot="card-header" class="flex flex-col space-y-1.5 p-6 pb-2">
-      <div class="tracking-tight text-base font-semibold">
+    <div class="px-6 pt-6">
+      <h2 class="text-lg font-semibold text-slate-900">
         24h Patient Vitals Monitor
-      </div>
-      <p class="text-xs text-muted-foreground">
-        Hourly average heart rate, blood pressure, and SpO2 across all monitored
+      </h2>
+
+      <p class="mt-1 text-sm text-slate-500">
+        Hourly average heart rate, blood pressure and SpO₂ across monitored
         patients
       </p>
     </div>
-    <div data-slot="card-content" class="p-6 pt-4">
+
+    <div class="p-6">
       <ChartVitalsChart :series="series" :categories="hours" />
     </div>
   </div>
   <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
     <div
-      class="rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow duration-200"
+      class="rounded-xl border dark:bg-card text-card-foreground shadow-sm transition-shadow duration-200"
     >
       <div data-slot="card-header" class="flex flex-col space-y-1.5 p-6 pb-2">
         <div class="tracking-tight text-base font-semibold">Bed Occupancy</div>

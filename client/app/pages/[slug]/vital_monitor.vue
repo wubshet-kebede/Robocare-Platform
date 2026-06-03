@@ -2,29 +2,46 @@
 definePageMeta({
   layout: "dashboard",
 });
+
 import { Heart, Activity, Thermometer, Droplets } from "lucide-vue-next";
+
 const user = useAuthUser();
-const hospitalID = user.value?.hospital.id;
+const hospitalID = user.value?.hospital?.id;
+
 const { vitalsMap, status } = useVitalsSocket(hospitalID);
-console.log("the value of the vitla map is ", vitalsMap.value);
-const patientData = [
-  {
-    initials: "MC",
-    name: "Margaret Chen",
-    room: "201",
-    status: "Stable",
+const { fetchVitals } = useVitalSignService();
+
+const loadingVitals = ref(false);
+const vitals = ref([]);
+
+/* ---------------------------
+   MAP BACKEND → UI FORMAT
+---------------------------- */
+const buildPatientCard = (p) => {
+  return {
+    id: p.patient_id, // IMPORTANT FIX
+    initials: p.patient_name
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase(),
+
+    name: p.patient_name,
+    room: "-",
+    status: p.status || "Stable",
+
     vitals: [
       {
         label: "Heart Rate",
-        value: 72,
+        value: p.heart_rate,
         unit: "bpm",
-        trend: "down",
+        trend: p.heart_rate > 100 ? "up" : "down",
         icon: Heart,
         iconClass: "text-red-500",
       },
       {
         label: "Blood Pressure",
-        value: "120/80",
+        value: `${p.systolic_bp}/${p.diastolic_bp}`,
         unit: "mmHg",
         trend: "down",
         icon: Activity,
@@ -32,147 +49,57 @@ const patientData = [
       },
       {
         label: "Temperature",
-        value: 98.6,
-        unit: "°F",
-        trend: "down",
+        value: p.temperature,
+        unit: "°C",
+        trend: p.temperature > 37 ? "up" : "down",
         icon: Thermometer,
         iconClass: "text-orange-400",
       },
       {
         label: "SpO2",
-        value: 98,
+        value: p.spo2,
         unit: "%",
-        trend: "up",
+        trend: p.spo2 < 95 ? "down" : "up",
         icon: Droplets,
         iconClass: "text-cyan-500",
       },
     ],
-  },
-  {
-    initials: "RK",
-    name: "Robert Kim",
-    room: "412",
-    status: "Critical",
-    vitals: [
-      {
-        label: "Heart Rate",
-        value: 112,
-        unit: "bpm",
-        trend: "up",
-        icon: Heart,
-        iconClass: "text-red-500",
-      },
-      {
-        label: "Blood Pressure",
-        value: "120/80",
-        unit: "mmHg",
-        trend: "down",
-        icon: Activity,
-        iconClass: "text-blue-500",
-      },
-      {
-        label: "Temperature",
-        value: 98.6,
-        unit: "°F",
-        trend: "down",
-        icon: Thermometer,
-        iconClass: "text-orange-400",
-      },
-      {
-        label: "SpO2",
-        value: 98,
-        unit: "%",
-        trend: "up",
-        icon: Droplets,
-        iconClass: "text-cyan-500",
-      },
-    ],
-  },
-  {
-    initials: "RK",
-    name: "Robert Kim",
-    room: "412",
-    status: "Critical",
-    vitals: [
-      {
-        label: "Heart Rate",
-        value: 112,
-        unit: "bpm",
-        trend: "up",
-        icon: Heart,
-        iconClass: "text-red-500",
-      },
-      {
-        label: "Blood Pressure",
-        value: "120/80",
-        unit: "mmHg",
-        trend: "down",
-        icon: Activity,
-        iconClass: "text-blue-500",
-      },
-      {
-        label: "Temperature",
-        value: 98.6,
-        unit: "°F",
-        trend: "down",
-        icon: Thermometer,
-        iconClass: "text-orange-400",
-      },
-      {
-        label: "SpO2",
-        value: 98,
-        unit: "%",
-        trend: "up",
-        icon: Droplets,
-        iconClass: "text-cyan-500",
-      },
-    ],
-  },
-  {
-    initials: "YD",
-    name: "Robert Kim",
-    room: "412",
-    status: "Critical",
-    vitals: [
-      {
-        label: "Heart Rate",
-        value: 112,
-        unit: "bpm",
-        trend: "up",
-        icon: Heart,
-        iconClass: "text-red-500",
-      },
-      {
-        label: "Blood Pressure",
-        value: "120/80",
-        unit: "mmHg",
-        trend: "down",
-        icon: Activity,
-        iconClass: "text-blue-500",
-      },
-      {
-        label: "Temperature",
-        value: 98.6,
-        unit: "°F",
-        trend: "down",
-        icon: Thermometer,
-        iconClass: "text-orange-400",
-      },
-      {
-        label: "SpO2",
-        value: 98,
-        unit: "%",
-        trend: "up",
-        icon: Droplets,
-        iconClass: "text-cyan-500",
-      },
-    ],
-  },
-];
+  };
+};
+
+/* ---------------------------
+   FETCH VITALS
+---------------------------- */
+const getVitalSigns = async () => {
+  try {
+    loadingVitals.value = true;
+
+    const res = await fetchVitals();
+
+    const raw = Array.isArray(res) ? res : (res?.data ?? []);
+
+    vitals.value = raw.map(buildPatientCard);
+
+    console.log("NORMALIZED VITALS:", vitals.value);
+  } catch (err) {
+    console.error("Failed to fetch vitals:", err);
+    vitals.value = [];
+  } finally {
+    loadingVitals.value = false;
+  }
+};
+
+/* FIX: CALL CORRECT FUNCTION */
+onMounted(() => {
+  getVitalSigns();
+});
+
+/* ---------------------------
+   LIVE PATIENTS (WS UPDATE)
+---------------------------- */
 const livePatients = computed(() => {
-  return patientData.map((patient) => {
-    const live = vitalsMap.value[patient.id];
-    console.log("the value of the live is ", live);
+  return vitals.value.map((patient) => {
+    const live = vitalsMap.value?.[patient.id];
 
     if (!live) return patient;
 

@@ -64,3 +64,26 @@ func GetAssignedPatientsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(patients)
 }
+
+func GetAdmittedPatientVitalsHandler(w http.ResponseWriter, r *http.Request) {
+	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
+	userID, ok2 := r.Context().Value(middleware.UserIDKey).(uuid.UUID)
+
+	if !ok || !ok2 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	vitals, err := admission.GetAdmittedPatientVitalsService(
+		hospitalID,
+		userID,
+	)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(vitals)
+}

@@ -46,3 +46,13 @@ func AdmissionService(
 func GetAssignedPatientsService(staffID uuid.UUID) ([]model.AssignedPatientResponse, error) {
 	return admission.GetAssignedPatientsRepository(staffID)
 }
+func GetAdmittedPatientVitalsService(
+	hospitalID uuid.UUID,
+	doctorID uuid.UUID,
+) ([]model.AdmittedPatientVitalResponse, error) {
+
+	return admission.GetAdmittedPatientVitalsRepository(
+		hospitalID,
+		doctorID,
+	)
+}
