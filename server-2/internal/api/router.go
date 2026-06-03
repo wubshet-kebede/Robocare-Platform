@@ -34,6 +34,7 @@ func SetupRouter(manager *ws.Manager) *mux.Router {
 	protected.HandleFunc("/register-patient", patient.CreatePatientHandler).Methods("POST")
 	protected.HandleFunc("/fetch-patients", patient.GetPatientHandler).Methods("GET")
 	protected.HandleFunc("/assignable-staff", user.GetAssignableStaffHandler).Methods("GET")
+	protected.HandleFunc("/get-vitals", admission.GetAdmittedPatientVitalsHandler).Methods("GET")
 	protected.HandleFunc("/admit-patient", admission.AdmissionHandler).Methods("POST")
 	protected.HandleFunc("/assigned-patients", admission.GetAssignedPatientsHandler).Methods("GET")
 	protected.HandleFunc("/register-room", room.CreateRoomHandler).Methods("POST")

@@ -100,7 +100,7 @@ onUnmounted(() => clearInterval(interval));
 <template>
   <div
     class="rounded-xl border bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-slate-300"
-    :class="statusConfig[patient.status].border"
+    :class="statusConfig[patient.status]?.border || 'border-l-gray-300'"
   >
     <div class="flex flex-col space-y-1.5 p-4 pb-2">
       <div class="flex items-center justify-between">
@@ -119,8 +119,8 @@ onUnmounted(() => clearInterval(interval));
         </div>
         <div
           :class="[
-            statusConfig[patient.status].bg,
-            statusConfig[patient.status].text,
+            statusConfig[patient.status]?.bg || 'bg-gray-400',
+            statusConfig[patient.status]?.text || 'text-white',
           ]"
           class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
         >

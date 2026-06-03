@@ -157,3 +157,38 @@ func GetAssignedPatientsRepository(staffID uuid.UUID) ([]model.AssignedPatientRe
 
 	return patients, nil
 }
+func GetAdmittedPatientVitalsRepository(
+	hospitalID uuid.UUID,
+	userID uuid.UUID,
+) ([]model.AdmittedPatientVitalResponse, error) {
+
+	var vitals []model.AdmittedPatientVitalResponse
+
+	latestVitals := db.DB.
+		Table("vital_signs").
+		Select("DISTINCT ON (admission_id) *").
+		Order("admission_id, measured_at DESC")
+
+	err := db.DB.
+		Table("(?) as vs", latestVitals).
+		Select(`
+			p.id as patient_id,
+			a.id as admission_id,
+			p.full_name as patient_name,
+			a.status,
+			vs.heart_rate,
+			vs.sp_o2,
+			vs.temperature,
+			vs.systolic_bp,
+			vs.diastolic_bp,
+			vs.measured_at
+		`).
+		Joins("JOIN admissions a ON vs.admission_id = a.id").
+		Joins("JOIN patients p ON a.patient_id = p.id").
+		Where("a.hospital_id = ?", hospitalID).
+		Where("a.assigned_doctor_id = ?", userID).
+		Where("a.is_active = ?", true).
+		Scan(&vitals).Error
+
+	return vitals, err
+}
