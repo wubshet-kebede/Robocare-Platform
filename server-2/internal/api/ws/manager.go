@@ -137,16 +137,30 @@ func (m *Manager) RemoveClient(c *Client) {
 }
 
 func (m *Manager) BroadcastVitals(hospitalID string, data []byte) {
+	 log.Printf("BroadcastVitals called for hospital=%s", hospitalID)
+	 log.Printf("Connected clients: %d", len(m.clients))
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
 	for client := range m.clients {
+		log.Printf(
+        "Client hospital=%q role=%q robot=%q",
+        client.HospitalID,
+        client.Role,
+        client.RobotID,
+    )
 		if client.HospitalID != hospitalID {
+			log.Printf(
+            "Skipping client. client=%q broadcast=%q",
+            client.HospitalID,
+            hospitalID,
+        )
 			continue
 		}
 
 		select {
 		case client.Send <- data:
+			log.Printf("Sending vitals to matching client")
 		default:
 			log.Println("dropping slow client")
 		}

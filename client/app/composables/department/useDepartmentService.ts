@@ -6,6 +6,12 @@ export const useDepartmentService = () => {
       method: "GET",
     });
   };
+  const createDepartment = (data: Record<string, any>) => {
+    return $api("/register-departments", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  };
 
-  return { getDepartments };
+  return { getDepartments, createDepartment };
 };

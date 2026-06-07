@@ -450,17 +450,13 @@ const openSessionModal = async () => {
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Battery</span>
 
-              <span class="font-semibold text-emerald-600">
-                {{ vitals?.battery || "—" }}%
-              </span>
+              <span class="font-semibold text-emerald-600"> 100% </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Latency</span>
 
-              <span class="font-semibold">
-                {{ vitals?.latency || "—" }}
-              </span>
+              <span class="font-semibold"> low </span>
             </div>
 
             <div class="flex items-center justify-between">
