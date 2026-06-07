@@ -39,6 +39,7 @@ func InitMQTTSubscriber(broker string, port int,  wsManager *ws.Manager) {
     }
 
     mqttSub, err := NewClient(cfg)
+	log.Println("MQTT subscriber client created")
     if err != nil {
         log.Fatal("failed to init MQTT subscriber:", err)
     }

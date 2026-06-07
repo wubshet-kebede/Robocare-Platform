@@ -32,4 +32,5 @@ type MQTTPublisher struct {
 type PublishGoalRequest struct {
     RobotID string    `json:"robot_id"`
     RoomID  uuid.UUID `json:"room_id"`
+    PatientID string  `json:"patient_id"`
 }

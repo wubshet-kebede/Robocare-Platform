@@ -29,7 +29,7 @@ func SetupRouter(manager *ws.Manager) *mux.Router {
 	protected := api.PathPrefix("").Subrouter()
     protected.Use(middleware.AuthMiddleware)
 	protected.HandleFunc("/invite-staff", invitation.InviteStaffHandler).Methods("POST")
-	protected.HandleFunc("/departments", department.CreateDepartmentHandler).Methods("POST") 
+	protected.HandleFunc("/register-departments", department.CreateDepartmentHandler).Methods("POST") 
 	protected.HandleFunc("/get-departments", department.GetDepartmentsHandler).Methods("GET")
 	protected.HandleFunc("/register-patient", patient.CreatePatientHandler).Methods("POST")
 	protected.HandleFunc("/fetch-patients", patient.GetPatientHandler).Methods("GET")

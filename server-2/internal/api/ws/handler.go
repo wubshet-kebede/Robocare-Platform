@@ -95,12 +95,16 @@ func (h *Handler) listen(c *Client) {
 	}
 }
 func (h *Handler) writePump(c *Client) {
-
+    
 	defer func() {
 		c.Conn.Close()
 	}()
 
 	for msg := range c.Send {
+		log.Printf(
+        "writePump sending %d bytes",
+        len(msg),
+    )
 
 		err := c.Conn.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
@@ -108,4 +112,5 @@ func (h *Handler) writePump(c *Client) {
 			return
 		}
 	}
+	
 }
