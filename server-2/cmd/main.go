@@ -8,7 +8,6 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api"
-	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/mqttclient"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/api/ws"
 	"github.com/wubshet-kebede/robocare-platform/server-2/internal/db"
 )
@@ -21,8 +20,8 @@ func main() {
 	db.Connect()
 	db.Migrate()
 	wsManager := ws.NewManager()
-	mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
-	mqttclient.InitMQTTSubscriber("tcp://localhost", 1883, wsManager)
+	// mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
+	// mqttclient.InitMQTTSubscriber("tcp://localhost", 1883, wsManager)
 	r := api.SetupRouter(wsManager)
 	allowedOrigins := []string{"http://localhost:3000"}
 	allowedHeaders := []string{"Content-Type", "Authorization"}
