@@ -6,9 +6,6 @@ const props = defineProps({
   },
   patient: Object,
 });
-console.log(props.patient?.id);
-console.log(props.patient?.name);
-console.log("the props we accepted from the parent is", props.patient);
 const emits = defineEmits(["update:modelValue"]);
 
 const isOpen = computed({
@@ -57,46 +54,6 @@ const robotOptions = computed(() =>
     name: robot.name,
   })),
 );
-console.log("the manual case", robotOptions.value);
-// const sessionTypeOptions = [
-//   {
-//     id: "Routine Check",
-//     name: "Routine Check",
-//   },
-
-//   {
-//     id: "Follow-up",
-//     name: "Follow-up",
-//   },
-
-//   {
-//     id: "Emergency Consultation",
-//     name: "Emergency Consultation",
-//   },
-// ];
-
-// const priorityOptions = [
-//   {
-//     id: "Low",
-//     name: "Low",
-//   },
-
-//   {
-//     id: "Medium",
-//     name: "Medium",
-//   },
-
-//   {
-//     id: "High",
-//     name: "High",
-//   },
-
-//   {
-//     id: "Critical",
-//     name: "Critical",
-//   },
-// ];
-
 watch(
   () => props.patient,
   (patient) => {
@@ -110,12 +67,6 @@ watch(
 const submit = async () => {
   try {
     loadingSubmit.value = true;
-
-    console.log("Patient ID:", values.patient);
-    console.log("Robot ID:", values.robot);
-    console.log("Room ID:", values.roomId);
-
-    // 1. NAVIGATION (can run independently)
     const response = await publishNavGoal({
       patient_id: values.patient,
       robot_id: values.robot,
@@ -123,15 +74,9 @@ const submit = async () => {
     });
 
     console.log("Navigation Goal Response:", response);
-
-    // 2. TELEPRESENCE SETUP
     setRobot(values.robot);
 
-    // IMPORTANT: connect WS first
-
     await connectWS();
-
-    // 4. START WEBRTC
     await startWebRTC();
 
     isOpen.value = false;
@@ -169,26 +114,6 @@ onMounted(() => {
                 <h1 class="text-md font-medium mb-2">Select Robot</h1>
               </template>
             </UiListSelect>
-            <!-- <UiListSelect
-              v-model="values.sessionType"
-              :items="sessionTypeOptions"
-              name="sessionType"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">Session Type</h1>
-              </template>
-            </UiListSelect>
-            <UiListSelect
-              v-model="values.priority"
-              :items="priorityOptions"
-              name="priority"
-              rules="required"
-            >
-              <template #label>
-                <h1 class="text-md font-medium mb-2">Priority Level</h1>
-              </template>
-            </UiListSelect> -->
             <UiBaseInput
               modelValue="Ready for Navigation"
               name="status"

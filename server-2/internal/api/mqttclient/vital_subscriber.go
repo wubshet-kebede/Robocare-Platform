@@ -48,6 +48,7 @@ func HandleVitalsMessage(wsManager *ws.Manager, msg mqtt.Message) {
 
 	wsManager.BroadcastVitals(
 		hospitalID.String(),
+        robotID.String(),
 		wsPayload,
 	)
 }

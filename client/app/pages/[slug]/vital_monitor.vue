@@ -7,19 +7,15 @@ import { Heart, Activity, Thermometer, Droplets } from "lucide-vue-next";
 
 const user = useAuthUser();
 const hospitalID = user.value?.hospital?.id;
-
+console.log("hospitalID:", hospitalID);
 const { vitalsMap, status } = useVitalsSocket(hospitalID);
 const { fetchVitals } = useVitalSignService();
 
 const loadingVitals = ref(false);
 const vitals = ref([]);
-
-/* ---------------------------
-   MAP BACKEND → UI FORMAT
----------------------------- */
 const buildPatientCard = (p) => {
   return {
-    id: p.patient_id, // IMPORTANT FIX
+    id: p.patient_id,
     initials: p.patient_name
       .split(" ")
       .map((w) => w[0])
@@ -67,9 +63,6 @@ const buildPatientCard = (p) => {
   };
 };
 
-/* ---------------------------
-   FETCH VITALS
----------------------------- */
 const getVitalSigns = async () => {
   try {
     loadingVitals.value = true;
@@ -89,14 +82,10 @@ const getVitalSigns = async () => {
   }
 };
 
-/* FIX: CALL CORRECT FUNCTION */
 onMounted(() => {
   getVitalSigns();
 });
 
-/* ---------------------------
-   LIVE PATIENTS (WS UPDATE)
----------------------------- */
 const livePatients = computed(() => {
   return vitals.value.map((patient) => {
     const live = vitalsMap.value?.[patient.id];
@@ -145,7 +134,6 @@ const livePatients = computed(() => {
       <p class="mt-1 text-sm text-muted-foreground">
         Real-time patient monitoring
       </p>
-      <p>WS Status: {{ status }}</p>
     </div>
     <div
       class="inline-flex items-center rounded-full border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-slate-50 dark:text-secondary-foreground w-fit gap-1.5 px-3 py-1 text-xs"

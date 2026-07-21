@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"log"
 	"net/http"
 	"sync"
 
@@ -65,13 +64,13 @@ func (h *TelepresenceHub) register(client *Client) {
 
 	if client.role == "robot" {
 		h.robots[client.robotID] = client
-		log.Println("[Telepresence] Robot connected:", client.robotID)
+		
 		return
 	}
 
 	if client.role == "doctor" {
 		h.doctors[client.robotID] = client
-		log.Println("[Telepresence] Doctor connected:", client.robotID)
+		
 		return
 	}
 }
@@ -96,7 +95,6 @@ func (h *TelepresenceHub) route(sender *Client, msg SignalMessage) {
 
 			err := robot.conn.WriteJSON(msg)
 			if err != nil {
-				log.Println("Error sending to robot:", err)
 			}
 		}
 
@@ -107,7 +105,6 @@ func (h *TelepresenceHub) route(sender *Client, msg SignalMessage) {
 
 			err := doctor.conn.WriteJSON(msg)
 			if err != nil {
-				log.Println("Error sending to doctor:", err)
 			}
 		}
 	}
@@ -135,7 +132,6 @@ func (h *TelepresenceHub) HandleWS(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println("upgrade error:", err)
 		return
 	}
 
@@ -162,7 +158,6 @@ func (h *TelepresenceHub) HandleWS(w http.ResponseWriter, r *http.Request) {
 		}
 
 		conn.Close()
-		log.Println("[Telepresence] disconnected:", client.role, client.robotID)
 	}()
 
 	for {
@@ -171,7 +166,6 @@ func (h *TelepresenceHub) HandleWS(w http.ResponseWriter, r *http.Request) {
 
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			log.Println("read error:", err)
 			return
 		}
 
