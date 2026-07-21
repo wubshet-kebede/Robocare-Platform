@@ -21,7 +21,7 @@ export function useVitalsSocket(hospitalId: string) {
       send(
         JSON.stringify({
           type: "register_session",
-          hospital_id: hospitalId,
+          hospitalId: hospitalId,
         }),
       );
     }

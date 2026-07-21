@@ -1,10 +1,16 @@
 import { ref } from "vue";
+interface PatientVitals {
+  heartRate: number;
+  spo2: number;
+  temperature: number;
+}
 
 export const useTelepresence = () => {
   const ws = ref<WebSocket | null>(null);
   const pc = ref<RTCPeerConnection | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
   const robotId = ref<string | null>(null);
+  const liveVitals = ref<PatientVitals | null>(null);
 
   const sessionReady = ref(false);
   const isConnecting = ref(false);
@@ -75,7 +81,6 @@ export const useTelepresence = () => {
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
       });
 
-      // Force browser to create an inbound media descriptor block in the SDP offer
       pc.value.addTransceiver("video", { direction: "recvonly" });
 
       pc.value.ontrack = (event) => {
@@ -85,8 +90,6 @@ export const useTelepresence = () => {
         );
 
         if (videoRef.value) {
-          // 🔥 THE FIX: If the stream array is empty, dynamically construct a MediaStream
-          // using the active incoming track object directly!
           if (event.streams && event.streams[0]) {
             videoRef.value.srcObject = event.streams[0];
           } else {
@@ -96,7 +99,6 @@ export const useTelepresence = () => {
             videoRef.value.srcObject = new MediaStream([event.track]);
           }
 
-          // Force playback execution
           videoRef.value
             .play()
             .then(() => {
@@ -133,7 +135,10 @@ export const useTelepresence = () => {
       // Wrap assigning .onmessage inside a condition to fix TypeScript null errors
       if (ws.value) {
         ws.value.onmessage = async (event) => {
+          console.log("[RAW WEBSOCKET PACKET ARRIVED]:", event.data);
           const msg = JSON.parse(event.data);
+
+          // 🔥 THE MULTIPLEXING LOOP FIX: Handle different telemetry signals over the same pipe
           if (msg.type === "answer") {
             console.log(
               "[Telepresence] Local state is ready. Applying remote Answer safely.",
@@ -141,6 +146,21 @@ export const useTelepresence = () => {
             await handleAnswer(msg.sdp);
           } else if (msg.type === "candidate") {
             await handleCandidate(msg.candidate);
+          } else if (msg.type === "vitals") {
+            // Unpack vitals metrics directly into our shared reference
+            console.log(
+              "[Telepresence Unified WS] Incoming live health vitals caught:",
+              msg,
+            );
+            if (msg.data) {
+              liveVitals.value = {
+                heartRate: Number(
+                  msg.data.heartRate || msg.data.heart_rate || 0,
+                ),
+                spo2: Number(msg.data.spo2 || 0),
+                temperature: Number(msg.data.temperature || 0),
+              };
+            }
           }
         };
       } else {
@@ -224,6 +244,7 @@ export const useTelepresence = () => {
     sessionReady.value = false;
     isConnecting.value = false;
     isWSOpen.value = false;
+    liveVitals.value = null; // Flush cache on session disconnect
     console.log("[Telepresence] Disconnected");
   };
 
@@ -233,6 +254,7 @@ export const useTelepresence = () => {
     connectWS,
     startWebRTC,
     videoRef,
+    liveVitals,
     disconnect,
   };
 };

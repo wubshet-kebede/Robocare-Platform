@@ -19,33 +19,6 @@ type Handler struct {
 func NewHandler(m *Manager) *Handler {
 	return &Handler{manager: m}
 }
-// func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
-// 	hospitalID, ok := r.Context().Value(middleware.HospitalIDKey).(uuid.UUID)
-// 	role, Rok := r.Context().Value(middleware.RoleKey).(string)
-
-// 	if !ok || !Rok {
-// 		http.Error(w, "missing hospital id or role", http.StatusBadRequest)
-// 		return
-// 	}
-// 	conn, err := upgrader.Upgrade(w, r, nil)
-// 	if err != nil {
-// 		log.Println("WebSocket upgrade failed:", err)
-// 		return
-// 	}
-
-// 	client := &Client{
-// 		Conn:       conn,
-// 		HospitalID: hospitalID.String(),
-// 		Role:       role,
-// 		RobotID:    " ",
-// 		Send:       make(chan []byte, 256),
-// 	}
-
-// 	h.manager.AddClient(client)
-
-// 	go h.writePump(client)
-// 	go h.listen(client)
-// }
 func (h *Handler) ServeWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {

@@ -3,6 +3,8 @@ definePageMeta({
   layout: "dashboard",
 });
 
+import { ref, onMounted, watch } from "vue";
+
 const search = ref("");
 const isSessionModalOpen = ref(false);
 const admittedPatients = ref([]);
@@ -10,7 +12,7 @@ const selectedPatient = ref(null);
 
 const { getAssignedPatients } = useAdmittedPatientService();
 const localVideoRef = ref(null);
-const { setRobot, connectWS, startWebRTC, videoRef, robotId } =
+const { setRobot, connectWS, startWebRTC, videoRef, liveVitals, robotId } =
   useTelepresence();
 const isStreamActive = ref(false);
 const { getRobots } = useRobotService();
@@ -19,7 +21,6 @@ const loadingPatients = ref(false);
 const getAdmittedPatients = async () => {
   try {
     loadingPatients.value = true;
-
     const response = await getAssignedPatients();
 
     admittedPatients.value = response.map((patient) => ({
@@ -31,7 +32,7 @@ const getAdmittedPatients = async () => {
       room_id: patient.room_id,
       doctorName: patient.assigned_doctor_name,
       urgency: patient.urgency,
-      status: patient.admission_status,
+      status: (patient.admission_status || "unknown").toLowerCase(),
       heart_rate: patient.heart_rate,
       spo2: patient.spo2,
       temperature: patient.temperature,
@@ -40,7 +41,6 @@ const getAdmittedPatients = async () => {
     if (admittedPatients.value.length > 0) {
       selectedPatient.value = admittedPatients.value[0];
     }
-
     console.log("Admitted Patients:", admittedPatients.value);
   } catch (error) {
     console.log("Fetch Patients Error:", error);
@@ -48,20 +48,18 @@ const getAdmittedPatients = async () => {
     loadingPatients.value = false;
   }
 };
+
 const loadingRobots = ref(false);
 const robots = ref([]);
 const getAvailableRobots = async () => {
   try {
     loadingRobots.value = true;
-
     const response = await getRobots();
-
     robots.value = response.map((robot) => ({
       id: robot.id,
       name: robot.name,
       status: robot.status,
     }));
-
     console.log("Available Robots:", robots.value);
   } catch (error) {
     console.log("Fetch Robots Error:", error);
@@ -69,6 +67,7 @@ const getAvailableRobots = async () => {
     loadingRobots.value = false;
   }
 };
+
 const metrics = [
   {
     title: "Live Consultations",
@@ -76,21 +75,18 @@ const metrics = [
     icon: "lucide:video",
     colorTheme: "bg-rose-50 text-rose-500",
   },
-
   {
     title: "Patients Waiting",
     value: "5",
     icon: "mdi:patient",
     colorTheme: "bg-amber-50 text-amber-500",
   },
-
   {
     title: "Robots Available",
     value: "2",
     icon: "material-symbols:robot",
     colorTheme: "bg-emerald-50 text-emerald-500",
   },
-
   {
     title: "Emergency Requests",
     value: "1",
@@ -98,11 +94,14 @@ const metrics = [
     colorTheme: "bg-violet-50 text-violet-500",
   },
 ];
+
 const vitals = ref({});
+
 onMounted(() => {
   getAdmittedPatients();
   getAvailableRobots();
 });
+
 watch(
   admittedPatients,
   (list) => {
@@ -116,26 +115,15 @@ watch(
   selectedPatient,
   (patient) => {
     if (!patient) return;
-
     vitals.value = {
       heartRate: patient.heart_rate,
       spo2: patient.spo2,
       temperature: patient.temperature,
-      // bloodPressure: patient.systolic_bp
-      //   ? `${patient.systolic_bp}/${patient.diastolic_bp}`
-      //   : "—",
     };
   },
   { immediate: true },
 );
-// const openSessionModal = () => {
-//   isSessionModalOpen.value = true;
-//   // pick robot from selected patient
-//   robotId.value = selectedPatient.value?.robot || "robot-1";
 
-//   // start telepresence
-//   connect();
-// };
 const openSessionModal = async () => {
   isSessionModalOpen.value = true;
   robotId.value = robots.value?.[0]?.id || "robot-1";
@@ -150,6 +138,7 @@ const openSessionModal = async () => {
     }
     console.log("[Page] WebSocket ready. Starting WebRTC handshake...");
     await startWebRTC();
+
     const checkStreamInterval = setInterval(() => {
       if (localVideoRef.value && localVideoRef.value.srcObject) {
         console.log(
@@ -163,6 +152,36 @@ const openSessionModal = async () => {
     console.error("[Page] Failed to start telepresence session:", error);
   }
 };
+watch(
+  liveVitals,
+  (newVitals) => {
+    if (newVitals) {
+      const currentPatientID = selectedPatient.value?.id;
+
+      if (
+        newVitals.patient_id &&
+        currentPatientID &&
+        newVitals.patient_id !== currentPatientID
+      ) {
+        console.warn(
+          "[UI Sync Guard] Discarding background vitals message packet; targets non-focused patient row entry ID.",
+        );
+        return;
+      }
+
+      console.log(
+        "[UI Dashboard] Real-time vital metrics updated safely:",
+        newVitals,
+      );
+      vitals.value = {
+        heartRate: newVitals.heartRate,
+        spo2: newVitals.spo2,
+        temperature: newVitals.temperature,
+      };
+    }
+  },
+  { deep: true },
+);
 </script>
 
 <template>
@@ -387,11 +406,15 @@ const openSessionModal = async () => {
         <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
           <div class="mb-5 flex items-center justify-between">
             <h2 class="text-lg font-semibold">Live Vitals</h2>
-
             <span
-              class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700"
+              class="rounded-full px-3 py-1 text-xs font-medium transition-all duration-300"
+              :class="
+                liveVitals
+                  ? 'bg-emerald-100 text-emerald-700 animate-pulse'
+                  : 'bg-blue-100 text-blue-700'
+              "
             >
-              Real-time
+              {{ liveVitals ? "● Live Stream" : "Stored Record" }}
             </span>
           </div>
 
@@ -401,38 +424,50 @@ const openSessionModal = async () => {
             >
               <div>
                 <p class="text-sm text-gray-500">Heart Rate</p>
-
-                <p class="text-xl font-bold">
+                <p
+                  class="text-xl font-bold mt-0.5"
+                  :class="{ 'text-rose-600': liveVitals }"
+                >
                   {{ vitals?.heartRate || "—" }}
+                  <span
+                    v-if="vitals?.heartRate"
+                    class="text-xs font-normal text-gray-400"
+                    >BPM</span
+                  >
                 </p>
               </div>
-
-              <Icon name="lucide:heart-pulse" class="h-6 w-6 text-rose-500" />
+              <Icon
+                name="lucide:heart-pulse"
+                class="h-6 w-6 text-rose-500"
+                :class="{ 'animate-bounce': liveVitals }"
+              />
             </div>
-
             <div
               class="flex items-center justify-between rounded-2xl bg-gray-50 p-4"
             >
               <div>
                 <p class="text-sm text-gray-500">SpO2</p>
-
-                <p class="text-xl font-bold">{{ vitals?.spo2 || "—" }}%</p>
+                <p
+                  class="text-xl font-bold mt-0.5"
+                  :class="{ 'text-blue-600': liveVitals }"
+                >
+                  {{ vitals?.spo2 || "—" }}%
+                </p>
               </div>
-
               <Icon name="lucide:activity" class="h-6 w-6 text-blue-500" />
             </div>
-
             <div
               class="flex items-center justify-between rounded-2xl bg-gray-50 p-4"
             >
               <div>
                 <p class="text-sm text-gray-500">Temperature</p>
-
-                <p class="text-xl font-bold">
+                <p
+                  class="text-xl font-bold mt-0.5"
+                  :class="{ 'text-emerald-600': liveVitals }"
+                >
                   {{ vitals?.temperature || "—" }}°C
                 </p>
               </div>
-
               <Icon name="lucide:thermometer" class="h-6 w-6 text-orange-500" />
             </div>
           </div>
@@ -443,29 +478,34 @@ const openSessionModal = async () => {
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Robot</span>
-
-              <span class="font-semibold"> </span>
+              <span class="font-semibold text-sm text-gray-700">
+                {{ robotId ? robotId.substring(0, 8) + "..." : "Unassigned" }}
+              </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Battery</span>
-
-              <span class="font-semibold text-emerald-600"> 100% </span>
+              <span class="font-semibold text-emerald-600">100%</span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Latency</span>
-
-              <span class="font-semibold"> low </span>
+              <span class="font-semibold text-gray-700">
+                {{ liveVitals ? "35ms" : "low" }}
+              </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-sm text-gray-500">Connection</span>
-
               <span
-                class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
+                class="rounded-full px-3 py-1 text-xs font-medium transition-all duration-300"
+                :class="
+                  liveVitals
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-600'
+                "
               >
-                Stable
+                {{ liveVitals ? "Streaming" : "Stable" }}
               </span>
             </div>
           </div>

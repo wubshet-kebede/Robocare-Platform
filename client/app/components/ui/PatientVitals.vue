@@ -15,20 +15,29 @@ const props = defineProps({
   },
 });
 const statusConfig = {
-  Stable: {
-    border: "border-l-green-500",
+  stable: {
+    border: "border-l-green-500 hover:border-green-300",
     bg: "bg-green-500",
     text: "text-white",
+    chartColor: "#22c55e",
   },
-  Warning: {
-    border: "border-l-amber-500",
+  warning: {
+    border: "border-l-amber-500 hover:border-amber-300",
     bg: "bg-amber-500",
     text: "text-white",
+    chartColor: "#f59e0b",
   },
-  Critical: {
-    border: "border-l-red-600",
+  critical: {
+    border: "border-l-red-600 hover:border-red-400",
     bg: "bg-red-600",
     text: "text-white",
+    chartColor: "#dc2626",
+  },
+  unknown: {
+    border: "border-l-slate-400 hover:border-slate-300",
+    bg: "bg-slate-400",
+    text: "text-white",
+    chartColor: "#94a3b8",
   },
 };
 
@@ -119,12 +128,18 @@ onUnmounted(() => clearInterval(interval));
         </div>
         <div
           :class="[
-            statusConfig[patient.status]?.bg || 'bg-gray-400',
-            statusConfig[patient.status]?.text || 'text-white',
+            (
+              statusConfig[patient?.status?.toLowerCase()] ||
+              statusConfig.unknown
+            ).bg,
+            (
+              statusConfig[patient?.status?.toLowerCase()] ||
+              statusConfig.unknown
+            ).text,
           ]"
-          class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+          class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 shadow-sm"
         >
-          {{ patient.status }}
+          {{ patient?.status || "unknown" }}
         </div>
       </div>
     </div>
