@@ -24,21 +24,24 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "access_token",
-		Value:    token["access_token"],
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false,
-		Expires:  time.Now().Add(4 * time.Hour),
-	})
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh_token",
-		Value:    token["refresh_token"],
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false,
-		Expires:  time.Now().Add(4 * time.Hour),
-	})
+    Name:     "access_token",
+    Value:    token["access_token"],
+    Path:     "/",
+    HttpOnly: true,
+    Secure:   true,
+    SameSite: http.SameSiteNoneMode,
+    Expires:  time.Now().Add(15 * time.Minute),
+})
+
+http.SetCookie(w, &http.Cookie{
+    Name:     "refresh_token",
+    Value:    token["refresh_token"],
+    Path:     "/",
+    HttpOnly: true,
+    Secure:   true,
+    SameSite: http.SameSiteNoneMode,
+    Expires:  time.Now().Add(7 * 24 * time.Hour),
+})
 	w.WriteHeader(http.StatusOK)
 	// json.NewEncoder(w).Encode(map[string]string{"message": "Login successful"})
 	json.NewEncoder(w).Encode(map[string]interface{}{
