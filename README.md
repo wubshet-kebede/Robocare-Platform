@@ -157,21 +157,29 @@ Frontend Dashboard (Nuxt 4)
 
 
 ### Dashboard
-_Add screenshot here_
+<img width="1815" height="918" alt="image" src="https://github.com/user-attachments/assets/6a01495c-936a-4c8a-9c57-0163c695aa60" />
 
-### Patient Monitoring
-_Add screenshot here_
 
-### Robot Monitoring
-_Add screenshot here_
+### Telepresence page
+<img width="1815" height="918" alt="image" src="https://github.com/user-attachments/assets/2837b36a-220a-4e1b-aca3-f2df297dc98a" />
+
+
+
+### Staff Management page
+<img width="1815" height="918" alt="image" src="https://github.com/user-attachments/assets/c834ad18-fc38-4e77-92f5-72336bf7a83d" />
+
 
 ---
 
 ## Demo
+The web platform (frontend  and backend services) has been deployed and is available online.
 
-- Demo Video: _Add LinkedIn or YouTube demo link here_
-- Source Code: _Add repository link here_
+The following video demonstrates the autonomous robot simulation inside the hospital environment, including robot navigation and telepresence features. This recording was captured locally during development using ROS 2 and Gazebo before deployment of the web platform.
 
+- Demo Video:
+   <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7476887508044247040?compact=1" height="399" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+- Source Code:
+  https://github.com/wubshet-kebede/Robocare-Platform
 ---
 
 ## Research Context
@@ -183,6 +191,28 @@ This project was developed as a final-year Computer Engineering thesis project t
 The project explored the integration of autonomous robotics, IoT communication, real-time web technologies, and healthcare monitoring systems to improve remote healthcare assistance and patient interaction.
 
 ---
+## Deployment
+
+The platform is deployed using:
+
+- Frontend: Vercel (Nuxt.js)
+- Backend: Render (Golang REST API)
+- Database: PostgreSQL
+- Robot Simulation: ROS 2 Jazzy + Gazebo Harmonic (local simulation environment)
+## Project Status
+
+🚧 **Under Development**
+
+RoboCare Platform is currently under active development. The web platform (frontend and backend services) has been deployed, while the autonomous robot system and additional hardware integrations are still being improved and tested.
+
+The current version demonstrates the complete software architecture, including:
+- Hospital management dashboard
+- Patient monitoring platform
+- Authentication and backend services
+- Robot simulation environment
+- Autonomous navigation and telepresence capabilities
+
+Future updates will include further integration, testing, and improvements to the robotic system.
 
 ## Author
 
