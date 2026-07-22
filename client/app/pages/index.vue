@@ -1,9 +1,6 @@
 <template>
   <div>
-    <!-- Auto-imported from components/landing/Hero.vue -->
     <LandingHero />
-
-    <!-- We will build these next -->
     <LandingAbout />
     <LandingFeatures />
     <LandingContact />

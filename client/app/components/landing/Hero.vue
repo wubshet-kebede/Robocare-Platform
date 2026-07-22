@@ -26,7 +26,7 @@
             <span
               class="text-cyan-700 text-[10px] font-semibold uppercase tracking-[0.25em]"
             >
-              Robocare v1.0 - Live Demo
+              ROBOCARE PLATFORM v1.0
             </span>
           </div>
           <h1
@@ -59,14 +59,14 @@
               to="/login"
               class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              Launch Dashboard
+              Access RoboCare Platform
             </NuxtLink>
 
             <NuxtLink
               to="#about"
               class="px-8 py-4 border border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-100 transition-all"
             >
-              View Framework
+              Explore How It Works
             </NuxtLink>
           </div>
           <div
@@ -102,16 +102,21 @@
               />
 
               <!-- Overlay -->
+              <!-- Overlay -->
               <div class="absolute top-4 right-4 flex gap-2">
                 <div
-                  class="px-2 py-1 bg-white/90 rounded text-[9px] font-mono text-cyan-600 border border-cyan-200"
+                  class="px-3 py-1.5 bg-white/90 backdrop-blur rounded-lg text-[10px] font-mono text-slate-700 border border-slate-200 flex items-center gap-1"
                 >
-                  LIDAR: ACTIVE
+                  <span
+                    class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"
+                  ></span>
+                  CAMERA ONLINE
                 </div>
+
                 <div
-                  class="px-2 py-1 bg-white/90 rounded text-[9px] font-mono text-emerald-600 border border-emerald-200"
+                  class="px-3 py-1.5 bg-white/90 backdrop-blur rounded-lg text-[10px] font-mono text-cyan-700 border border-cyan-200"
                 >
-                  SLAM: MAP GENERATED
+                  ZONE: GAZEBO
                 </div>
               </div>
             </div>

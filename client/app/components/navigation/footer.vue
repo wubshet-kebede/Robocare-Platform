@@ -3,19 +3,30 @@
     <div class="container mx-auto px-8">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
         <div class="md:col-span-5">
-          <div class="flex items-center gap-3 mb-6">
+          <div class="flex items-center gap-3 mb-4">
             <div
               class="w-1.5 h-10 bg-gradient-to-b from-cyan-500 to-emerald-500 rounded-full"
             ></div>
-            <h3 class="text-slate-900 font-semibold text-lg tracking-tight">
-              IoT-Integrated Robotic Framework
-            </h3>
+
+            <div>
+              <h3 class="text-slate-900 font-semibold text-lg tracking-tight">
+                RoboCare Platform
+              </h3>
+
+              <p class="text-slate-500 text-sm mt-1">
+                IoT-integrated robotic framework for intelligent hospital
+                operations.
+              </p>
+            </div>
           </div>
 
           <p class="text-slate-600 text-sm leading-relaxed max-w-md">
-            Developed by the Department of Computer Engineering to address
-            manual monitoring challenges in Ethiopian hospitals through
-            autonomous robotics and real-time telemetry.
+            RoboCare is an autonomous healthcare robotics platform developed to
+            improve hospital workflows through intelligent navigation, real-time
+            monitoring, and connected IoT technologies. The system is designed
+            to reduce manual operational challenges in Ethiopian healthcare
+            facilities by enabling robotic assistance, remote supervision, and
+            data-driven decision making.
           </p>
         </div>
         <div class="md:col-span-4">
@@ -56,7 +67,7 @@
         class="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4"
       >
         <p class="text-slate-500 text-[11px] font-medium tracking-wide">
-          © 2026 Health Robotics Framework. All rights reserved.
+          © 2026 RoboCare. All rights reserved.
         </p>
 
         <div class="flex gap-8 text-sm text-slate-500">

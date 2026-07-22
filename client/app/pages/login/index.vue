@@ -1,6 +1,7 @@
 <script setup>
 import UiBaseInput from "~/components/ui/BaseInput.vue";
 import { useForm } from "vee-validate";
+
 definePageMeta({
   layout: false,
 });
@@ -22,6 +23,7 @@ const submit = handleSubmit(async (values) => {
     const userData = await me();
     user.value = userData;
     console.log("Logged user:", userData);
+
     await navigateTo(`/${userData.hospital.slug}/dashboard`);
   } catch (err) {
     console.log(err);
@@ -39,9 +41,7 @@ const submit = handleSubmit(async (values) => {
         muted
         playsinline
         class="absolute inset-0 w-full h-full object-cover opacity-60"
-      >
-        <!-- <source src="/assets/robot-animation.mp4" type="video/mp4" /> -->
-      </video>
+      ></video>
       <img
         src="/assets/images/image_copy.png"
         alt="Hospital Image"
@@ -232,23 +232,3 @@ const submit = handleSubmit(async (values) => {
     </div>
   </div>
 </template>
-
-<!-- <script setup>
-definePageMeta({
-  layout: false,
-});
-const form = reactive({
-  email: "",
-  password: "",
-});
-const loading = ref(false);
-
-const handleLogin = async () => {
-  loading.value = true;
-  // Call your Go Backend here!
-  console.log("Logging in with:", form.email);
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
-};
-</script> -->
