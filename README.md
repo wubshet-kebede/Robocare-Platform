@@ -172,15 +172,17 @@ Frontend Dashboard (Nuxt 4)
 ---
 
 ## Demo
-The web platform (frontend  and backend services) has been deployed and is available online.
 
-The following video demonstrates the autonomous robot simulation inside the hospital environment, including robot navigation and telepresence features. This recording was captured locally during development using ROS 2 and Gazebo before deployment of the web platform.
+The web platform (frontend dashboard and backend services) has been deployed online.
+
+The following video demonstrates the autonomous mobile health robot simulation inside a hospital environment. This demo was recorded locally during development using ROS 2 and Gazebo before deploying the web platform.
 
 - Demo Video:
-   <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7476887508044247040?compact=1" height="399" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+
+<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7476887508044247040?compact=1" height="399" width="504" frameborder="0" allowfullscreen="" title="Robocare Robot Simulation Demo"></iframe>
+
 - Source Code:
-  https://github.com/wubshet-kebede/Robocare-Platform
----
+https://github.com/wubshet-kebede/Robocare-Platform
 
 ## Research Context
 
