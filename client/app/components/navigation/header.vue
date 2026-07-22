@@ -1,3 +1,6 @@
+<script setup>
+const isMenuOpen = ref(false);
+</script>
 <template>
   <header
     class="fixed top-0 w-full z-50 border-b border-slate-200 bg-white/90 backdrop-blur-xl"
@@ -27,7 +30,7 @@
           <span
             class="text-slate-400 text-[10px] font-medium tracking-[0.25em] uppercase"
           >
-            UoG · Ethiopia
+            Healthcare Robotics
           </span>
         </div>
       </NuxtLink>
@@ -64,7 +67,7 @@
       </div>
 
       <!-- Auth Actions -->
-      <div class="flex items-center gap-4">
+      <div class="hidden lg:flex items-center gap-4">
         <NuxtLink
           to="/login"
           class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
@@ -79,6 +82,77 @@
           Sign Up
         </NuxtLink>
       </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        @click="isMenuOpen = !isMenuOpen"
+        class="lg:hidden p-2 rounded-xl border border-slate-200 hover:bg-slate-50"
+      >
+        <Icon :name="isMenuOpen ? 'lucide:x' : 'lucide:menu'" class="w-5 h-5" />
+      </button>
     </nav>
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0 -translate-y-3"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 -translate-y-3"
+    >
+      <div
+        v-if="isMenuOpen"
+        class="lg:hidden border-t border-slate-200 bg-white"
+      >
+        <div class="container mx-auto px-8 py-6 flex flex-col gap-5">
+          <NuxtLink
+            to="#about"
+            @click="isMenuOpen = false"
+            class="text-slate-700 font-medium"
+          >
+            About
+          </NuxtLink>
+
+          <NuxtLink
+            to="#features"
+            @click="isMenuOpen = false"
+            class="text-slate-700 font-medium"
+          >
+            Features
+          </NuxtLink>
+
+          <NuxtLink
+            to="#team"
+            @click="isMenuOpen = false"
+            class="text-slate-700 font-medium"
+          >
+            Team
+          </NuxtLink>
+
+          <NuxtLink
+            to="#contact"
+            @click="isMenuOpen = false"
+            class="text-slate-700 font-medium"
+          >
+            Contact
+          </NuxtLink>
+
+          <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
+            <NuxtLink
+              to="/login"
+              class="w-full text-center py-3 rounded-xl border border-slate-200"
+            >
+              Sign In
+            </NuxtLink>
+
+            <NuxtLink
+              to="/signup"
+              class="w-full text-center py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold"
+            >
+              Sign Up
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </header>
 </template>
