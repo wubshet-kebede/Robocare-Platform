@@ -23,7 +23,7 @@ func main() {
 	// mqttclient.InitMQTTPublisher("tcp://localhost", 1883)
 	// mqttclient.InitMQTTSubscriber("tcp://localhost", 1883, wsManager)
 	r := api.SetupRouter(wsManager)
-	allowedOrigins := []string{"http://localhost:3000"}
+	allowedOrigins := []string{"http://localhost:3000","https://robocare-platform.vercel.app",}
 	allowedHeaders := []string{"Content-Type", "Authorization"}
 	allowedMethods := []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
 	corsMiddleware := handlers.CORS(
