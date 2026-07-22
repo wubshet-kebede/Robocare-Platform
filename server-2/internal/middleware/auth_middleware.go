@@ -61,11 +61,11 @@ func AuthMiddleware(next http.Handler) http.Handler {
 				Value:    newAccess,
 				Path:     "/",
 				HttpOnly: true,
-				Secure:   false,
-				SameSite: http.SameSiteLaxMode,
+				Secure:   true,
+				SameSite: http.SameSiteNoneMode,
 				Expires:  time.Now().Add(15 * time.Minute),
 			})
-
+            
 			accessClaims = map[string]interface{}{
 				"id":              userID,
 				"role":            role,
