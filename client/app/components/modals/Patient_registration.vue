@@ -133,14 +133,16 @@ const bloodTypeOptions = [
   <ModalsModal
     v-model="isOpen"
     title="Patient Registration"
-    wrapperClass="max-w-4xl"
+    wrapperClass="w-full max-w-4xl"
   >
     <template #content>
-      <div class="p-8 space-y-8">
+      <div class="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8">
         <div>
-          <h2 class="text-xl font-semibold mb-6">Personal Information</h2>
+          <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">
+            Personal Information
+          </h2>
 
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <UiBaseInput
               v-model="values.fullName"
               name="fullName"
@@ -191,7 +193,7 @@ const bloodTypeOptions = [
         <div>
           <h2 class="text-xl font-semibold mb-6">Contact Information</h2>
 
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <UiBaseInput
               v-model="values.email"
               name="email"
@@ -212,7 +214,7 @@ const bloodTypeOptions = [
                 </h1>
               </template>
             </UiBaseInput>
-            <div class="col-span-2">
+            <div class="md:col-span-2">
               <UiBaseInput
                 v-model="values.address"
                 name="address"
@@ -231,7 +233,7 @@ const bloodTypeOptions = [
         <div>
           <h2 class="text-xl font-semibold mb-6">Medical Information</h2>
 
-          <div class="space-y-6">
+          <div class="space-y-4 sm:space-y-6">
             <UiBaseInput v-model="values.allergies" name="allergies">
               <template #label>
                 <h1 class="text-md font-medium mb-2">Allergies</h1>
@@ -250,7 +252,7 @@ const bloodTypeOptions = [
         <div>
           <h2 class="text-xl font-semibold mb-6">Emergency Contact</h2>
 
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <UiBaseInput
               v-model="values.emergencyContactName"
               name="emergencyContactName"

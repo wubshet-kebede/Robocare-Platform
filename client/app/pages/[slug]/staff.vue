@@ -133,7 +133,7 @@ const metrics = [
     :staff="selectedStaff"
   />
   <div
-    class="mb-6 flex flex-col gap-4 sm:flex-row items-center justify-between"
+    class="mb-6 flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between"
   >
     <div>
       <h1 class="text-2xl font-bold tracking-tight">Staff Management</h1>
@@ -141,11 +141,13 @@ const metrics = [
         Manage hospital workforce, schedules, and department assignments.
       </p>
     </div>
-    <div class="flex items-center gap-3">
-      <div class="relative">
+    <div
+      class="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto"
+    >
+      <div class="relative w-full sm:w-auto">
         <UiBaseInput
           v-model="search"
-          class="w-64 pl-9"
+          class="w-full sm:w-64 lg:w-72 pl-9"
           placeholder="Search staff..."
           value=""
           leading-icon="lucide:search"
@@ -156,14 +158,14 @@ const metrics = [
       <button
         type="button"
         @click="openInviteModal"
-        class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
+        class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
       >
         <Icon name="fluent-mdl2:chat-invite-friend" class="mr-2 h-4 w-4" />
         invite Staff Member
       </button>
     </div>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
     <UiMetricCard
       v-for="metric in metrics"
       :key="metric.title"
@@ -173,14 +175,15 @@ const metrics = [
       :colorTheme="metric.colorTheme"
     />
   </div>
-  <div class="p-6">
-    <div class="flex gap-2 mb-8">
+  <div class="p-3 sm:p-4 lg:p-6">
+    <div class="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
       <button
+        class="shrink-0"
         v-for="tab in tabs"
         :key="tab.name"
         @click="activeTab = tab.name"
         :class="[
-          'flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all duration-200',
+          'shrink-0 flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl font-medium transition-all duration-200',
           activeTab === tab.name
             ? 'bg-white text-gray-900 shadow-sm'
             : 'text-gray-500 hover:text-gray-900',
@@ -198,7 +201,7 @@ const metrics = [
       </button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
       <UiStaffCard
         v-for="person in filteredStaff"
         :key="person.id"
@@ -209,7 +212,7 @@ const metrics = [
 
     <div
       v-if="filteredStaff.length === 0"
-      class="text-center py-20 text-gray-500"
+      class="text-center py-12 sm:py-20 text-gray-500"
     >
       No staff found in this category.
     </div>

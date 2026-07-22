@@ -203,11 +203,13 @@ watch(
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
-        <div class="relative">
+      <div
+        class="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end"
+      >
+        <div class="relative flex-1">
           <UiBaseInput
             v-model="search"
-            class="w-72 pl-10"
+            class="w-full pl-10"
             placeholder="Search patients or sessions..."
             leading-icon="lucide:search"
             leadingIconClass="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
@@ -217,7 +219,7 @@ watch(
         <button
           type="button"
           @click="openSessionModal"
-          class="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+          class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
         >
           <Icon name="lucide:video" class="h-4 w-4" />
           Start Session

@@ -180,15 +180,19 @@ const admissionStatusOptions = [
   <ModalsModal
     v-model="isOpen"
     title="Patient Admission"
-    wrapperClass="max-w-4xl"
+    wrapperClass="w-full max-w-4xl"
   >
     <template #content>
-      <div class="p-8 space-y-8">
+      <div class="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8">
         <div>
-          <h2 class="text-xl font-semibold mb-6">Patient Information</h2>
+          <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">
+            Patient Information
+          </h2>
 
-          <div class="rounded-2xl border border-gray-200 bg-gray-50 p-6">
-            <div class="grid grid-cols-2 gap-6">
+          <div
+            class="rounded-2xl border border-gray-200 bg-gray-50 p-4 sm:p-5 lg:p-6"
+          >
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <p class="text-sm text-gray-400">Patient Name</p>
 
@@ -224,9 +228,11 @@ const admissionStatusOptions = [
           </div>
         </div>
         <div>
-          <h2 class="text-xl font-semibold mb-6">Admission Information</h2>
+          <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">
+            Admission Information
+          </h2>
 
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <UiListSelect
               v-model="values.selectedStaffId"
               :items="staffOptions"
@@ -270,8 +276,7 @@ const admissionStatusOptions = [
         </div>
         <div>
           <h2 class="text-xl font-semibold mb-6">Medical Details</h2>
-
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <UiListSelect
               v-model="values.status"
               :items="statusOptions"
@@ -311,7 +316,7 @@ const admissionStatusOptions = [
                 <h1 class="text-md font-medium mb-2">Diagnosis</h1>
               </template>
             </UiBaseInput>
-            <div class="col-span-2">
+            <div class="md:col-span-2">
               <UiBaseInput
                 v-model="values.reasonForAdmission"
                 name="reasonForAdmission"
@@ -324,7 +329,9 @@ const admissionStatusOptions = [
             </div>
           </div>
         </div>
-        <div class="flex justify-end gap-4 pt-6">
+        <div
+          class="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-6"
+        >
           <button
             @click="isOpen = false"
             class="rounded-xl border border-gray-300 px-6 py-3 hover:bg-gray-100 transition"

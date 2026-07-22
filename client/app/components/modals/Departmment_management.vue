@@ -138,14 +138,15 @@ const submit = handleSubmit(async (formValues) => {
   <ModalsModal
     v-model="isOpen"
     title="Department Management"
-    wrapperClass="max-w-3xl"
+    wrapperClass="w-[95vw] max-w-3xl"
   >
     <template #content>
-      <div class="p-8 space-y-8">
+      <div class="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
         <div>
-          <h2 class="text-xl font-semibold mb-6">Department Information</h2>
-
-          <div class="grid grid-cols-2 gap-6">
+          <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">
+            Department Information
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Department Name -->
             <UiBaseInput v-model="values.name" name="name" rules="required">
               <template #label>

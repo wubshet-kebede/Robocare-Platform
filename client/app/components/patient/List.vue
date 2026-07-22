@@ -222,15 +222,17 @@ const formatPatientId = (id) => {
     :patient="selectedPatient"
     :assignable-staff="assignableStaff"
   />
-  <div class="bg-[#faf7f7] min-h-screen p-6">
-    <div class="grid grid-cols-12 gap-6">
-      <div class="col-span-8 space-y-4">
-        <div class="inline-flex rounded-xl bg-[#f1ecec] p-1 gap-1">
+  <div class="bg-[#faf7f7] min-h-screen p-3 sm:p-4 lg:p-6">
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div class="xl:col-span-8 space-y-4">
+        <div
+          class="flex overflow-x-auto rounded-xl bg-[#f1ecec] p-1 gap-1 scrollbar-hide"
+        >
           <button
             v-for="tab in tabs"
             :key="tab.value"
             @click="activeTab = tab.value"
-            class="flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200"
+            class="shrink-0 flex items-center rounded-lg px-4 py-2 text-sm font-medium"
             :class="
               activeTab === tab.value
                 ? 'bg-white shadow-sm text-black'
@@ -256,7 +258,7 @@ const formatPatientId = (id) => {
           v-for="patient in filteredPatients"
           :key="patient?.id"
           @click="selectedPatient = patient"
-          class="cursor-pointer rounded-2xl border bg-white px-6 py-5 shadow-sm transition-all duration-200 hover:shadow-md"
+          class="cursor-pointer rounded-2xl border bg-white p-4 sm:p-5 lg:px-6 lg:py-5 shadow-sm"
           :class="
             selectedPatient?.id === patient.id
               ? 'border-red-200 ring-1 ring-red-100'
@@ -264,7 +266,7 @@ const formatPatientId = (id) => {
           "
         >
           <div
-            class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"
+            class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
           >
             <div class="flex items-center gap-4 min-w-0">
               <div
@@ -307,7 +309,7 @@ const formatPatientId = (id) => {
               </div>
             </div>
             <div
-              class="grid grid-cols-2 gap-x-10 gap-y-4 xl:flex xl:items-center xl:gap-10"
+              class="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:items-center lg:gap-8 gap-4"
             >
               <div>
                 <p class="text-xs text-gray-400">Age</p>
@@ -349,9 +351,11 @@ const formatPatientId = (id) => {
           </div>
         </div>
       </div>
-      <div class="col-span-4">
+      <div class="xl:col-span-4">
         <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div class="flex items-center gap-4">
+          <div
+            class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left"
+          >
             <div
               class="flex h-14 w-14 items-center justify-center rounded-full bg-[#f3eeee] text-lg font-bold"
             >
@@ -368,7 +372,7 @@ const formatPatientId = (id) => {
               </p>
             </div>
           </div>
-          <div class="mt-8 grid grid-cols-2 gap-6">
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p class="text-sm text-gray-400">Age</p>
 

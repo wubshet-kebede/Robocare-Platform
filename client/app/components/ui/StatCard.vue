@@ -8,30 +8,35 @@ const cards = [
 </script>
 
 <template>
-  <div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
     <div
       v-for="(card, index) in cards"
       :key="index"
-      class="flex items-center gap-3 rounded-lg border dark:border-border dark:bg-card py-2 px-4"
-      :style="{ borderLeftWidth: '4px', borderLeftColor: `var(${card.color})` }"
+      class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-md transition-all"
+      :style="{
+        borderLeftWidth: '4px',
+        borderLeftColor: `var(${card.color})`,
+      }"
     >
-      <div class="flex-1 min-w-0">
-        <p class="text-xs dark:text-muted-foreground truncate">
-          {{ card.title }}
-        </p>
-        <div class="flex items-center gap-2">
-          <span class="text-lg font-bold">{{ card.value }}</span>
-          <div
-            class="inline-flex items-center rounded-md border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow-sm text-[10px] px-1.5 py-0"
-            :class="[
-              card.change.startsWith('+')
-                ? 'bg-success dark:text-success-foreground'
-                : 'bg-destructive dark:text-destructive-foreground',
-            ]"
-          >
-            {{ card.change }}
-          </div>
-        </div>
+      <p class="text-sm text-slate-500 mb-2">
+        {{ card.title }}
+      </p>
+
+      <div class="flex items-center justify-between">
+        <span class="text-xl lg:text-2xl font-bold text-slate-900">
+          {{ card.value }}
+        </span>
+
+        <span
+          class="text-xs font-medium px-2 py-1 rounded-md"
+          :class="
+            card.change.startsWith('+')
+              ? 'bg-emerald-100 text-emerald-700'
+              : 'bg-red-100 text-red-700'
+          "
+        >
+          {{ card.change }}
+        </span>
       </div>
     </div>
   </div>

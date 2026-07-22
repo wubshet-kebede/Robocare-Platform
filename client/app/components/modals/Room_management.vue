@@ -131,14 +131,16 @@ const roomStatusOptions = [
   <ModalsModal
     v-model="isOpen"
     title="Room Management"
-    wrapperClass="max-w-3xl"
+    wrapperClass="w-[95vw] max-w-4xl"
   >
     <template #content>
-      <div class="p-8 space-y-8">
+      <div class="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
         <div>
-          <h2 class="text-xl font-semibold mb-6">Room Information</h2>
+          <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">
+            Room Information
+          </h2>
 
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UiBaseInput
               v-model="values.roomNumber"
               name="roomNumber"
@@ -217,8 +219,7 @@ const roomStatusOptions = [
           <h2 class="text-xl font-semibold mb-6">
             Robot Navigation Coordinates
           </h2>
-
-          <div class="grid grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <UiBaseInput
               v-model="values.x"
               name="x"
