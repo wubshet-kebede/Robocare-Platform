@@ -2,7 +2,7 @@
 const colorMode = useColorMode();
 
 const isDark = computed(() => colorMode.value === "dark");
-
+const sidebarOpen = ref(false);
 function toggleTheme() {
   colorMode.preference = isDark.value ? "light" : "dark";
 }
@@ -139,8 +139,18 @@ const getInitials = (name) => {
 
 <template>
   <div class="flex min-h-screen dark:bg-background">
+    <Transition name="fade">
+      <div
+        v-if="sidebarOpen"
+        @click="sidebarOpen = false"
+        class="fixed inset-0 z-50 bg-black/20 backdrop-blur-lg bg-gray-100 dark:bg-background lg:hidden"
+      />
+    </Transition>
     <aside
-      class="fixed ltr:left-0 rtl:right-0 top-0 z-40 hidden h-screen flex-col dark:bg-sidebar transition-all duration-300 ease-in-out lg:flex w-[260px]"
+      :class="[
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        'fixed left-0 top-0 z-50 h-screen w-[280px] max-w-[85vw] flex flex-col dark:bg-sidebar transition-transform duration-300 ease-in-out lg:translate-x-0',
+      ]"
     >
       <div
         class="flex h-16 items-center gap-3 border-b border-sidebar-border px-4"
@@ -163,6 +173,9 @@ const getInitials = (name) => {
             >Dashboard</span
           >
         </div>
+        <button @click="sidebarOpen = false" class="ml-auto lg:hidden">
+          <Icon name="lucide:x" class="h-5 w-5" />
+        </button>
       </div>
 
       <nav
@@ -265,6 +278,7 @@ const getInitials = (name) => {
           <!-- LEFT -->
           <div class="flex items-center gap-3">
             <button
+              @click="sidebarOpen = true"
               aria-label="Open menu"
               class="flex h-8 w-8 items-center justify-center rounded-lg dark:text-muted-foreground transition-colors dark:hover:bg-accent dark:hover:text-foreground lg:hidden"
             >
@@ -272,7 +286,7 @@ const getInitials = (name) => {
             </button>
 
             <button
-              class="relative hidden h-9 w-72 items-center rounded-lg border dark:border-input dark:bg-muted/40 ps-9 pe-4 text-start text-sm dark:text-muted-foreground/50 transition-colors hover:bg-muted/60 sm:flex"
+              class="relative hidden md:flex h-9 w-72 items-center rounded-lg border dark:border-input dark:bg-muted/40 ps-9 pe-4 text-start text-sm dark:text-muted-foreground/50 transition-colors hover:bg-muted/60 sm:flex"
             >
               <Icon
                 name="lucide:search"
@@ -321,20 +335,22 @@ const getInitials = (name) => {
             <button class="relative h-8 w-8 flex items-center justify-center">
               <Icon name="lucide:bell" class="h-4 w-4 dark:text-white" />
               <span
-                class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full dark:bg-destructive"
-              ></span>
+                class="absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] text-white"
+              >
+                3
+              </span>
             </button>
 
             <!-- User -->
             <button
-              class="ms-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
+              class="ms-1 flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
             >
               {{ getInitials(user?.full_name) }}
             </button>
           </div>
         </header>
       </div>
-      <main class="flex-1 p-4 sm:p-6">
+      <main class="flex-1 p-4 md:p-6 lg:p-8">
         <slot />
       </main>
     </div>

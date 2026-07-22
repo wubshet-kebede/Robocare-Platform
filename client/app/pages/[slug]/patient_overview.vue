@@ -50,41 +50,45 @@ const isModalOpen = ref(false);
     v-model="isModalOpen"
   ></ModalsPatientRegistration>
   <div
-    class="mb-6 flex flex-col gap-4 sm:flex-row items-center justify-between"
+    class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
   >
-    <div>
-      <h1 class="text-2xl font-bold tracking-tight">Patient Overview</h1>
+    <div class="w-full lg:w-auto">
+      <h1 class="text-xl sm:text-2xl font-bold tracking-tight">
+        Patient Overview
+      </h1>
+
       <p class="mt-1 text-sm text-muted-foreground">
         Monitor and manage patient records, vitals, and care plans.
       </p>
     </div>
-    <div class="flex items-center gap-3">
-      <div class="relative">
+    <div
+      class="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto"
+    >
+      <div class="relative flex-1">
         <UiBaseInput
           v-model="search"
-          class="w-64 pl-9"
+          class="w-full pl-9"
           placeholder="Search patients..."
-          value=""
           leading-icon="lucide:search"
           leadingIconClass="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-        >
-        </UiBaseInput>
+        />
       </div>
+
       <button
         type="button"
         @click="isModalOpen = true"
-        class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
+        class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
       >
         <Icon name="lucide:plus" class="h-3.5 w-3.5" />
         Add Patient
       </button>
     </div>
   </div>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
     <div
       v-for="item in metrics"
       :key="item.title"
-      class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+      class="rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow"
     >
       <div class="flex items-center justify-between">
         <div
@@ -119,15 +123,16 @@ const isModalOpen = ref(false);
       <div class="mt-4">
         <h3 class="text-sm font-medium text-gray-500">{{ item.title }}</h3>
         <div class="mt-1 flex items-baseline gap-2">
-          <span class="text-2xl font-bold text-gray-900 dark:text-white">{{
-            item.value
-          }}</span>
+          <span
+            class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white"
+            >{{ item.value }}</span
+          >
           <span class="text-xs text-gray-400">{{ item.trendText }}</span>
         </div>
       </div>
     </div>
   </div>
-  <div class="p-6">
+  <div class="mt-6 p-0 sm:p-2">
     <PatientList />
   </div>
 </template>
