@@ -153,7 +153,8 @@ Frontend Dashboard (Nuxt 4)
 ## Screenshots
 
 ### Login Page
-_Add screenshot here_
+<img width="1844" height="917" alt="image" src="https://github.com/user-attachments/assets/f09d44b3-7ef2-4c04-a862-a4d3ce74ea54" />
+
 
 ### Dashboard
 _Add screenshot here_
