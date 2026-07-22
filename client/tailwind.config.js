@@ -16,6 +16,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Geist", "sans-serif"],
+      },
+
       colors: {
         "sidebar-robocare": "#f7f0f1",
         "sidebar-primary": "#ea6c5a",

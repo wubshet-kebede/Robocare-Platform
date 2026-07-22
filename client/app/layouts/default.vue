@@ -10,10 +10,3 @@
     <NavigationFooter />
   </div>
 </template>
-
-<!-- <style>
-/* Smooth scrolling for anchor links (About, Contact, etc.) */
-html {
-  scroll-behavior: smooth;
-}
-</style> -->
