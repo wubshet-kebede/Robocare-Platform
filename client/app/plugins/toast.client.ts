@@ -1,16 +1,14 @@
-import * as vt from "vue-toastification";
+import Vue3Toastify, { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const modulePayload: any = vt.default || vt;
-
-  nuxtApp.vueApp.use(modulePayload);
-
-  const useToastHook = vt.useToast || modulePayload.useToast;
+  nuxtApp.vueApp.use(Vue3Toastify, {
+    autoClose: 3000,
+  });
 
   return {
     provide: {
-      toast:
-        typeof useToastHook === "function" ? useToastHook() : modulePayload,
+      toast,
     },
   };
 });
