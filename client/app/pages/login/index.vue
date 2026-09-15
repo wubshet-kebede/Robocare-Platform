@@ -1,9 +1,7 @@
 <script setup>
 import UiBaseInput from "~/components/ui/BaseInput.vue";
 import { useForm } from "vee-validate";
-import { useToast } from "vue-toastification";
-
-const toast = useToast();
+const { $toast } = useNuxtApp();
 definePageMeta({
   layout: false,
 });
@@ -25,11 +23,11 @@ const submit = handleSubmit(async (values) => {
     const userData = await me();
     user.value = userData;
     console.log("Logged user:", userData);
-    toast.success("Welcome back! Login successful.");
+    $toast.success("Welcome back! Login successful.");
     await navigateTo(`/${userData.hospital.slug}/dashboard`);
   } catch (err) {
     console.log(err);
-    toast.error("Login failed. Please check your email and password.");
+    $toast.error("Login failed. Please check your email and password.");
   } finally {
     loading.value = false;
   }
