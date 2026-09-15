@@ -4,9 +4,7 @@ import { useForm } from "vee-validate";
 definePageMeta({
   layout: false,
 });
-import { useToast } from "vue-toastification";
-
-const toast = useToast();
+const { $toast } = useNuxtApp();
 const { handleSubmit } = useForm();
 const { signup } = useAuthService();
 const loading = ref(false);
@@ -28,11 +26,11 @@ const submit = handleSubmit(async (values) => {
       admin_phone: values.phone,
     });
     console.log("signup response:", res);
-    toast.success("Account created successfully! Welcome to RoboCare.");
+    $toast.success("Account created successfully! Welcome to RoboCare.");
     navigateTo("/login");
   } catch (err) {
     console.log(err);
-    toast.error(err?.data?.message || "Signup failed. Please try again.");
+    $toast.error(err?.data?.message || "Signup failed. Please try again.");
   } finally {
     loading.value = false;
   }

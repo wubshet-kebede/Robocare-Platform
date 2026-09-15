@@ -1,12 +1,16 @@
-import Toast, { POSITION } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+import * as vt from "vue-toastification";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(Toast, {
-    position: POSITION.TOP_RIGHT,
-    timeout: 3000,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-  });
+  const modulePayload: any = vt.default || vt;
+
+  nuxtApp.vueApp.use(modulePayload);
+
+  const useToastHook = vt.useToast || modulePayload.useToast;
+
+  return {
+    provide: {
+      toast:
+        typeof useToastHook === "function" ? useToastHook() : modulePayload,
+    },
+  };
 });
