@@ -1,5 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  build: {
+    transpile: ["vue3-toastify"],
+  },
+  vite: {
+    ssr: {
+      noExternal: ["vue3-toastify"],
+    },
+  },
   imports: {
     dirs: ["composables/**"],
   },
